@@ -1,0 +1,268 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Zamówienie" noindex>
+  <section class="container section">
+    <p class="eyebrow">Ostatni krok</p>
+    <h1>Coś dobrego jest już blisko.</h1>
+    <p class="intro muted">Kupujesz bez rejestracji. Wypełnij dane i sprawdź podsumowanie.</p>
+    <form id="checkout-form" class="checkout-grid mt-12">
+      <div>
+        <h2 class="!text-3xl mb-8">Twoje dane</h2>
+        <div class="grid sm:grid-cols-2 gap-x-5">
+          <label class="field">
+            Imię
+            <input name="firstName" required maxlength="40" autocomplete="given-name" />
+          </label>
+          <label class="field">
+            Nazwisko
+            <input name="lastName" required maxlength="60" autocomplete="family-name" />
+          </label>
+        </div>
+        <label class="field">
+          E-mail
+          <input type="email" name="email" required maxlength="50" autocomplete="email" />
+        </label>
+        <fieldset id="shipping-fields" hidden disabled>
+          <legend class="font-serif text-3xl mb-6">Dostawa</legend>
+          <label class="field">
+            Telefon
+            <input name="phone" type="tel" required maxlength="25" autocomplete="tel" />
+          </label>
+          <label class="field">
+            Ulica, numer domu i mieszkania
+            <input name="street" required maxlength="150" autocomplete="street-address" />
+          </label>
+          <div class="grid sm:grid-cols-2 gap-x-5">
+            <label class="field">
+              Kod pocztowy
+              <input
+                name="postalCode"
+                required
+                pattern="[0-9]{2}-[0-9]{3}"
+                placeholder="00-000"
+                autocomplete="postal-code"
+              />
+            </label>
+            <label class="field">
+              Miejscowość
+              <input name="city" required maxlength="100" autocomplete="address-level2" />
+            </label>
+          </div>
+          <p class="text-xs muted mb-5">Dostawa na terenie Polski.</p>
+          <label class="field">
+            Sposób dostawy<select name="shippingMethod" id="shipping-method"></select>
+          </label>
+        </fieldset>
+        <label class="check">
+          <input type="checkbox" id="invoice-toggle" />
+          <span>Potrzebuję faktury na firmę</span>
+        </label>
+        <fieldset id="invoice-fields" disabled hidden>
+          <label class="field">
+            Nazwa firmy
+            <input name="company" required maxlength="150" />
+          </label>
+          <label class="field">
+            NIP (10 cyfr)
+            <input name="nip" required pattern="[0-9]{10}" />
+          </label>
+          <label class="field">
+            Adres firmy
+            <input name="invoiceAddress" required maxlength="250" />
+          </label>
+        </fieldset>
+      </div>
+      <aside class="card">
+        <h2 class="!text-3xl mb-8">Twoje zamówienie</h2>
+        <div data-checkout-lines>Wczytywanie…</div>
+        <div class="flex justify-between mt-6">
+          <span>Dostawa</span>
+          <span data-checkout-shipping></span>
+        </div>
+        <div class="flex justify-between border-t border-[#d9d3cc] pt-6 mt-6">
+          <strong>Razem brutto</strong>
+          <strong data-checkout-total></strong>
+        </div>
+        <label class="check">
+          <input type="checkbox" name="terms" required />
+          <span>
+            Akceptuję{' '}
+            <a href="/regulamin" target="_blank">
+              regulamin
+            </a>{' '}
+            i zapoznałam/em się z{' '}
+            <a href="/polityka-prywatnosci" target="_blank">
+              polityką prywatności
+            </a>
+            .
+          </span>
+        </label>
+        <label class="check" id="digital-consent" hidden>
+          <input type="checkbox" name="digitalConsent" />
+          <span>
+            Zgadzam się na dostarczenie treści cyfrowej przed upływem terminu odstąpienia od umowy.
+            Przyjmuję do wiadomości utratę prawa odstąpienia po spełnieniu świadczenia.
+          </span>
+        </label>
+        <button type="submit" class="btn w-full" id="pay-button" disabled>
+          Zamawiam z obowiązkiem zapłaty →
+        </button>
+        <p class="text-xs muted mt-4">Bezpieczna płatność przez Przelewy24.</p>
+        <p id="checkout-message" role="alert" class="mt-5 text-sm error"></p>
+        <a id="order-status-link" class="text-link mt-4" hidden>
+          Sprawdź zapisane zamówienie →
+        </a>
+      </aside>
+    </form>
+    <noscript>
+      <p class="notice">Zamówienie wymaga włączonego JavaScript.</p>
+    </noscript>
+  </section>
+</Layout>
+<style>
+  .checkout-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 28px 0;
+  }
+  @media (max-width: 900px) {
+    .checkout-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+</style>
+<script>
+  import { readCart, quote } from '../../scripts/cart';
+  import { money } from '../../lib/types';
+  const form = document.querySelector<HTMLFormElement>('#checkout-form')!;
+  const message = document.querySelector<HTMLElement>('#checkout-message')!;
+  const button = document.querySelector<HTMLButtonElement>('#pay-button')!;
+  const shipping = document.querySelector<HTMLFieldSetElement>('#shipping-fields')!;
+  const methods = document.querySelector<HTMLSelectElement>('#shipping-method')!;
+  let q: Awaited<ReturnType<typeof quote>>;
+  async function refresh() {
+    button.disabled = true;
+    try {
+      q = await quote(readCart(), methods.value || undefined);
+      shipping.hidden = !q.physical;
+      shipping.disabled = !q.physical;
+      const digital = document.querySelector<HTMLElement>('#digital-consent')!;
+      digital.hidden = !q.digital;
+      digital.querySelector('input')!.required = q.digital;
+      if (!methods.options.length)
+        q.methods.forEach((m) => methods.add(new Option(`${m.name} — ${money(m.price)}`, m.id)));
+      const list = document.querySelector('[data-checkout-lines]')!;
+      list.replaceChildren();
+      q.lines.forEach((p) => {
+        const row = document.createElement('p');
+        row.className = 'flex justify-between gap-4 mb-3 text-sm';
+        const label = document.createElement('span');
+        label.textContent = `${p.name} × ${p.quantity}`;
+        const price = document.createElement('span');
+        price.textContent = money(p.price * p.quantity);
+        row.append(label, price);
+        list.append(row);
+      });
+      document.querySelector('[data-checkout-shipping]')!.textContent = money(q.shipping);
+      document.querySelector('[data-checkout-total]')!.textContent = money(q.total);
+      if (q.lines.some((p) => p.productType === 'physical' && p.quantity > p.stock))
+        throw new Error('Stan magazynowy uległ zmianie. Wróć do koszyka.');
+      button.disabled = false;
+      message.textContent = '';
+    } catch (e) {
+      message.textContent = readCart().length
+        ? e instanceof Error
+          ? e.message
+          : 'Nie udało się wycenić koszyka.'
+        : 'Koszyk jest pusty. Wybierz produkty przed złożeniem zamówienia.';
+    }
+  }
+  methods.addEventListener('change', () => void refresh());
+  document.querySelector<HTMLInputElement>('#invoice-toggle')!.addEventListener('change', (e) => {
+    const enabled = (e.currentTarget as HTMLInputElement).checked;
+    const field = document.querySelector<HTMLFieldSetElement>('#invoice-fields')!;
+    field.hidden = !enabled;
+    field.disabled = !enabled;
+  });
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (button.disabled) return;
+    button.disabled = true;
+    message.textContent = 'Zapisujemy zamówienie…';
+    try {
+      const data = new FormData(form);
+      const get = (key: string) => String(data.get(key) || '');
+      const payload = {
+        items: readCart(),
+        firstName: get('firstName'),
+        lastName: get('lastName'),
+        email: get('email'),
+        phone: get('phone') || undefined,
+        shippingMethod: q.shippingMethod,
+        address: q.physical
+          ? {
+              street: get('street'),
+              postalCode: get('postalCode'),
+              city: get('city'),
+              country: 'PL',
+            }
+          : undefined,
+        invoice: document.querySelector<HTMLInputElement>('#invoice-toggle')!.checked
+          ? { company: get('company'), nip: get('nip'), address: get('invoiceAddress') }
+          : undefined,
+        terms: data.get('terms') === 'on',
+        digitalConsent: data.get('digitalConsent') === 'on',
+      };
+      const fingerprint = JSON.stringify(payload);
+      let attempt: { fingerprint: string; idempotencyKey: string; accessToken: string } | null =
+        null;
+      try {
+        attempt = JSON.parse(sessionStorage.getItem('tc-attempt') || 'null');
+      } catch {
+        /* Start a new attempt for malformed session data. */
+      }
+      if (!attempt || attempt.fingerprint !== fingerprint) {
+        const bytes = crypto.getRandomValues(new Uint8Array(32));
+        attempt = {
+          fingerprint,
+          idempotencyKey: crypto.randomUUID(),
+          accessToken: Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join(''),
+        };
+        sessionStorage.setItem('tc-attempt', JSON.stringify(attempt));
+      }
+      const statusLink = document.querySelector<HTMLAnchorElement>('#order-status-link')!;
+      statusLink.href = `/zamowienie/sukces?token=${attempt.accessToken}`;
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...payload,
+          idempotencyKey: attempt.idempotencyKey,
+          accessToken: attempt.accessToken,
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        if (response.status === 502 || response.status === 409) statusLink.hidden = false;
+        throw new Error(result.error);
+      }
+      location.assign(result.redirect);
+    } catch (e) {
+      message.textContent =
+        e instanceof Error
+          ? e.message
+          : 'Błąd połączenia. Sprawdź status zamówienia przed kolejną próbą.';
+      button.disabled = false;
+    }
+  });
+  void refresh();
+</script>

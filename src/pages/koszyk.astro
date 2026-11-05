@@ -1,0 +1,93 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Twój koszyk" noindex>
+  <section class="container section">
+    <p class="eyebrow">Jeszcze chwila i gotowe</p>
+    <h1>Twój koszyk.</h1>
+    <div class="cart-layout mt-12">
+      <div data-cart-lines aria-live="polite">
+        <p>Wczytywanie koszyka…</p>
+      </div>
+      <aside class="card" data-cart-summary hidden>
+        <h2 class="!text-3xl">Podsumowanie</h2>
+        <div class="flex justify-between mt-8 gap-4">
+          <span>Produkty</span>
+          <span data-subtotal></span>
+        </div>
+        <div class="flex justify-between mt-4 gap-4">
+          <span>Dostawa</span>
+          <span data-shipping></span>
+        </div>
+        <div class="flex justify-between border-t border-[#d9d3cc] mt-6 pt-6 gap-4">
+          <strong>Razem</strong>
+          <strong data-total></strong>
+        </div>
+        <a href="/zamowienie" class="btn w-full mt-8">
+          Przejdź do zamówienia →
+        </a>
+        <p class="text-xs muted mt-4">
+          Kupujesz bez zakładania konta. Ostateczny koszt dostawy potwierdzisz w następnym kroku.
+        </p>
+      </aside>
+    </div>
+    <a href="/sklep" class="text-link mt-12">
+      ← Wróć do produktów
+    </a>
+    <noscript>
+      <p class="notice">Koszyk wymaga JavaScript. Włącz go w przeglądarce.</p>
+    </noscript>
+  </section>
+</Layout>
+<style is:global>
+  .cart-layout {
+    display: grid;
+    grid-template-columns: 1.7fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+  .cart-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 65px auto;
+    gap: 20px;
+    align-items: center;
+    padding: 24px 0;
+    border-bottom: 1px solid #d9d3cc;
+  }
+  .cart-row img {
+    border-radius: 6px;
+    width: 80px;
+    height: 90px;
+  }
+  .cart-row input {
+    padding: 8px !important;
+  }
+  .cart-row > div > a {
+    font-family: var(--font-serif);
+    font-size: 25px;
+  }
+  @media (max-width: 900px) {
+    .cart-layout {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+  @media (max-width: 500px) {
+    .cart-row {
+      grid-template-columns: 60px 1fr 55px;
+      gap: 12px;
+    }
+    .cart-row img {
+      width: 60px;
+      height: 75px;
+    }
+    .cart-row > button {
+      grid-column: 2;
+      justify-self: start;
+    }
+    .cart-row > div > a {
+      font-size: 23px;
+    }
+  }
+</style>

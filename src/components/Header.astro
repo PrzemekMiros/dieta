@@ -1,0 +1,172 @@
+---
+import type { SiteSettings } from '../lib/types';
+interface Props {
+  settings: SiteSettings;
+}
+const { settings } = Astro.props;
+const links = [
+  ['O mnie', '/o-nas'],
+  ['Ebooki', '/ebooki'],
+  ['Pieczywo', '/produkty'],
+  ['Blog', '/blog'],
+  ['Kontakt', '/kontakt'],
+];
+---
+
+<a class="skip" href="#main">
+  Przejdź do treści
+</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="Twoja Dietetyczka — strona główna">
+      {settings.logo ? (
+        <img src={settings.logo} width="160" height="50" alt="Twoja Dietetyczka" />
+      ) : (
+        <>
+          <span>TWOJA DIETETYCZKA</span>
+          <small>zdrowe nawyki, bez presji</small>
+        </>
+      )}
+    </a>
+    <nav aria-label="Główna" id="main-nav">
+      {links.map(([label, href]) => (
+        <a href={href} aria-current={Astro.url.pathname === href ? 'page' : undefined}>
+          {label}
+        </a>
+      ))}
+    </nav>
+    <div class="header-actions">
+      <a class="cart-link" href="/kontakt" aria-label="Umów konsultację">
+        Umów wizytę
+      </a>
+      <a class="btn btn-dark shop-link" href="/kontakt">
+        Umów konsultację <span aria-hidden="true">↗</span>
+      </a>
+      <button class="menu-toggle" type="button" aria-controls="main-nav" aria-expanded="false">
+        Menu <span aria-hidden="true">☰</span>
+      </button>
+    </div>
+  </div>
+</header>
+<style>
+  .site-header {
+    position: relative;
+    z-index: 20;
+    border-bottom: 1px solid #d9d3cc80;
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    min-height: 100px;
+  }
+  .brand {
+    display: grid;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .brand span {
+    font-family: var(--font-serif);
+    font-size: 24px;
+    letter-spacing: 0.01em;
+  }
+  .brand small {
+    font-size: 8px;
+    letter-spacing: 0.19em;
+    text-transform: uppercase;
+  }
+  nav {
+    display: flex;
+    gap: 28px;
+    font-size: 12px;
+  }
+  nav a:hover,
+  nav a[aria-current] {
+    color: var(--color-action);
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+  .cart-link {
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .cart-link span {
+    display: inline-grid;
+    place-items: center;
+    width: 23px;
+    height: 23px;
+    background: var(--color-beige);
+    border-radius: 50%;
+    margin-left: 5px;
+  }
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: 0;
+    padding: 10px;
+    font-size: 12px;
+  }
+  @media (max-width: 1023px) {
+    nav {
+      gap: 16px;
+    }
+    .shop-link {
+      display: none;
+    }
+  }
+  @media (max-width: 767px) {
+    .header-inner {
+      min-height: 82px;
+      gap: 12px;
+    }
+    .brand span {
+      font-size: 19px;
+    }
+    .brand small {
+      font-size: 6px;
+    }
+    .header-actions {
+      gap: 8px;
+    }
+    .menu-toggle {
+      display: block;
+    }
+    nav {
+      display: none;
+      position: absolute;
+      top: 82px;
+      left: 0;
+      right: 0;
+      background: var(--color-paper);
+      padding: 24px;
+      box-shadow: 0 12px 20px #0000000a;
+    }
+    nav[data-open] {
+      display: flex;
+      flex-direction: column;
+    }
+    nav a {
+      padding: 9px;
+      font-size: 16px;
+    }
+  }
+</style>
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const nav = document.querySelector('#main-nav');
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') !== 'true';
+    toggle.setAttribute('aria-expanded', String(open));
+    nav?.toggleAttribute('data-open', open);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      toggle?.setAttribute('aria-expanded', 'false');
+      nav?.removeAttribute('data-open');
+    }
+  });
+</script>

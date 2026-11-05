@@ -1,0 +1,40 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { settings } from '../lib/catalog';
+const s = await settings();
+---
+
+<Layout title="Kontakt">
+  <section class="section container split">
+    <div>
+      <p class="eyebrow">Porozmawiajmy</p>
+      <h1>
+        Zadbaj o swoje
+        <br />
+        zdrowie już dziś.
+      </h1>
+      <p class="intro muted">
+        Chcesz poprawić odżywianie, lepiej się czuć lub zacząć zdrowe nawyki bez presji? Napisz do
+        mnie — chętnie pomogę dobrać odpowiednie wsparcie.
+      </p>
+    </div>
+    <div class="card">
+      <h2 class="!text-3xl">Napisz do mnie</h2>
+      {s.email ? (
+        <a class="text-link mt-6" href={`mailto:${s.email}`}>
+          {s.email} ↗
+        </a>
+      ) : (
+        <p class="notice">Dane kontaktowe pojawią się tutaj po ustaleniu terminu konsultacji.</p>
+      )}
+      {s.phone && (
+        <p class="mt-4">
+          <a href={`tel:${s.phone}`}>{s.phone}</a>
+        </p>
+      )}
+      {s.companyName && <p class="mt-8">{s.companyName}</p>}
+      {s.address && <p>{s.address}</p>}
+      {s.nip && <p>NIP: {s.nip}</p>}
+    </div>
+  </section>
+</Layout>

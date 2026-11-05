@@ -1,0 +1,68 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Status zamówienia" noindex>
+  <section class="container section max-w-4xl">
+    <p class="eyebrow">Twoje zamówienie</p>
+    <h1 id="status-title">Sprawdzamy płatność.</h1>
+    <p class="intro muted" id="status-description" role="status">
+      Czekamy na potwierdzenie z systemu płatniczego.
+    </p>
+    <p class="mt-6 text-xs muted" id="status-id"></p>
+    <button id="status-refresh" class="btn btn-outline mt-8">
+      Odśwież status
+    </button>
+    <a href="/sklep" class="text-link mt-8 ml-6">
+      Wróć do sklepu →
+    </a>
+  </section>
+</Layout>
+<script>
+  const access = new URLSearchParams(location.search).get('token');
+  let polls = 0;
+  let timer: ReturnType<typeof setTimeout>;
+  const title = document.querySelector('#status-title')!,
+    description = document.querySelector('#status-description')!;
+  async function check() {
+    clearTimeout(timer);
+    try {
+      const response = await fetch(`/api/status?token=${encodeURIComponent(access || '')}`);
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error);
+      document.querySelector('#status-id')!.textContent = `Numer zamówienia: ${result.id}`;
+      if (result.status === 'paid') {
+        title.textContent = 'Dziękujemy. Płatność potwierdzona.';
+        description.textContent =
+          'Potwierdzenie i ewentualne linki do ebooków otrzymasz e-mailem. Sprawdź też folder spam.';
+        localStorage.removeItem('tc-cart-v1');
+        sessionStorage.removeItem('tc-attempt');
+        return;
+      }
+      if (result.status === 'cancelled') {
+        title.textContent = 'Zamówienie zostało anulowane.';
+        description.textContent = 'Jeśli pieniądze zostały pobrane, skontaktuj się ze sklepem.';
+        return;
+      }
+      if (result.status === 'payment_review') {
+        title.textContent = 'Sprawdzamy Twoją płatność.';
+        description.textContent =
+          'Płatność wpłynęła do anulowanego zamówienia. Sklep skontaktuje się w sprawie realizacji lub zwrotu.';
+        return;
+      }
+      title.textContent = 'Oczekujemy na potwierdzenie.';
+      description.textContent =
+        'Jeśli płatność została przerwana lub anulowana w bramce, zamówienie pozostaje nieopłacone. Nie oznaczamy go jako opłaconego na podstawie powrotu na tę stronę.';
+      if (++polls < 20) timer = setTimeout(check, 5000);
+    } catch (e) {
+      title.textContent = 'Nie możemy odczytać statusu.';
+      description.textContent = e instanceof Error ? e.message : 'Spróbuj ponownie.';
+    }
+  }
+  document.querySelector('#status-refresh')!.addEventListener('click', () => {
+    polls = 0;
+    void check();
+  });
+  window.addEventListener('pagehide', () => clearTimeout(timer));
+  void check();
+</script>

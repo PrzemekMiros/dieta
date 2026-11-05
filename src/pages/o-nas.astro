@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HomeSection from '../components/HomeSection.astro';
+import PortableText from '../components/PortableText.astro';
+import { contentPage } from '../lib/catalog';
+const page = await contentPage('o-nas');
+---
+
+<Layout title="O mnie">
+  <section class="container section">
+    <p class="eyebrow">Twoja Dietetyczka</p>
+    <h1>
+      Zdrowie zaczyna się
+      <br />
+      od prostych wyborów.
+    </h1>
+    {page ? (
+      <PortableText blocks={page.content} />
+    ) : (
+      <p class="intro muted">
+        Pomagam osobom, które chcą czuć się lepiej, łatwiej dbać o swoje zdrowie i wprowadzać trwałe
+        zmiany bez presji. Moje działania są oparte na mądrym, bezpiecznym i praktycznym podejściu do
+        żywienia — tak, aby pasowało do codzienności i nie odbierało przyjemności z jedzenia.
+      </p>
+    )}
+  </section>
+  <HomeSection section={{ key: 'about' }} products={[]} home={{}} />
+  <HomeSection section={{ key: 'philosophy' }} products={[]} home={{}} />
+</Layout>

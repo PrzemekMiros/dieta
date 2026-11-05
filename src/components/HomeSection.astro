@@ -1,0 +1,582 @@
+---
+import type { Section, Product, HomeContent } from '../lib/types';
+interface Props {
+  section: Section;
+  products: Product[];
+  home: HomeContent;
+}
+const { section: s, home } = Astro.props;
+const features = [
+  ['Dieta bez presji', 'Skupiamy się na zdrowiu, a nie na zakazach. Zdrowe wybory stają się prostsze i trwalsze.'],
+  ['Plan dopasowany do Ciebie', 'Uwzględniam Twoje potrzeby, codzienność, preferencje i cele.'],
+  ['Przejrzyste zasady', 'Wiele małych zmian daje lepsze efekty niż drastyczny reżim.'],
+  ['Wsparcie na co dzień', 'Jestem przy Tobie na każdym etapie, żebyś nie czuła się sama z wyzwaniem.'],
+];
+---
+
+{s.key === 'philosophy' && (
+  <section class="section container split" id="filozofia">
+    <div data-reveal>
+      <p class="eyebrow">{s.subtitle || 'Moja filozofia'}</p>
+      <h2>{s.title || 'Zdrowie to nie restrykcja, tylko codzienny komfort.'}</h2>
+      <div class="intro muted">
+        <p>
+          {s.body ||
+            'Wierzę, że zdrowe odżywianie powinno wspierać życie, a nie je utrudniać. Pomagam budować relację z jedzeniem, która jest spokojna, konkretna i realna.'}
+        </p>
+        <p>
+          Tworzę rozwiązania, które pomagają czuć się lepiej, mieć więcej energii i wracać do swoich
+          zdrowych nawyków bez poczucia winy.
+        </p>
+      </div>
+    </div>
+    <div>
+      {features.map(([title, body], i) => (
+        <div class="feature" data-reveal>
+          <span>0{i + 1}</span>
+          <div>
+            <h3>{title}</h3>
+            <p>{body}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+)}
+{s.key === 'about' && (
+  <section class="section bg-beige" id="o-nas">
+    <div class="container split">
+      <div class="about-images" data-reveal>
+        <img
+          class="about-main"
+          src={s.image || '/images/baking-editorial.webp'}
+          alt="Dietetyczka prowadząca konsultację z pacjentką"
+          width="640"
+          height="800"
+          loading="lazy"
+        />
+        <div class="about-small">
+          <img
+            src="/images/cake-editorial.webp"
+            alt="Zdrowe posiłki i plan żywieniowy"
+            width="280"
+            height="320"
+            loading="lazy"
+          />
+          <span>spokojnie, skutecznie, bez presji.</span>
+        </div>
+      </div>
+      <div data-reveal>
+        <p class="eyebrow">{s.subtitle || 'Poznaj mnie'}</p>
+        <h2>{s.title || 'Tu zaczyna się lepsza relacja z jedzeniem.'}</h2>
+        <div class="intro muted">
+          <p>
+            {s.body ||
+              'Jako dietetyczka wspieram osoby, które chcą poprawić swoje odżywianie, zadbać o zdrowie i wprowadzić trwałe zmiany bez frustracji.'}
+          </p>
+          <p>
+            Każda konsultacja jest dopasowana do Ciebie — nie do szablonu. Pomagam przełożyć wiedzę na
+            praktykę, która działa w realnym życiu.
+          </p>
+        </div>
+        <a class="text-link mt-8" href="/o-nas">
+          Dowiedz się więcej <span>↗</span>
+        </a>
+        <div class="about-note">
+          Małe zmiany.
+          <br />
+          <em>Duży efekt.</em>
+        </div>
+      </div>
+    </div>
+  </section>
+)}
+{s.key === 'categories' && (
+  <section class="section container" id="oferta">
+    <div class="section-heading" data-reveal>
+      <div>
+        <p class="eyebrow">{s.subtitle || 'Co mogę Ci zaproponować'}</p>
+        <h2>{s.title || 'Wybierz wsparcie, które odpowiada Twoim potrzebom.'}</h2>
+        <p class="intro muted">
+          Każdy plan powstaje z myślą o Tobie — Twoim rytmie, goalach i codzienności.
+        </p>
+      </div>
+    </div>
+    <div class="category-grid">
+      {[
+        [
+          'Konsultacje indywidualne',
+          'Wsparcie dopasowane do Twojego celu',
+          'Pomagam zrozumieć, jak jeść lepiej, czuć się lepiej i wprowadzać trwałe zmiany.',
+          '/kontakt',
+          'Umów konsultację',
+        ],
+        [
+          'Plany żywieniowe',
+          'Praktyczne rozwiązania na co dzień',
+          'Dostarczam jasne zalecenia, propozycje posiłków i wskazówki do łatwego wdrożenia.',
+          '/kontakt',
+          'Zobacz ofertę',
+        ],
+        [
+          'Coaching i edukacja',
+          'Więcej niż dieta — zdrowy styl życia',
+          'Uczymy się właściwych nawyków, które pomagają utrzymać efekty w dłuższej perspektywie.',
+          '/kontakt',
+          'Skontaktuj się',
+        ],
+      ].map(([label, title, body, href, cta], i) => (
+        <article class:list={['card category-card', { 'dark-card': i === 2 }]} data-reveal>
+          <p class="eyebrow">{label}</p>
+          <h3>{title}</h3>
+          <p>{body}</p>
+          <div class="category-rule" />
+          <p class="text-xs">
+            {i === 0
+              ? 'Rozmowa · diagnoza · plan'
+              : i === 1
+                ? 'Na co dzień · bez chaosu'
+                : 'Motywacja · edukacja · regularność'}
+          </p>
+          <a href={href} class="text-link">
+            {cta} <span>→</span>
+          </a>
+        </article>
+      ))}
+    </div>
+  </section>
+)}
+{s.key === 'steps' && (
+  <section class="section steps">
+    <div class="container">
+      <p class="eyebrow">{s.subtitle || 'Jak wygląda współpraca'}</p>
+      <h2 data-reveal>{s.title || 'Prosty i wspierający proces.'}</h2>
+      <div class="steps-grid">
+        {[
+          ['Umów rozmowę', 'Zaczynamy od rozmowy o Twoich potrzebach, celach i codziennym stylu życia.'],
+          ['Oceń potrzeby', 'Analizuję Twoje nawyki, preferencje i obszary, które warto poprawić.'],
+          ['Otrzymaj plan', 'Przygotowuję konkretne zalecenia i prosty plan działania.'],
+          ['Działaj z wsparciem', 'Zostajesz pod opieką i otrzymujesz regularne wsparcie na każdym etapie.'],
+        ].map(([title, body], i) => (
+          <div data-reveal>
+            <span>0{i + 1}</span>
+            <h3>{title}</h3>
+            <p>{body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+{s.key === 'products' && (
+  <section class="section container" id="jak-pomagam">
+    <div class="section-heading">
+      <div data-reveal>
+        <p class="eyebrow">{s.subtitle || 'Jak mogę pomóc'}</p>
+        <h2>{s.title || 'Wspieram Cię w zdrowych zmianach.'}</h2>
+      </div>
+      <a href="/kontakt" class="text-link">
+        Zarezerwuj konsultację <span>↗</span>
+      </a>
+    </div>
+    <div class="product-grid">
+      {[
+        ['Konsultacja wstępna', 'Rozmowa, analiza potrzeb i jasne wskazówki na start.'],
+        ['Plan żywieniowy', 'Dopasowany do Twojego stylu życia i celów zdrowotnych.'],
+        ['Wsparcie w zmianach', 'Regularna kontrola postępów i modyfikacja planu.'],
+        ['Edukacja i nawyki', 'Nauka zdrowych wyborów, które zostają na dłużej.'],
+      ].map(([title, body]) => (
+        <article class="card category-card" data-reveal>
+          <p class="eyebrow">Oferta</p>
+          <h3>{title}</h3>
+          <p>{body}</p>
+          <div class="category-rule" />
+          <a href="/kontakt" class="text-link">
+            Dowiedz się więcej <span>→</span>
+          </a>
+        </article>
+      ))}
+    </div>
+  </section>
+)}
+{s.key === 'testimonials' && (
+  <section class="section bg-beige">
+    <div class="container testimonials">
+      <p class="eyebrow">{s.subtitle || 'Opinie klientów'}</p>
+      <h2 data-reveal>{s.title || 'Dobrze jest czuć się lepiej.'}</h2>
+      {home.testimonials?.length ? (
+        <>
+          <div class="review-track" tabindex="0" aria-label="Opinie klientów">
+            {home.testimonials.map((t) => (
+              <figure>
+                <blockquote>{t.quote}</blockquote>
+                <figcaption>{t.author}</figcaption>
+              </figure>
+            ))}
+          </div>
+          <div class="flex justify-center gap-3 mt-6">
+            <button class="btn btn-outline" data-review="-1" aria-label="Poprzednia opinia">
+              ←
+            </button>
+            <button class="btn btn-outline" data-review="1" aria-label="Następna opinia">
+              →
+            </button>
+          </div>
+        </>
+      ) : (
+        <p class="intro mx-auto muted">
+          Wiele osób zaczyna od małej zmiany i dopiero potem widzi, jak dużo może zmienić się w ich
+          codziennym samopoczuciu, energii i relacji z jedzeniem.
+        </p>
+      )}
+    </div>
+  </section>
+)}
+{s.key === 'faq' && (
+  <section class="section container split faq">
+    <div data-reveal>
+      <p class="eyebrow">{s.subtitle || 'Najczęstsze pytania'}</p>
+      <h2>{s.title || 'Masz wątpliwości? Odpowiem na najważniejsze.'}</h2>
+      <p class="intro muted">Zawsze chętnie pomogę dobrać właściwy typ wsparcia.</p>
+      <a href="/kontakt" class="text-link mt-8">
+        Przejdź do kontaktu <span>↗</span>
+      </a>
+    </div>
+    <div>
+      {[
+        [
+          'Czy plan żywieniowy jest indywidualnie dopasowany?',
+          'Tak. Każdy plan przygotowuję z uwzględnieniem Twoich potrzeb, celów, stylu życia i preferencji żywieniowych.',
+        ],
+        [
+          'Czy mogę zacząć bez dużych zmian?',
+          'Tak. Współpraca polega na małych, trwałych krokach, które łatwiej utrzymać w codzienności.',
+        ],
+        [
+          'Czy konsultacje są prowadzone online?',
+          'Tak. Współpracuję zarówno online, jak i stacjonarnie, w zależności od Twoich preferencji.',
+        ],
+        [
+          'Czy pomagasz w przypadku problemów zdrowotnych?',
+          'Wspieram w zakresie odżywiania i stylu życia, a w razie potrzeby współpracuję z innymi specjalistami.',
+        ],
+        [
+          'Czy mogę wrócić do Ciebie po pewnym czasie?',
+          'Oczywiście. Regularne wsparcie to ważny element utrwalania zdrowych nawyków i dbania o siebie.',
+        ],
+      ].map(([q, a]) => (
+        <details>
+          <summary>
+            {q}
+            <span aria-hidden="true">+</span>
+          </summary>
+          <p>{a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+)}
+{s.key === 'newsletter' && (
+  <section class="section bg-beige">
+    <div class="container split">
+      <div data-reveal>
+        <p class="eyebrow">{s.subtitle || 'Zdrowe porady'}</p>
+        <h2>{s.title || 'Zapisz się na małe inspiracje do zdrowego życia.'}</h2>
+        <p class="intro muted">
+          Otrzymuj praktyczne rady, ciekawostki i informacje o nowych konsultacjach i materiałach.
+        </p>
+      </div>
+      <form id="newsletter-form">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <label class="field">
+            Twoje imię
+            <input
+              name="name"
+              required
+              maxlength="80"
+              autocomplete="given-name"
+              placeholder="Jak masz na imię?"
+            />
+          </label>
+          <label class="field">
+            Twój e-mail
+            <input
+              name="email"
+              type="email"
+              required
+              maxlength="254"
+              autocomplete="email"
+              placeholder="twoj@email.pl"
+            />
+          </label>
+        </div>
+        <label class="check">
+          <input name="consent" type="checkbox" required />
+          <span>
+            Chcę otrzymywać wiadomości o zdrowych nawykach i aktualnych ofertach. Znam{' '}
+            <a href="/polityka-prywatnosci">politykę prywatności</a>. Mogę zrezygnować w każdej
+            chwili.
+          </span>
+        </label>
+        <button class="btn btn-dark" type="submit">
+          Zapisuję się <span>↗</span>
+        </button>
+        <p class="mt-4 text-sm" role="status" data-form-message></p>
+      </form>
+    </div>
+  </section>
+)}
+<style>
+  .feature {
+    display: flex;
+    gap: 24px;
+    padding: 24px 0;
+    border-bottom: 1px solid #d9d3cc;
+  }
+  .feature > span {
+    color: #847761;
+    font-size: 12px;
+    padding-top: 6px;
+  }
+  .feature h3 {
+    font-size: 27px;
+  }
+  .feature p {
+    font-size: 13px;
+    color: #646464;
+    margin-top: 9px;
+  }
+  .about-images {
+    position: relative;
+    padding-right: 55px;
+    padding-bottom: 45px;
+  }
+  .about-main {
+    width: 100%;
+    height: 560px;
+    border-radius: 220px 220px 6px 6px;
+  }
+  .about-small {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 45%;
+    padding: 8px;
+    background: var(--color-paper);
+    box-shadow: 0 12px 40px #32282013;
+    transform: rotate(3deg);
+  }
+  .about-small img {
+    height: 210px;
+    width: 100%;
+    object-position: 50% 40%;
+  }
+  .about-small span {
+    display: block;
+    text-align: center;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 22px;
+    padding: 6px;
+  }
+  .about-note {
+    margin-top: 40px;
+    border-top: 1px solid #c7bdb3;
+    padding-top: 24px;
+    font-family: var(--font-serif);
+    font-size: 29px;
+    line-height: 1.2;
+  }
+  .about-note em {
+    color: var(--color-action);
+  }
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .category-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 390px;
+  }
+  .category-card > p:not(.eyebrow) {
+    margin-top: 24px;
+    font-size: 13px;
+  }
+  .category-card .text-link {
+    margin-top: 30px;
+    align-self: start;
+  }
+  .category-rule {
+    margin-top: auto;
+    padding-top: 30px;
+    border-bottom: 1px solid #c8c0b8;
+  }
+  .dark-card {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    border-color: var(--color-ink);
+  }
+  .dark-card .eyebrow {
+    color: #d8afa7;
+  }
+  .steps {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .steps .eyebrow {
+    color: #cfbba0;
+  }
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+    margin-top: 70px;
+  }
+  .steps-grid span {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 48px;
+    color: #ce9389;
+  }
+  .steps-grid h3 {
+    font-size: 27px;
+    margin: 16px 0;
+  }
+  .steps-grid p {
+    font-size: 12px;
+    color: #d0ceca;
+  }
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .testimonials {
+    text-align: center;
+    max-width: 900px;
+  }
+  .review-track {
+    display: flex;
+    overflow: auto;
+    scroll-snap-type: x mandatory;
+  }
+  .review-track figure {
+    min-width: 100%;
+    margin: 48px 0 0;
+    scroll-snap-align: start;
+  }
+  .review-track blockquote {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    line-height: 1.35;
+  }
+  .review-track figcaption {
+    font-size: 12px;
+    margin-top: 24px;
+  }
+  details {
+    border-bottom: 1px solid #cfc8c0;
+    padding: 22px 0;
+  }
+  summary {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    font-size: 14px;
+    list-style: none;
+  }
+  details p {
+    font-size: 13px;
+    color: #646464;
+    margin-top: 16px;
+  }
+  details[open] summary span {
+    transform: rotate(45deg);
+  }
+  .faq {
+    align-items: start;
+  }
+  @media (max-width: 1023px) {
+    .product-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .steps-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .category-grid {
+      gap: 14px;
+    }
+    .category-card {
+      padding: 24px;
+    }
+  }
+  @media (max-width: 767px) {
+    .category-grid {
+      grid-template-columns: 1fr;
+    }
+    .category-card {
+      min-height: 320px;
+    }
+    .about-main {
+      height: 430px;
+    }
+    .about-small img {
+      height: 150px;
+    }
+    .steps-grid {
+      gap: 30px;
+      margin-top: 40px;
+    }
+    .product-grid {
+      gap: 28px 16px;
+    }
+    .about-images {
+      max-width: 500px;
+    }
+    .product-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-review]').forEach((button) =>
+    button.addEventListener('click', () => {
+      const track = document.querySelector('.review-track');
+      track?.scrollBy({
+        left: track.clientWidth * Number(button.dataset.review),
+        behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+      });
+    }),
+  );
+  document
+    .querySelector<HTMLFormElement>('#newsletter-form')
+    ?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.currentTarget as HTMLFormElement;
+      const message = form.querySelector<HTMLElement>('[data-form-message]')!;
+      const button = form.querySelector('button')!;
+      button.disabled = true;
+      try {
+        const data = new FormData(form);
+        const response = await fetch('/api/newsletter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: data.get('name'),
+            email: data.get('email'),
+            consent: data.get('consent') === 'on',
+          }),
+        });
+        const result = await response.json();
+        message.textContent = result.message || result.error;
+        if (response.ok) form.reset();
+      } catch {
+        message.textContent = 'Nie udało się połączyć. Spróbuj ponownie.';
+      } finally {
+        button.disabled = false;
+      }
+    });
+</script>

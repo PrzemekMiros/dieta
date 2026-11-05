@@ -1,0 +1,15 @@
+---
+import Layout from '../layouts/Layout.astro';
+Astro.response.status = 404;
+---
+
+<Layout title="Nie znaleziono strony" noindex>
+  <section class="section container">
+    <p class="eyebrow">404</p>
+    <h1>Ta strona chwilowo nie jest dostępna.</h1>
+    <p class="intro muted">Sprawdź adres lub wróć na stronę główną i znajdź najlepszy sposób, aby zacząć wspierać swoje zdrowie.</p>
+    <a class="btn mt-8" href="/">
+      Wróć na stronę główną →
+    </a>
+  </section>
+</Layout>
