@@ -49,16 +49,16 @@ const features = [
       <div class="about-images" data-reveal>
         <img
           class="about-main"
-          src={s.image || '/images/baking-editorial.webp'}
-          alt="Dietetyczka prowadząca konsultację z pacjentką"
+          src="/images/IMG_8219.png"
+          alt="Miska pożywnego śniadania z malinami i owocami"
           width="640"
           height="800"
           loading="lazy"
         />
         <div class="about-small">
           <img
-            src="/images/cake-editorial.webp"
-            alt="Zdrowe posiłki i plan żywieniowy"
+            src="/images/IMG_7423.png"
+            alt="Placuszki z owocami na zdrowe śniadanie"
             width="280"
             height="320"
             loading="lazy"
@@ -138,7 +138,7 @@ const features = [
                 ? 'Na co dzień · bez chaosu'
                 : 'Motywacja · edukacja · regularność'}
           </p>
-          <a href={href} class="text-link">
+          <a href={href} class="text-link" data-booking-open={href === '/kontakt' ? true : undefined}>
             {cta} <span>→</span>
           </a>
         </article>
@@ -175,7 +175,7 @@ const features = [
         <p class="eyebrow">{s.subtitle || 'Jak mogę pomóc'}</p>
         <h2>{s.title || 'Wspieram Cię w zdrowych zmianach.'}</h2>
       </div>
-      <a href="/kontakt" class="text-link">
+      <a href="/kontakt" class="text-link" data-booking-open>
         Zarezerwuj konsultację <span>↗</span>
       </a>
     </div>
@@ -191,7 +191,7 @@ const features = [
           <h3>{title}</h3>
           <p>{body}</p>
           <div class="category-rule" />
-          <a href="/kontakt" class="text-link">
+          <a href="/kontakt" class="text-link" data-booking-open>
             Dowiedz się więcej <span>→</span>
           </a>
         </article>

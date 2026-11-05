@@ -36,14 +36,19 @@ const links = [
       ))}
     </nav>
     <div class="header-actions">
-      <a class="cart-link" href="/kontakt" aria-label="Umów konsultację">
-        Umów wizytę
-      </a>
-      <a class="btn btn-dark shop-link" href="/kontakt">
-        Umów konsultację <span aria-hidden="true">↗</span>
-      </a>
-      <button class="menu-toggle" type="button" aria-controls="main-nav" aria-expanded="false">
-        Menu <span aria-hidden="true">☰</span>
+      <button class="btn btn-dark shop-link" type="button" data-booking-open>
+        <span class="shop-label">Umów konsultację</span>
+        <span class="shop-short-label">Umów</span>
+        <span aria-hidden="true">↗</span>
+      </button>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-label="Przełącz menu nawigacji"
+        aria-controls="main-nav"
+        aria-expanded="false"
+      >
+        <span class="menu-label">Menu</span> <span aria-hidden="true">☰</span>
       </button>
     </div>
   </div>
@@ -90,18 +95,11 @@ const links = [
     align-items: center;
     gap: 22px;
   }
-  .cart-link {
-    font-size: 12px;
+  .shop-link {
     white-space: nowrap;
   }
-  .cart-link span {
-    display: inline-grid;
-    place-items: center;
-    width: 23px;
-    height: 23px;
-    background: var(--color-beige);
-    border-radius: 50%;
-    margin-left: 5px;
+  .shop-short-label {
+    display: none;
   }
   .menu-toggle {
     display: none;
@@ -114,26 +112,36 @@ const links = [
     nav {
       gap: 16px;
     }
-    .shop-link {
-      display: none;
-    }
   }
   @media (max-width: 767px) {
     .header-inner {
       min-height: 82px;
-      gap: 12px;
+      gap: 4px;
     }
     .brand span {
-      font-size: 19px;
+      font-size: 16px;
     }
     .brand small {
       font-size: 6px;
     }
     .header-actions {
-      gap: 8px;
+      gap: 4px;
+    }
+    .shop-link {
+      padding: 8px 10px;
+      gap: 6px;
+      font-size: 10px;
+    }
+    .shop-label,
+    .menu-label {
+      display: none;
+    }
+    .shop-short-label {
+      display: inline;
     }
     .menu-toggle {
       display: block;
+      padding: 8px;
     }
     nav {
       display: none;

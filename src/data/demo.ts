@@ -29,6 +29,14 @@ const slugs = [
   'bochenek-z-otrębami',
   'mini-pieczywo-fit',
 ];
+const productImages = [
+  '/images/IMG_7495.png',
+  '/images/IMG_8219.png',
+  '/images/IMG_7423.png',
+  '/images/IMG_7344.png',
+  '/images/IMG_7254.png',
+  '/images/IMG_5522.png',
+];
 export const demoProducts: Product[] = names.map((name, i) => ({
   _id: `demo-${i + 1}`,
   name,
@@ -44,7 +52,7 @@ export const demoProducts: Product[] = names.map((name, i) => ({
           'Zdrowy wybór na co dzień — smaczny, sycący i prosty w przygotowaniu.',
         ][i]!
       : 'Smaczne i pożywne pieczywo wspierające codzienną dietę.',
-  image: '/images/baking-editorial.webp',
+  image: productImages[i % productImages.length]!,
   price: [8900, 6900, 5900, 2900, 7900, 4900, 1900, 1200, 2400, 5900, 14900, 11900, 9900][i]!,
   productType: i < 3 ? 'digital' : 'physical',
   featured: [0, 1, 3, 12].includes(i),

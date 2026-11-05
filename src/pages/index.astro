@@ -36,9 +36,15 @@ const featured = home.featuredProducts?.length
           'Pomagam kobietom i rodzinom wprowadzać zdrowe nawyki, które naprawdę da się utrzymać. Tworzę plan żywieniowy dopasowany do Twojego stylu życia, potrzeb i codziennych obowiązków — bez głodu, bez stresu i bez wyrzutów.'}
       </p>
       <div class="flex flex-wrap gap-3 mt-8" data-reveal>
-        <a class="btn" href={home.primaryHref || '/kontakt'}>
-          {home.primaryLabel || 'Umów konsultację'} <span>↗</span>
-        </a>
+        {(home.primaryHref || '/kontakt').startsWith('/kontakt') ? (
+          <button class="btn" type="button" data-booking-open>
+            {home.primaryLabel || 'Umów konsultację'} <span>↗</span>
+          </button>
+        ) : (
+          <a class="btn" href={home.primaryHref}>
+            {home.primaryLabel || 'Umów konsultację'} <span>↗</span>
+          </a>
+        )}
         <a class="btn btn-outline" href={home.secondaryHref || '/o-nas'}>
           {home.secondaryLabel || 'Poznaj mnie'}
         </a>
@@ -74,8 +80,8 @@ const featured = home.featuredProducts?.length
       <div class="hero-circle" data-parallax></div>
       <img
         class="hero-photo"
-        src={home.heroImage || '/images/baking-editorial.webp'}
-        alt="Dietetyczka prowadząca konsultację żywieniową"
+        src="/images/IMG_7495.png"
+        alt="Miska owsianki z owocami i orzechami"
         width="1120"
         height="1400"
         fetchpriority="high"
