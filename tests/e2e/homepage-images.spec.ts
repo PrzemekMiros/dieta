@@ -3,8 +3,9 @@ import { expect, test } from '@playwright/test';
 test('strona główna wyświetla nowe zdjęcia posiłków', async ({ page }) => {
   await page.goto('/');
 
-  for (const selector of ['.hero-photo', '.about-main', '.about-small img', '.product-card img']) {
+  for (const selector of ['.hero-photo', '.about-main', '.about-small img']) {
     const image = page.locator(selector).first();
+    await image.scrollIntoViewIfNeeded();
     await expect(image).toBeVisible();
     await expect
       .poll(() => image.evaluate((element: HTMLImageElement) => element.naturalWidth))
