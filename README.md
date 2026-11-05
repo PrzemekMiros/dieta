@@ -2,6 +2,12 @@
 
 Sklep w Astro SSR + TypeScript, Tailwind CSS 4 i GSAP/ScrollTrigger, z Sanity Studio, PostgreSQL/Drizzle, integracją Przelewy24, prywatnymi ebookami i osobnym panelem zamówień.
 
+## Wdrożenie na Netlify
+
+Repozytorium jest skonfigurowane do builda SSR na Netlify (`netlify.toml`, Node 24/npm 11). Netlify automatycznie używa adaptera Astro Netlify; poza Netlify lokalny build nadal używa adaptera Node. Ustaw wymagane zmienne z `.env.example` w Netlify Site configuration → Environment variables. Ustaw `SITE_URL` na publiczny adres HTTPS. Nie włączaj sprzedaży przed skonfigurowaniem i odbiorem bazy PostgreSQL, Sanity, P24, S3 i SMTP.
+
+Netlify obsługuje SSR strony, ale nie uruchamia stale procesów `worker` i `payments:reconcile`. Bez osobnego hosta/schedulera te zadania nie będą przetwarzać kolejki e-mail ani uzgadniać płatności; sprzedaż nie jest gotowa do uruchomienia tylko przez sam deploy Netlify. Szczegóły: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
 Projekt działa lokalnie z 3 demonstracyjnymi ebookami i 10 produktami fizycznymi. **Sprzedaż jest domyślnie wyłączona.** Prawdziwy sandbox P24, Sanity, SMTP i S3 wymagają konfiguracji kont właściciela oraz testów odbiorowych. To nie jest deklaracja gotowości produkcyjnej.
 
 ## Start na tym komputerze

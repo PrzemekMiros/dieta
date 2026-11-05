@@ -4,6 +4,16 @@
 
 Node 24, PostgreSQL 17 (lub kompatybilny wspierany serwer), proces HTTP Astro SSR, osobny proces workera SMTP, cykliczny job uzgadniania płatności. Studio Sanity może działać niezależnie od sklepu. Nie jest panelem zamówień.
 
+### Netlify
+
+Repozytorium ma `netlify.toml` z build command `npm run build`, publish directory `dist`, Node 24 i npm 11. Gdy Netlify uruchamia build (`NETLIFY` ustawione przez platformę), Astro używa `@astrojs/netlify`; build poza Netlify zachowuje adapter standalone Node. Adapter sam generuje wewnętrzną funkcję SSR — nie ustawiaj własnego `netlify/functions` jako katalogu funkcji, chyba że dodasz tam własne funkcje.
+
+W Site configuration → Environment variables ustaw produkcyjne wartości wymagane przez `.env.example`, w szczególności `APP_ENV=production`, `DEMO_CATALOG=false`, `SITE_URL`, `DATABASE_URL`, `SANITY_PROJECT_ID` i `SANITY_DATASET`. Dodaj `SANITY_READ_TOKEN`, jeśli dataset wymaga uwierzytelnionego odczytu. Zmienne sprzedażowe ustawiaj dopiero po skonfigurowaniu i odbiorze P24, S3, SMTP i dokumentów prawnych. Nie ustawiaj sekretów jako zmiennych `PUBLIC_*`.
+
+Netlify SSR nie uruchamia ciągłych procesów `worker:start` ani `payments:reconcile:start`. Są one potrzebne do dostarczania wiadomości z outboxa i uzgadniania płatności. Uruchom je na osobnym, stale działającym hoście Node oraz schedulerze, albo zaprojektuj i przetestuj osobne zadania serverless przed włączeniem sprzedaży. Sam udany deploy Netlify nie oznacza gotowości sklepu do przyjmowania płatności.
+
+W konfiguracji witryny wybierz Node 24; `netlify.toml` i `.nvmrc` ustawiają tę wersję również dla buildów. Nie ustawiaj osobnego katalogu funkcji. Widoczność logów deployów ustaw jako prywatną.
+
 1. Ustaw zmienne z `.env.example` w managerze sekretów hostingu. `SITE_URL` to docelowy adres HTTPS bez końcowego ukośnika. `APP_ENV=production`, `DEMO_CATALOG=false`; na początku `SALES_ENABLED=false`.
 2. `npm ci`, `npm run check`, `npm run lint`, `npm test`, `npm run build`.
 3. Na kopii bazy wykonaj backup/restore oraz `npm run db:migrate`. Przed produkcyjną migracją wykonaj backup.
