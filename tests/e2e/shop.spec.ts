@@ -33,6 +33,16 @@ test('koszyk, trwałość i mieszany checkout', async ({ page }) => {
   await expect(page.locator('#shipping-fields')).toBeVisible();
   await expect(page.locator('[data-checkout-total]')).toHaveText(/134,90/);
 });
+test('menu pokazuje koszyk i liczbę produktów', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('tc-cart-v1', JSON.stringify([{ id: 'demo-1', quantity: 2 }]));
+  });
+  await page.goto('/');
+  const cartLink = page.locator('#main-nav').getByRole('link', { name: /Koszyk/ });
+  await expect(cartLink).toContainText('2');
+  await cartLink.click();
+  await expect(page).toHaveURL('/koszyk');
+});
 test('usuwanie i zmiana ilości', async ({ page }) => {
   await page.goto('/produkt/szpatula');
   await page.getByRole('button', { name: 'Dodaj do koszyka' }).click();

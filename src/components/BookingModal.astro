@@ -664,6 +664,8 @@ const dayNames = settings.days
       const result = (await response.json()) as { error?: string };
       if (!response.ok) throw new Error(result.error || 'Nie udało się zarezerwować terminu.');
       bookingForm.hidden = true;
+      if (timeSection) timeSection.hidden = true;
+      bookingFeedback.textContent = '';
       if (bookingResult && bookingResultMessage && chosenDate) {
         bookingResultMessage.textContent = `${formatDate(chosenDate)} o ${chosenTime}. Termin został zapisany w Kalendarzu Google.`;
         bookingResult.hidden = false;

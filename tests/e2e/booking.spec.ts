@@ -35,6 +35,8 @@ test('kalendarz konsultacji otwiera się jako pełnoekranowy podgląd', async ({
   await expect(dialog.locator('[data-booking-result]')).toContainText(
     'zapisany w Kalendarzu Google',
   );
+  await expect(dialog.locator('[data-time-section]')).toBeHidden();
+  await expect(dialog.locator('[data-booking-feedback]')).toBeEmpty();
   await expect(page).toHaveURL('/');
   await dialog.getByRole('button', { name: 'Zamknij kalendarz' }).click();
   await expect(dialog).toBeHidden();
