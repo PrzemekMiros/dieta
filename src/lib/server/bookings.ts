@@ -1,10 +1,7 @@
-import { and, eq, gt, lt, sql } from 'drizzle-orm';
-import { randomUUID } from 'node:crypto';
+import { createHash } from 'node:crypto';
 import { z } from 'zod';
-import { db, type Tx } from './db';
 import { env } from './env';
-import * as t from './schema';
-import { createGoogleEvent, deleteGoogleEvent, getGoogleBusy } from './google-calendar';
+import { createGoogleEvent, getGoogleBusy, GoogleCalendarError } from './google-calendar';
 import { HttpError } from './security';
 
 export type BookingSettings = {
@@ -21,6 +18,24 @@ function parseTime(value: string) {
   const match = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(value);
   if (!match) throw new Error('Invalid booking time configuration.');
   return Number(match[1]) * 60 + Number(match[2]);
+}
+
+const bookingLimits = new Map<string, { count: number; resetAt: number }>();
+
+export function limitBookingRequests(key: string, maximum: number, seconds: number) {
+  const now = Date.now();
+  let current = bookingLimits.get(key);
+  if (!current || current.resetAt <= now) {
+    current = { count: 0, resetAt: now + seconds * 1000 };
+    bookingLimits.set(key, current);
+  }
+  current.count++;
+  if (bookingLimits.size > 1000) {
+    for (const [entry, value] of bookingLimits) {
+      if (value.resetAt <= now) bookingLimits.delete(entry);
+    }
+  }
+  if (current.count > maximum) throw new HttpError(429, 'Za dużo prób. Spróbuj za chwilę.');
 }
 
 export function bookingSettings(): BookingSettings {
@@ -157,29 +172,13 @@ function candidateSlots(dateKey: string, settings: BookingSettings) {
   return slots;
 }
 
-async function localBusy(tx: Tx | ReturnType<typeof db>, start: Date, end: Date) {
-  return tx
-    .select({ startAt: t.bookings.startAt, endAt: t.bookings.endAt })
-    .from(t.bookings)
-    .where(
-      and(
-        eq(t.bookings.status, 'confirmed'),
-        lt(t.bookings.startAt, end),
-        gt(t.bookings.endAt, start),
-      ),
-    );
-}
-
 export async function availableBookingTimes(dateKey: string) {
   const settings = bookingSettings();
   const slots = candidateSlots(dateKey, settings);
   if (!slots.length) return { date: dateKey, times: [] as string[] };
 
   const { start, end } = dateRange(dateKey, settings);
-  const [busy, booked] = await Promise.all([
-    getGoogleBusy(start, end),
-    localBusy(db(), start, end),
-  ]);
+  const busy = await getGoogleBusy(start, end);
   return {
     date: dateKey,
     times: slots
@@ -188,7 +187,7 @@ export async function availableBookingTimes(dateKey: string) {
           !busy.some(
             (interval) =>
               slot.start.getTime() < interval.end && slot.end.getTime() > interval.start,
-          ) && !booked.some((booking) => slot.start < booking.endAt && slot.end > booking.startAt),
+          ),
       )
       .map((slot) => slot.time),
   };
@@ -216,65 +215,38 @@ export async function createBooking(input: z.infer<typeof bookingInputSchema>) {
     (candidate) => candidate.time === input.time,
   );
   if (!slot) throw new HttpError(400, 'Wybrany termin nie jest dostępny.');
-  const eventId = randomUUID().replaceAll('-', '');
-  let eventCreated = false;
+  const { start, end } = dateRange(input.date, settings);
+  const busy = await getGoogleBusy(start, end);
+  if (
+    busy.some(
+      (interval) => slot.start.getTime() < interval.end && slot.end.getTime() > interval.start,
+    )
+  ) {
+    throw new HttpError(409, 'Ten termin nie jest już dostępny. Wybierz inną godzinę.');
+  }
 
+  const eventId = createHash('sha256')
+    .update(`${input.date}:${input.time}:${settings.timeZone}`)
+    .digest('hex');
   try {
-    const [booking] = await db().transaction(async (tx) => {
-      await tx.execute(
-        sql`select pg_advisory_xact_lock(hashtextextended(${`${input.date}:${input.time}`}, 0))`,
-      );
-      const local = await localBusy(tx, slot.start, slot.end);
-      if (local.length) throw new HttpError(409, 'Ten termin został właśnie zarezerwowany.');
-      const { start, end } = dateRange(input.date, settings);
-      const busy = await getGoogleBusy(start, end);
-      if (
-        busy.some(
-          (interval) => slot.start.getTime() < interval.end && slot.end.getTime() > interval.start,
-        )
-      ) {
-        throw new HttpError(409, 'Ten termin nie jest już dostępny. Wybierz inną godzinę.');
-      }
-
-      await createGoogleEvent({
-        id: eventId,
-        name: input.name,
-        email: input.email,
-        start: `${input.date}T${input.time}:00`,
-        end: `${input.date}T${String(
-          Math.floor((parseTime(input.time) + settings.durationMinutes) / 60),
-        ).padStart(
-          2,
-          '0',
-        )}:${String((parseTime(input.time) + settings.durationMinutes) % 60).padStart(2, '0')}:00`,
-        timeZone: settings.timeZone,
-      });
-      eventCreated = true;
-      return tx
-        .insert(t.bookings)
-        .values({
-          name: input.name,
-          email: input.email,
-          startAt: slot.start,
-          endAt: slot.end,
-          googleEventId: eventId,
-        })
-        .returning({ id: t.bookings.id });
+    await createGoogleEvent({
+      id: eventId,
+      name: input.name,
+      email: input.email,
+      start: `${input.date}T${input.time}:00`,
+      end: `${input.date}T${String(
+        Math.floor((parseTime(input.time) + settings.durationMinutes) / 60),
+      ).padStart(
+        2,
+        '0',
+      )}:${String((parseTime(input.time) + settings.durationMinutes) % 60).padStart(2, '0')}:00`,
+      timeZone: settings.timeZone,
     });
-    return { id: booking!.id, date: input.date, time: input.time };
   } catch (error) {
-    if (eventCreated) {
-      try {
-        await deleteGoogleEvent(eventId);
-      } catch (cleanupError) {
-        console.error(
-          JSON.stringify({
-            event: 'booking_google_cleanup_failed',
-            error: cleanupError instanceof Error ? cleanupError.name : 'Unknown',
-          }),
-        );
-      }
+    if (error instanceof GoogleCalendarError && error.status === 409) {
+      throw new HttpError(409, 'Ten termin został właśnie zarezerwowany. Wybierz inną godzinę.');
     }
     throw error;
   }
+  return { id: eventId, date: input.date, time: input.time };
 }

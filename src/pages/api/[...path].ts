@@ -28,6 +28,7 @@ import {
   bookingDateSchema,
   bookingInputSchema,
   createBooking,
+  limitBookingRequests,
 } from '../../lib/server/bookings';
 export const ALL: APIRoute = async (ctx) => {
   const { request, params, cookies, url } = ctx;
@@ -61,7 +62,7 @@ export const ALL: APIRoute = async (ctx) => {
         return ctx.redirect(await signedDownload(access), 302);
       }
       if (path === 'booking/availability') {
-        await limited(`booking-availability:${ip}`, 120, 3600);
+        limitBookingRequests(`availability:${ip}`, 120, 3600);
         const date = bookingDateSchema.parse(url.searchParams.get('date'));
         return json(await availableBookingTimes(date));
       }
@@ -187,7 +188,7 @@ export const ALL: APIRoute = async (ctx) => {
       });
     }
     if (path === 'booking') {
-      await limited(`booking-submit:${ip}`, 5, 3600);
+      limitBookingRequests(`submit:${ip}`, 5, 3600);
       const input = bookingInputSchema.parse(body);
       return json(await createBooking(input), 201);
     }
@@ -371,6 +372,11 @@ export const ALL: APIRoute = async (ctx) => {
         event: 'api_error',
         path,
         error: error instanceof Error ? error.name : 'Unknown',
+        ...(path?.startsWith('booking/') || path === 'booking'
+          ? {
+              detail: error instanceof Error ? error.message.slice(0, 200) : 'Unknown',
+            }
+          : {}),
       }),
     );
     return json({ error: 'Usługa jest chwilowo niedostępna. Spróbuj ponownie później.' }, 503);

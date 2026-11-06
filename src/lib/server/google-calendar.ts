@@ -12,6 +12,15 @@ type BusyInterval = {
   end: number;
 };
 
+export class GoogleCalendarError extends Error {
+  constructor(
+    message: string,
+    public readonly status: number,
+  ) {
+    super(message);
+  }
+}
+
 let tokenCache: { key: string; value: string; expiresAt: number } | undefined;
 
 function config(): GoogleConfig {
@@ -58,7 +67,12 @@ async function accessToken(settings: GoogleConfig) {
     }),
     signal: AbortSignal.timeout(15_000),
   });
-  if (!response.ok) throw new Error(`Google token request failed (${response.status}).`);
+  if (!response.ok) {
+    throw new GoogleCalendarError(
+      `Google token request failed (${response.status}).`,
+      response.status,
+    );
+  }
 
   const body: unknown = await response.json();
   if (
@@ -90,7 +104,12 @@ async function request(path: string, init: RequestInit = {}) {
     },
     signal: AbortSignal.timeout(15_000),
   });
-  if (!response.ok) throw new Error(`Google Calendar request failed (${response.status}).`);
+  if (!response.ok) {
+    throw new GoogleCalendarError(
+      `Google Calendar request failed (${response.status}).`,
+      response.status,
+    );
+  }
   return response.status === 204 ? undefined : response.json();
 }
 

@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { generateKeyPairSync, verify } from 'node:crypto';
-import { bookingInputSchema, bookingSettings } from '../src/lib/server/bookings';
+import {
+  availableBookingTimes,
+  bookingInputSchema,
+  bookingSettings,
+  createBooking,
+} from '../src/lib/server/bookings';
 import {
   createGoogleEvent,
   deleteGoogleEvent,
@@ -19,6 +24,88 @@ afterEach(() => {
 });
 
 describe('rezerwacje konsultacji', () => {
+  it('pobiera wolne terminy i zapisuje rezerwację wyłącznie w Google Calendar', async () => {
+    vi.stubEnv('DATABASE_URL', '');
+    vi.stubEnv('GOOGLE_SERVICE_ACCOUNT_EMAIL', 'calendar@example.test');
+    vi.stubEnv('GOOGLE_PRIVATE_KEY', privateKey);
+    vi.stubEnv('GOOGLE_CALENDAR_ID', 'consultations@example.test');
+    vi.stubEnv('BOOKING_TIMEZONE', 'Europe/Warsaw');
+    vi.stubEnv('BOOKING_START', '09:00');
+    vi.stubEnv('BOOKING_END', '11:00');
+    vi.stubEnv('BOOKING_DURATION_MINUTES', '60');
+    vi.stubEnv('BOOKING_NOTICE_HOURS', '24');
+    vi.stubEnv('BOOKING_HORIZON_DAYS', '60');
+    vi.stubEnv('BOOKING_DAYS', '1,2,3,4,5');
+
+    const date = new Date();
+    date.setUTCHours(12, 0, 0, 0);
+    date.setUTCDate(date.getUTCDate() + 3);
+    while (date.getUTCDay() === 0 || date.getUTCDay() === 6) {
+      date.setUTCDate(date.getUTCDate() + 1);
+    }
+    const dateKey = date.toISOString().slice(0, 10);
+    const createdEventIds = new Set<string>();
+    let availabilityRequest = 0;
+    const fetchMock = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
+      const url = String(input);
+      if (url === 'https://oauth2.googleapis.com/token') {
+        return Response.json({ access_token: 'test-token', expires_in: 3600 });
+      }
+      if (url.endsWith('/freeBusy')) {
+        availabilityRequest++;
+        return Response.json({
+          calendars: {
+            'consultations@example.test': {
+              busy:
+                availabilityRequest === 1
+                  ? [
+                      {
+                        start: `${dateKey}T00:00:00Z`,
+                        end: `${dateKey}T23:59:59Z`,
+                      },
+                    ]
+                  : [],
+            },
+          },
+        });
+      }
+      if (url.endsWith('/events')) {
+        const event = JSON.parse(String(init?.body)) as { id: string };
+        if (createdEventIds.has(event.id)) return new Response(null, { status: 409 });
+        createdEventIds.add(event.id);
+        return Response.json({ id: event.id });
+      }
+      throw new Error(`Unexpected Google URL: ${url}`);
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await expect(availableBookingTimes(dateKey)).resolves.toEqual({
+      date: dateKey,
+      times: [],
+    });
+    const result = await createBooking(
+      bookingInputSchema.parse({
+        date: dateKey,
+        time: '10:00',
+        name: 'Anna',
+        email: 'anna@example.test',
+        privacyAccepted: true,
+      }),
+    );
+    expect(result).toMatchObject({ date: dateKey, time: '10:00' });
+    await expect(
+      createBooking(
+        bookingInputSchema.parse({
+          date: dateKey,
+          time: '10:00',
+          name: 'Anna',
+          email: 'anna@example.test',
+          privacyAccepted: true,
+        }),
+      ),
+    ).rejects.toMatchObject({ status: 409 });
+  });
+
   it('ustawia domyślny harmonogram i normalizuje dni tygodnia', () => {
     vi.stubEnv('BOOKING_TIMEZONE', 'Europe/Warsaw');
     vi.stubEnv('BOOKING_START', '09:00');
@@ -127,6 +214,6 @@ describe('rezerwacje konsultacji', () => {
       summary: 'Konsultacja online — Anna',
       description: 'Rezerwacja konsultacji online.\nKontakt: anna@example.test',
     });
-    expect(fetchMock).toHaveBeenCalledTimes(4);
+    expect(fetchMock.mock.calls.some(([, init]) => init?.method === 'DELETE')).toBe(true);
   });
 });
