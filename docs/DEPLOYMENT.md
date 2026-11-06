@@ -24,6 +24,14 @@ W konfiguracji witryny wybierz Node 24; `netlify.toml` i `.nvmrc` ustawiają tę
 8. Uruchom stale `npm run worker:start`. `npm run payments:reconcile:start` wykonuj co 5 minut przez scheduler. Te joby są bundlowane w `dist/jobs`; po buildzie można użyć `npm prune --omit=dev` na instancji runtime. Migracje i tworzenie admina wykonuj w osobnym środowisku administracyjnym z narzędziami developerskimi.
 9. Konfiguruj zaufane nagłówki proxy/IP na poziomie hostingu. Nie akceptuj dowolnego X-Forwarded-For od klienta. Dodaj limit żądań przed procesem Node i monitorowanie błędów/obciążenia.
 
+## Rezerwacje konsultacji i Google Calendar
+
+Rezerwacje wymagają działającej bazy PostgreSQL oraz zmiennych `GOOGLE_SERVICE_ACCOUNT_EMAIL`, `GOOGLE_PRIVATE_KEY` i `GOOGLE_CALENDAR_ID`. W Google Cloud włącz Google Calendar API, utwórz konto usługi i udostępnij mu docelowy kalendarz z uprawnieniami do wprowadzania zmian. Wprowadź adres `client_email`, klucz prywatny oraz samo ID kalendarza (nie jego URL) do managera sekretów hostingu. Klucz przechowuj wyłącznie po stronie serwera; w `.env` można zapisać go z sekwencjami `\n`, które aplikacja zamieni na nowe linie.
+
+Uruchom migracje przez `npm run db:migrate`. Domyślnie konsultacje odbywają się od poniedziałku do piątku, w godzinach 09:00–17:00, trwają 60 minut, wymagają 24-godzinnego wyprzedzenia i są dostępne przez 60 dni. Godziny, czas trwania, strefę, wyprzedzenie, horyzont i dni pracy można zmienić zmiennymi `BOOKING_*` z `.env.example`. Dostępność sprawdzana jest w Google i lokalnej bazie, a równoczesne próby rezerwacji są serializowane w PostgreSQL. Rezerwacja od razu tworzy wydarzenie Google; formularz pokazuje potwierdzenie na stronie, ale nie wysyła zaproszenia ani e-maila.
+
+Wydarzenie Google zawiera imię i adres e-mail podane w formularzu. Uwzględnij przekazanie tych danych do Google Calendar w opublikowanej polityce prywatności. Nie udostępniaj klucza usługi ani zmiennych bezpośrednio przeglądarce.
+
 ## Sanity
 
 `SANITY_PROJECT_ID`, `SANITY_DATASET`, opcjonalny serwerowy token odczytu. Studio: `npm run studio` lub `npm run studio:build`; projekt musi istnieć w Sanity, a redaktor musi być do niego zaproszony. Dodaj do CORS wyłącznie adresy własnego Studio. Token zapisu potrzebny jedynie do jawnego seeda datasetu development; nie wystawiaj go frontendowi. Dane prawne są dokumentami `page` o slugach `regulamin`, `polityka-prywatnosci`, `dostawa-i-zwroty`.

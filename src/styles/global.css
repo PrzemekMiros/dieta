@@ -11,7 +11,7 @@
   --color-action: #92514b;
 }
 :root {
-  --section-space: clamp(4rem, 8vw, 8rem);
+  --section-space: clamp(2rem, 4vw, 4rem);
   --radius: 12px;
   --ease: cubic-bezier(0.2, 0.65, 0.3, 1);
 }

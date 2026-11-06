@@ -190,3 +190,20 @@ export const newsletter = pgTable('newsletter_subscribers', {
   unsubscribeHash: text('unsubscribe_hash').notNull(),
   createdAt: created(),
 });
+export const bookings = pgTable(
+  'bookings',
+  {
+    id: id(),
+    name: text('name').notNull(),
+    email: text('email').notNull(),
+    startAt: timestamp('start_at', { withTimezone: true }).notNull(),
+    endAt: timestamp('end_at', { withTimezone: true }).notNull(),
+    googleEventId: text('google_event_id').notNull().unique(),
+    status: text('status').notNull().default('confirmed'),
+    createdAt: created(),
+  },
+  (t) => [
+    check('booking_end_after_start', sql`${t.endAt}>${t.startAt}`),
+    uniqueIndex('booking_start_at_unique').on(t.startAt),
+  ],
+);

@@ -23,6 +23,12 @@ import { createOrder, acceptPayment, cancelOrder, resendLinks } from '../../lib/
 import { notificationSchema, validNotification } from '../../lib/server/p24';
 import { enqueue, escapeHtml } from '../../lib/server/email';
 import { signedDownload } from '../../lib/server/digital';
+import {
+  availableBookingTimes,
+  bookingDateSchema,
+  bookingInputSchema,
+  createBooking,
+} from '../../lib/server/bookings';
 export const ALL: APIRoute = async (ctx) => {
   const { request, params, cookies, url } = ctx;
   const path = params.path;
@@ -53,6 +59,11 @@ export const ALL: APIRoute = async (ctx) => {
           .parse(url.searchParams.get('token'));
         await limited(`download:${hash(access)}`, 20, 3600);
         return ctx.redirect(await signedDownload(access), 302);
+      }
+      if (path === 'booking/availability') {
+        await limited(`booking-availability:${ip}`, 120, 3600);
+        const date = bookingDateSchema.parse(url.searchParams.get('date'));
+        return json(await availableBookingTimes(date));
       }
       if (path === 'newsletter/confirm' || path === 'newsletter/unsubscribe') {
         const raw = z
@@ -175,6 +186,11 @@ export const ALL: APIRoute = async (ctx) => {
           'Sprawdź skrzynkę i potwierdź zapis. Jeśli masz już aktywną subskrypcję, nic się nie zmieni.',
       });
     }
+    if (path === 'booking') {
+      await limited(`booking-submit:${ip}`, 5, 3600);
+      const input = bookingInputSchema.parse(body);
+      return json(await createBooking(input), 201);
+    }
     if (path === 'admin/login') {
       const input = z
         .object({
@@ -257,14 +273,12 @@ export const ALL: APIRoute = async (ctx) => {
             )
             .returning();
           if (!stock) throw new HttpError(409, 'Stan nie może być ujemny.');
-          await tx
-            .insert(t.inventoryMovements)
-            .values({
-              productId: input.productId,
-              quantity: input.delta,
-              kind: 'adjustment',
-              key: randomUUID(),
-            });
+          await tx.insert(t.inventoryMovements).values({
+            productId: input.productId,
+            quantity: input.delta,
+            kind: 'adjustment',
+            key: randomUUID(),
+          });
           await tx
             .insert(t.auditLogs)
             .values({ adminId: admin.id, action: 'inventory', data: input });
@@ -302,14 +316,12 @@ export const ALL: APIRoute = async (ctx) => {
               .orderBy(desc(t.emailOutbox.createdAt))
               .limit(1);
             if (!mail) throw new HttpError(404, 'Brak wiadomości.');
-            await tx
-              .insert(t.emailOutbox)
-              .values({
-                key: `manual:${randomUUID()}`,
-                to: mail.to,
-                subject: mail.subject,
-                html: mail.html,
-              });
+            await tx.insert(t.emailOutbox).values({
+              key: `manual:${randomUUID()}`,
+              to: mail.to,
+              subject: mail.subject,
+              html: mail.html,
+            });
           }
           if (input.action === 'shipment') {
             if (order.status !== 'paid' || !input.status)
@@ -332,14 +344,12 @@ export const ALL: APIRoute = async (ctx) => {
               `<p>Zamówienie ${order.id}</p><p>Status: ${escapeHtml(input.status)}</p><p>Numer przesyłki: ${escapeHtml(input.tracking || '—')}</p>`,
             );
           }
-          await tx
-            .insert(t.auditLogs)
-            .values({
-              adminId: admin.id,
-              orderId: order.id,
-              action: input.action,
-              data: { status: input.status, tracking: input.tracking },
-            });
+          await tx.insert(t.auditLogs).values({
+            adminId: admin.id,
+            orderId: order.id,
+            action: input.action,
+            data: { status: input.status, tracking: input.tracking },
+          });
         });
         return json({ ok: true });
       }

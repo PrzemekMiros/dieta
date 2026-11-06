@@ -3,6 +3,15 @@ import { expect, test } from '@playwright/test';
 test('kalendarz konsultacji otwiera się jako pełnoekranowy podgląd', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 740 });
   await page.goto('/');
+  await page.route('**/api/booking/availability?date=*', async (route) => {
+    const date = new URL(route.request().url()).searchParams.get('date');
+    await route.fulfill({
+      json: { date, times: ['09:00'] },
+    });
+  });
+  await page.route('**/api/booking', async (route) => {
+    await route.fulfill({ json: { id: 'test-booking', date: '2030-01-01', time: '09:00' } });
+  });
 
   const dialog = page.locator('.booking-dialog');
   await page.locator('.site-header [data-booking-open]').click();
@@ -15,14 +24,16 @@ test('kalendarz konsultacji otwiera się jako pełnoekranowy podgląd', async ({
 
   await dialog.locator('[data-date]:not(:disabled)').first().click();
   await expect(dialog.locator('[data-time-section]')).toBeVisible();
+  await expect(dialog.locator('[data-time]:not(:disabled)')).toHaveCount(1);
   await dialog.locator('[data-time]:not(:disabled)').first().click();
   await expect(dialog.locator('[data-booking-form]')).toBeVisible();
 
   await dialog.locator('[name="name"]').fill('Anna');
   await dialog.locator('[name="email"]').fill('anna@example.test');
-  await dialog.getByRole('button', { name: 'Pokaż podsumowanie' }).click();
+  await dialog.locator('[name="privacyAccepted"]').check();
+  await dialog.getByRole('button', { name: 'Zarezerwuj termin' }).click();
   await expect(dialog.locator('[data-booking-result]')).toContainText(
-    'zgłoszenie nie zostało wysłane',
+    'zapisany w Kalendarzu Google',
   );
   await expect(page).toHaveURL('/');
   await dialog.getByRole('button', { name: 'Zamknij kalendarz' }).click();

@@ -1,4 +1,21 @@
-<dialog class="booking-dialog" aria-label="Wybór terminu konsultacji">
+---
+import { bookingSettings } from '../lib/server/bookings';
+
+const settings = bookingSettings();
+const dayNames = settings.days
+  .map((day) =>
+    new Intl.DateTimeFormat('pl-PL', { weekday: 'long', timeZone: 'UTC' }).format(
+      new Date(Date.UTC(2024, 0, day)),
+    ),
+  )
+  .join(', ');
+---
+
+<dialog
+  class="booking-dialog"
+  aria-label="Wybór terminu konsultacji"
+  data-booking-config={JSON.stringify(settings)}
+>
   <div class="booking-shell">
     <div class="booking-content">
       <section class="booking-calendar" aria-label="Wybór terminu konsultacji">
@@ -17,28 +34,41 @@
           <div class="month-heading">
             <h2 data-month-label aria-live="polite"></h2>
             <div class="month-controls">
-              <button type="button" data-month="-1" aria-label="Poprzedni miesiąc">←</button>
-              <button type="button" data-month="1" aria-label="Następny miesiąc">→</button>
+              <button type="button" data-month="-1" aria-label="Poprzedni miesiąc">
+                ←
+              </button>
+              <button type="button" data-month="1" aria-label="Następny miesiąc">
+                →
+              </button>
             </div>
           </div>
           <div class="calendar-grid" aria-hidden="true">
-            <span>Pn</span><span>Wt</span><span>Śr</span><span>Cz</span><span>Pt</span><span>Sb</span
-            ><span>Nd</span>
+            <span>Pn</span>
+            <span>Wt</span>
+            <span>Śr</span>
+            <span>Cz</span>
+            <span>Pt</span>
+            <span>Sb</span>
+            <span>Nd</span>
           </div>
           <div class="calendar-grid calendar-days" data-calendar-days></div>
-          <p class="calendar-help">Dostępne dni: poniedziałek–piątek.</p>
+          <p class="calendar-help">Dostępne dni: {dayNames}.</p>
         </div>
 
         <aside class="booking-details">
           <div class="booking-summary-card">
             <p class="eyebrow">Konsultacja online</p>
             <h2>Spokojna rozmowa o Twoich potrzebach.</h2>
-            <p>Spotkanie trwa 60 minut. Wybierz termin od poniedziałku do piątku, w godzinach 9:00–16:00.</p>
+            <p>
+              Spotkanie trwa {settings.durationMinutes} minut. Dostępne godziny:
+              {settings.start}–{settings.end}, strefa {settings.timeZone}.
+            </p>
           </div>
           <section class="time-section" data-time-section hidden aria-labelledby="time-title">
             <h3 id="time-title">Wybierz godzinę</h3>
             <p class="selected-day" data-selected-day></p>
             <div class="time-options" data-time-options></div>
+            <p class="booking-feedback" data-booking-feedback role="status" aria-live="polite"></p>
           </section>
 
           <form class="booking-form" data-booking-form hidden>
@@ -46,7 +76,7 @@
             <p class="booking-summary" data-booking-summary></p>
             <label class="field">
               Imię
-              <input name="name" required maxlength="80" autocomplete="given-name" />
+              <input name="name" required maxlength="80" autocomplete="name" />
             </label>
             <label class="field">
               Adres e-mail
@@ -59,23 +89,31 @@
                 placeholder="twoj@email.pl"
               />
             </label>
-            <button class="btn" type="submit">
-              Pokaż podsumowanie <span aria-hidden="true">↗</span>
+            <label class="field booking-consent">
+              <input name="privacyAccepted" type="checkbox" required />
+              <span>
+                Zapoznałam/em się z
+                <a href="/polityka-prywatnosci" target="_blank" rel="noreferrer">
+                  polityką prywatności
+                </a>
+                . Imię i e-mail zostaną zapisane w Kalendarzu Google.
+              </span>
+            </label>
+            <button class="btn" type="submit" data-booking-submit>
+              Zarezerwuj termin <span aria-hidden="true">↗</span>
             </button>
           </form>
 
           <div class="booking-result" data-booking-result role="status" tabindex="-1" hidden>
-            <h3>Podgląd gotowy</h3>
-            <p>
-              To tylko wersja demonstracyjna — zgłoszenie nie zostało wysłane, a termin nie jest
-              zarezerwowany.
-            </p>
+            <h3>Termin zarezerwowany</h3>
+            <p data-booking-result-message></p>
             <button class="btn btn-outline" type="button" data-booking-reset>
               Wybierz inny termin
             </button>
           </div>
           <div class="booking-demo-note" role="note">
-            Kalendarz demonstracyjny. Formularz nie wysyła danych i nie rezerwuje terminu.
+            Wolne terminy są sprawdzane w Kalendarzu Google. Rezerwacja wymaga co najmniej
+            {settings.noticeHours} godz. wyprzedzenia.
           </div>
         </aside>
       </section>
@@ -127,6 +165,12 @@
     border-left: 3px solid #c98172;
     background: #303030;
     color: #e8e2dc;
+    font-size: 12px;
+  }
+  .booking-feedback {
+    min-height: 1.2em;
+    margin-top: 10px;
+    color: #e8c1b8;
     font-size: 12px;
   }
   .booking-calendar {
@@ -306,6 +350,20 @@
   .booking-form .field {
     margin-bottom: 14px;
   }
+  .booking-form .booking-consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    color: #c4c0bc;
+    font-size: 11px;
+  }
+  .booking-consent input {
+    margin-top: 2px;
+  }
+  .booking-consent a {
+    color: #f4f1ed;
+    text-decoration: underline;
+  }
   .booking-result p {
     margin-block: 12px 20px;
     color: #c4c0bc;
@@ -377,23 +435,45 @@
   const bookingForm = dialog?.querySelector<HTMLFormElement>('[data-booking-form]');
   const bookingSummary = dialog?.querySelector<HTMLElement>('[data-booking-summary]');
   const bookingResult = dialog?.querySelector<HTMLElement>('[data-booking-result]');
+  const bookingResultMessage = dialog?.querySelector<HTMLElement>('[data-booking-result-message]');
+  const bookingFeedback = dialog?.querySelector<HTMLElement>('[data-booking-feedback]');
+  const submitButton = dialog?.querySelector<HTMLButtonElement>('[data-booking-submit]');
+  const bookingConfig = JSON.parse(dialog?.dataset.bookingConfig || '{}') as {
+    timeZone: string;
+    durationMinutes: number;
+    noticeHours: number;
+    horizonDays: number;
+    days: number[];
+  };
   let monthOffset = 0;
   let chosenDate: Date | null = null;
+  let chosenDateKey: string | null = null;
   let chosenTime: string | null = null;
   let lastTrigger: HTMLElement | null = null;
+  let availabilityRequest = 0;
 
-  const localDateKey = (date: Date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+  const dateKeyInZone = (date: Date) => {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: bookingConfig.timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(date);
+    const value = (type: string) => parts.find((part) => part.type === type)?.value ?? '';
+    return `${value('year')}-${value('month')}-${value('day')}`;
   };
   const dateFromKey = (key: string) => {
     const [year, month, day] = key.split('-').map(Number);
-    return new Date(year!, month! - 1, day!);
+    return new Date(Date.UTC(year!, month! - 1, day!));
+  };
+  const addDays = (date: Date, count: number) => {
+    const result = new Date(date);
+    result.setUTCDate(result.getUTCDate() + count);
+    return result;
   };
   const formatDate = (date: Date) =>
     new Intl.DateTimeFormat('pl-PL', {
+      timeZone: bookingConfig.timeZone,
       weekday: 'long',
       day: 'numeric',
       month: 'long',
@@ -403,38 +483,39 @@
   function renderCalendar() {
     if (!dayGrid || !monthLabel) return;
     const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const todayKey = localDateKey(today);
-    const month = new Date(today.getFullYear(), today.getMonth() + monthOffset, 1);
-    const lastDate = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
-    const leadingDays = (month.getDay() + 6) % 7;
-    const maximumDate = new Date(today);
-    maximumDate.setDate(maximumDate.getDate() + 90);
+    const todayKey = dateKeyInZone(now);
+    const today = dateFromKey(todayKey);
+    const month = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth() + monthOffset, 1));
+    const lastDate = new Date(
+      Date.UTC(month.getUTCFullYear(), month.getUTCMonth() + 1, 0),
+    ).getUTCDate();
+    const leadingDays = (month.getUTCDay() + 6) % 7;
+    const maximumDate = addDays(today, bookingConfig.horizonDays);
+    const maximumDateKey = maximumDate.toISOString().slice(0, 10);
+    const maximumMonthOffset =
+      (maximumDate.getUTCFullYear() - today.getUTCFullYear()) * 12 +
+      maximumDate.getUTCMonth() -
+      today.getUTCMonth();
 
     monthLabel.textContent = new Intl.DateTimeFormat('pl-PL', {
       month: 'long',
       year: 'numeric',
+      timeZone: bookingConfig.timeZone,
     }).format(month);
     const previous = dialog?.querySelector<HTMLButtonElement>('[data-month="-1"]');
     const next = dialog?.querySelector<HTMLButtonElement>('[data-month="1"]');
     if (previous) previous.disabled = monthOffset <= 0;
-    if (next) next.disabled = monthOffset >= 3;
+    if (next) next.disabled = monthOffset >= maximumMonthOffset;
 
     const cells = Array.from({ length: leadingDays }, () => '<span aria-hidden="true"></span>');
     for (let day = 1; day <= lastDate; day++) {
-      const date = new Date(month.getFullYear(), month.getMonth(), day);
-      const key = localDateKey(date);
-      const dayNumber = date.getDay();
-      const isWeekday = dayNumber >= 1 && dayNumber <= 5;
-      const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-      const hasFutureSlot =
-        key !== todayKey ||
-        Array.from({ length: 7 }, (_, index) => `${String(index + 9).padStart(2, '0')}:00`).some(
-          (time) => time > currentTime,
-        );
-      const enabled = isWeekday && date >= today && date <= maximumDate && hasFutureSlot;
+      const date = new Date(Date.UTC(month.getUTCFullYear(), month.getUTCMonth(), day));
+      const key = date.toISOString().slice(0, 10);
+      const dayNumber = date.getUTCDay() || 7;
+      const enabled =
+        bookingConfig.days.includes(dayNumber) && key >= todayKey && key <= maximumDateKey;
       const isToday = key === todayKey;
-      const isSelected = chosenDate ? key === localDateKey(chosenDate) : false;
+      const isSelected = key === chosenDateKey;
       cells.push(
         `<button class="calendar-day${isToday ? ' today' : ''}" type="button" data-date="${key}" aria-label="${formatDate(date)}" aria-pressed="${isSelected}" ${enabled ? '' : 'disabled'}>${day}</button>`,
       );
@@ -442,29 +523,54 @@
     dayGrid.innerHTML = cells.join('');
   }
 
-  function renderTimes() {
-    if (!chosenDate || !timeSection || !timeOptions || !selectedDay) return;
-    selectedDay.textContent = formatDate(chosenDate);
+  async function loadTimes(dateKey: string) {
+    if (!timeSection || !timeOptions || !selectedDay || !bookingFeedback) return;
+    const requestId = ++availabilityRequest;
+    selectedDay.textContent = formatDate(dateFromKey(dateKey));
     timeSection.hidden = false;
-    const now = new Date();
-    const todayKey = localDateKey(now);
-    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    timeOptions.innerHTML = Array.from({ length: 7 }, (_, index) => {
-      const time = `${String(index + 9).padStart(2, '0')}:00`;
-      const isSelected = chosenTime === time;
-      const isAvailable = localDateKey(chosenDate!) !== todayKey || time > currentTime;
-      return `<button class="time-option" type="button" data-time="${time}" aria-pressed="${isSelected}" ${isAvailable ? '' : 'disabled'}>${time}</button>`;
-    }).join('');
+    timeOptions.replaceChildren();
+    bookingFeedback.textContent = 'Sprawdzam dostępne godziny…';
+    bookingFeedback.setAttribute('role', 'status');
+    try {
+      const response = await fetch(`/api/booking/availability?date=${encodeURIComponent(dateKey)}`);
+      const result = (await response.json()) as { times?: unknown; error?: string };
+      if (!response.ok) throw new Error(result.error || 'Nie udało się sprawdzić dostępności.');
+      if (requestId !== availabilityRequest || dateKey !== chosenDateKey) return;
+      if (!Array.isArray(result.times) || !result.times.every((time) => typeof time === 'string')) {
+        throw new Error('Otrzymano nieprawidłową listę godzin.');
+      }
+      result.times.forEach((time) => {
+        const button = document.createElement('button');
+        button.className = 'time-option';
+        button.type = 'button';
+        button.dataset.time = time;
+        button.setAttribute('aria-pressed', 'false');
+        button.textContent = time;
+        timeOptions.append(button);
+      });
+      bookingFeedback.textContent = result.times.length
+        ? ''
+        : 'Brak wolnych godzin w wybranym dniu.';
+    } catch (error) {
+      if (requestId !== availabilityRequest || dateKey !== chosenDateKey) return;
+      bookingFeedback.textContent =
+        error instanceof Error ? error.message : 'Nie udało się sprawdzić dostępności.';
+      bookingFeedback.setAttribute('role', 'alert');
+    }
   }
 
   function resetBooking() {
     monthOffset = 0;
     chosenDate = null;
+    chosenDateKey = null;
     chosenTime = null;
+    availabilityRequest++;
     bookingForm?.reset();
     if (timeSection) timeSection.hidden = true;
     if (bookingForm) bookingForm.hidden = true;
     if (bookingResult) bookingResult.hidden = true;
+    if (bookingFeedback) bookingFeedback.textContent = '';
+    if (submitButton) submitButton.disabled = false;
     renderCalendar();
   }
 
@@ -489,20 +595,24 @@
     if (monthButton && !monthButton.disabled) {
       monthOffset += Number(monthButton.dataset.month);
       chosenDate = null;
+      chosenDateKey = null;
       chosenTime = null;
+      availabilityRequest++;
       if (timeSection) timeSection.hidden = true;
       if (bookingForm) bookingForm.hidden = true;
+      if (bookingResult) bookingResult.hidden = true;
       renderCalendar();
       return;
     }
     const dayButton = event.target.closest<HTMLButtonElement>('[data-date]');
     if (dayButton && !dayButton.disabled) {
       chosenDate = dateFromKey(dayButton.dataset.date!);
+      chosenDateKey = dayButton.dataset.date!;
       chosenTime = null;
       if (bookingForm) bookingForm.hidden = true;
       if (bookingResult) bookingResult.hidden = true;
       renderCalendar();
-      renderTimes();
+      void loadTimes(chosenDateKey);
       return;
     }
     const timeButton = event.target.closest<HTMLButtonElement>('[data-time]');
@@ -513,8 +623,9 @@
           button.setAttribute('aria-pressed', String(button === timeButton));
         });
       }
-      if (bookingSummary && chosenDate) {
-        bookingSummary.textContent = `${formatDate(chosenDate)} o ${chosenTime} · konsultacja online, 60 minut`;
+      if (bookingSummary && chosenDate && bookingFeedback) {
+        bookingSummary.textContent = `${formatDate(chosenDate)} o ${chosenTime} · konsultacja online, ${bookingConfig.durationMinutes} minut`;
+        bookingFeedback.textContent = '';
       }
       if (bookingForm) bookingForm.hidden = false;
       if (bookingResult) bookingResult.hidden = true;
@@ -524,13 +635,49 @@
     if (resetButton) resetBooking();
   });
 
-  bookingForm?.addEventListener('submit', (event) => {
+  bookingForm?.addEventListener('submit', async (event) => {
     event.preventDefault();
-    if (!bookingForm.reportValidity() || !chosenDate || !chosenTime) return;
-    bookingForm.hidden = true;
-    if (bookingResult) {
-      bookingResult.hidden = false;
-      bookingResult.focus();
+    if (
+      !bookingForm.reportValidity() ||
+      !chosenDateKey ||
+      !chosenTime ||
+      !bookingFeedback ||
+      !submitButton
+    )
+      return;
+    submitButton.disabled = true;
+    bookingFeedback.textContent = 'Rezerwuję termin…';
+    bookingFeedback.setAttribute('role', 'status');
+    const formData = new FormData(bookingForm);
+    try {
+      const response = await fetch('/api/booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date: chosenDateKey,
+          time: chosenTime,
+          name: formData.get('name'),
+          email: formData.get('email'),
+          privacyAccepted: formData.get('privacyAccepted') === 'on',
+        }),
+      });
+      const result = (await response.json()) as { error?: string };
+      if (!response.ok) throw new Error(result.error || 'Nie udało się zarezerwować terminu.');
+      bookingForm.hidden = true;
+      if (bookingResult && bookingResultMessage && chosenDate) {
+        bookingResultMessage.textContent = `${formatDate(chosenDate)} o ${chosenTime}. Termin został zapisany w Kalendarzu Google.`;
+        bookingResult.hidden = false;
+        bookingResult.focus();
+      }
+    } catch (error) {
+      bookingFeedback.textContent =
+        error instanceof Error ? error.message : 'Nie udało się zarezerwować terminu.';
+      bookingFeedback.setAttribute('role', 'alert');
+      if (error instanceof Error && error.message.toLowerCase().includes('termin')) {
+        await loadTimes(chosenDateKey);
+      }
+    } finally {
+      submitButton.disabled = false;
     }
   });
 
