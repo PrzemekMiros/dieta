@@ -4,37 +4,68 @@ import Layout from '../../layouts/Layout.astro';
 
 <Layout title="Zamówienie" noindex>
   <section class="container section">
-    <p class="eyebrow">Ostatni krok</p>
-    <h1>Coś dobrego jest już blisko.</h1>
-    <p class="intro muted">Kupujesz bez rejestracji. Wypełnij dane i sprawdź podsumowanie.</p>
-    <form id="checkout-form" class="checkout-grid mt-12">
+    <p class="eyebrow">Zakupy · krok 2 z 2</p>
+    <h1>Finalizuj zakup.</h1>
+    <p class="page-intro muted">
+      Podaj dane do zamówienia i sprawdź podsumowanie przed bezpieczną płatnością.
+    </p>
+    <nav class="checkout-progress" aria-label="Etapy zakupu">
+      <ol>
+        <li>
+          <a href="/koszyk">
+            <span>1</span> Koszyk
+          </a>
+        </li>
+        <li aria-current="step">
+          <span>2</span> Dane i płatność
+        </li>
+      </ol>
+    </nav>
+    <form id="checkout-form" class="checkout-grid">
       <div>
-        <h2 class="!text-3xl mb-8">Twoje dane</h2>
-        <div class="grid sm:grid-cols-2 gap-x-5">
-          <label class="field">
-            Imię
-            <input name="firstName" required maxlength="40" autocomplete="given-name" />
-          </label>
-          <label class="field">
-            Nazwisko
-            <input name="lastName" required maxlength="60" autocomplete="family-name" />
-          </label>
-        </div>
-        <label class="field">
-          E-mail
-          <input type="email" name="email" required maxlength="50" autocomplete="email" />
-        </label>
-        <fieldset id="shipping-fields" hidden disabled>
-          <legend class="font-serif text-3xl mb-6">Dostawa</legend>
-          <label class="field">
-            Telefon
-            <input name="phone" type="tel" required maxlength="25" autocomplete="tel" />
-          </label>
-          <label class="field">
-            Ulica, numer domu i mieszkania
-            <input name="street" required maxlength="150" autocomplete="street-address" />
-          </label>
-          <div class="grid sm:grid-cols-2 gap-x-5">
+        <section class="checkout-section" aria-labelledby="contact-title">
+          <div class="checkout-section-heading">
+            <div>
+              <h2 id="contact-title">Dane kontaktowe</h2>
+              <p>Potwierdzenie zamówienia wyślemy na podany adres e-mail.</p>
+            </div>
+          </div>
+          <div class="checkout-fields-grid">
+            <label class="field">
+              Imię
+              <input name="firstName" required maxlength="40" autocomplete="given-name" />
+            </label>
+            <label class="field">
+              Nazwisko
+              <input name="lastName" required maxlength="60" autocomplete="family-name" />
+            </label>
+            <label class="field">
+              E-mail
+              <input type="email" name="email" required maxlength="254" autocomplete="email" />
+            </label>
+            <label class="field">
+              Telefon
+              <input
+                name="phone"
+                type="tel"
+                required
+                minlength="7"
+                maxlength="25"
+                autocomplete="tel"
+              />
+            </label>
+          </div>
+        </section>
+        <fieldset id="shipping-fields" class="checkout-section checkout-shipping" hidden disabled>
+          <legend>Adres dostawy</legend>
+          <p class="checkout-section-description">
+            Uzupełnij dane odbiorcy i wybierz sposób dostawy.
+          </p>
+          <div class="checkout-fields-grid">
+            <label class="field">
+              Ulica, numer domu i mieszkania
+              <input name="street" required maxlength="150" autocomplete="street-address" />
+            </label>
             <label class="field">
               Kod pocztowy
               <input
@@ -49,35 +80,49 @@ import Layout from '../../layouts/Layout.astro';
               Miejscowość
               <input name="city" required maxlength="100" autocomplete="address-level2" />
             </label>
+            <label class="field">
+              Sposób dostawy
+              <select name="shippingMethod" id="shipping-method"></select>
+            </label>
           </div>
-          <p class="text-xs muted mb-5">Dostawa na terenie Polski.</p>
-          <label class="field">
-            Sposób dostawy<select name="shippingMethod" id="shipping-method"></select>
-          </label>
+          <p class="text-xs muted mb-5">Dostawa dostępna na terenie Polski.</p>
         </fieldset>
-        <label class="check">
-          <input type="checkbox" id="invoice-toggle" />
-          <span>Potrzebuję faktury na firmę</span>
-        </label>
-        <fieldset id="invoice-fields" disabled hidden>
-          <label class="field">
-            Nazwa firmy
-            <input name="company" required maxlength="150" />
+        <section class="checkout-section checkout-invoice">
+          <label class="check invoice-toggle">
+            <input type="checkbox" id="invoice-toggle" aria-controls="invoice-fields" />
+            <span>Potrzebuję faktury na firmę</span>
           </label>
-          <label class="field">
-            NIP (10 cyfr)
-            <input name="nip" required pattern="[0-9]{10}" />
-          </label>
-          <label class="field">
-            Adres firmy
-            <input name="invoiceAddress" required maxlength="250" />
-          </label>
-        </fieldset>
+          <fieldset id="invoice-fields" class="invoice-fields" disabled hidden>
+            <legend class="sr-only">Dane do faktury</legend>
+            <div class="checkout-fields-grid">
+              <label class="field">
+                Nazwa firmy
+                <input name="company" required maxlength="150" />
+              </label>
+              <label class="field">
+                NIP (10 cyfr)
+                <input name="nip" required pattern="[0-9]{10}" />
+              </label>
+              <label class="field">
+                Adres firmy
+                <input name="invoiceAddress" required maxlength="250" />
+              </label>
+            </div>
+          </fieldset>
+        </section>
       </div>
-      <aside class="card">
-        <h2 class="!text-3xl mb-8">Twoje zamówienie</h2>
-        <div data-checkout-lines>Wczytywanie…</div>
+      <aside class="card checkout-summary" aria-busy="true">
+        <p class="eyebrow">Podsumowanie</p>
+        <h2 class="!text-3xl mb-12">Twoje zamówienie</h2>
+        <div class="my-6 border-b border-[#d9d3cc]"></div>
+        <div data-checkout-lines aria-live="polite">
+          Przeliczamy koszyk…
+        </div>
         <div class="flex justify-between mt-6">
+          <span>Produkty</span>
+          <span data-checkout-subtotal></span>
+        </div>
+        <div class="flex justify-between mt-3">
           <span>Dostawa</span>
           <span data-checkout-shipping></span>
         </div>
@@ -89,11 +134,11 @@ import Layout from '../../layouts/Layout.astro';
           <input type="checkbox" name="terms" required />
           <span>
             Akceptuję{' '}
-            <a href="/regulamin" target="_blank">
+            <a href="/regulamin" target="_blank" rel="noreferrer">
               regulamin
             </a>{' '}
             i zapoznałam/em się z{' '}
-            <a href="/polityka-prywatnosci" target="_blank">
+            <a href="/polityka-prywatnosci" target="_blank" rel="noreferrer">
               polityką prywatności
             </a>
             .
@@ -107,12 +152,23 @@ import Layout from '../../layouts/Layout.astro';
           </span>
         </label>
         <button type="submit" class="btn w-full" id="pay-button" disabled>
-          Zamawiam z obowiązkiem zapłaty →
+          Zamawiam z obowiązkiem zapłaty <span aria-hidden="true">→</span>
         </button>
-        <p class="text-xs muted mt-4">Bezpieczna płatność przez Przelewy24.</p>
-        <p id="checkout-message" role="alert" class="mt-5 text-sm error"></p>
+        <p class="checkout-security">
+          <span aria-hidden="true">✓</span> Bezpieczna płatność przez Przelewy24. Po kliknięciu
+          przejdziesz do płatności.
+        </p>
+        <p
+          id="checkout-message"
+          role="status"
+          aria-live="polite"
+          class="checkout-message mt-5 text-sm"
+        ></p>
         <a id="order-status-link" class="text-link mt-4" hidden>
           Sprawdź zapisane zamówienie →
+        </a>
+        <a href="/koszyk" class="checkout-back-link">
+          ← Wróć do koszyka
         </a>
       </aside>
     </form>
@@ -122,21 +178,200 @@ import Layout from '../../layouts/Layout.astro';
   </section>
 </Layout>
 <style>
+  .page-intro {
+    max-width: 620px;
+    margin-top: 20px;
+  }
+  .checkout-progress {
+    max-width: 560px;
+    margin-block: 36px 30px;
+  }
+  .checkout-progress ol {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 0;
+    list-style: none;
+  }
+  .checkout-progress li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 2px solid #d9d3cc;
+    padding-bottom: 12px;
+    color: #77716c;
+    font-size: 13px;
+  }
+  .checkout-progress li[aria-current='step'] {
+    border-color: var(--color-action);
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+  .checkout-progress li > span,
+  .checkout-progress li a > span {
+    display: grid;
+    place-items: center;
+    width: 25px;
+    height: 25px;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    font-size: 11px;
+  }
+  .checkout-progress a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
   .checkout-grid {
     display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 80px;
+    grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.85fr);
+    gap: clamp(40px, 7vw, 96px);
     align-items: start;
+  }
+  .checkout-fields-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 20px;
+  }
+  .checkout-fields-grid > .field {
+    min-width: 0;
+  }
+  .checkout-section {
+    margin: 0;
+    padding: 0 0 28px;
+    border: 0;
+    border-bottom: 1px solid #e1dcd6;
+  }
+  .checkout-section + .checkout-section {
+    margin-top: 28px;
+  }
+  .checkout-section-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .checkout-section-heading h2,
+  .checkout-shipping legend {
+    font-family: var(--font-serif);
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 1.06;
+    letter-spacing: -0.035em;
+  }
+  .checkout-section-heading p,
+  .checkout-section-description {
+    margin-top: 7px;
+    color: #6c665f;
+    font-size: 12px;
+  }
+  .checkout-shipping {
+    padding-top: 2px;
+  }
+  .checkout-shipping legend {
+    margin-bottom: 0;
+  }
+  .checkout-section-description {
+    margin: 7px 0 22px;
+  }
+  .checkout-invoice {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+  .invoice-toggle {
+    margin: 0;
+  }
+  .invoice-fields {
+    margin: 22px 0 0;
+    padding: 0;
+    border: 0;
+  }
+  .checkout-summary {
+    position: sticky;
+    top: 24px;
+  }
+  .checkout-summary h2 {
+    font-size: 30px;
+  }
+  .checkout-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+    font-size: 13px;
+  }
+  .checkout-line-name {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .checkout-line-price {
+    flex: 0 0 auto;
+    font-weight: 500;
+  }
+  .checkout-security {
+    margin-top: 16px;
+    color: #5c665d;
+    font-size: 11px;
+    text-align: center;
+  }
+  .checkout-security span {
+    margin-right: 4px;
+    color: #52745c;
+  }
+  .checkout-message:not(:empty) {
+    padding: 12px 14px;
+    border-radius: 6px;
+    background: #f7e9e6;
+    color: #842d2d;
+  }
+  .checkout-back-link {
+    display: block;
+    margin-top: 18px;
+    color: #6c665f;
+    font-size: 12px;
+    text-align: center;
+  }
+  .checkout-back-link:hover {
+    color: var(--color-action);
+    text-decoration: underline;
+  }
+  .checkout-form-note {
+    margin-top: 12px;
   }
   fieldset {
     border: 0;
     padding: 0;
-    margin: 28px 0;
   }
   @media (max-width: 900px) {
     .checkout-grid {
       grid-template-columns: 1fr;
-      gap: 40px;
+      gap: 28px;
+    }
+    .checkout-summary {
+      position: static;
+      order: -1;
+    }
+  }
+  @media (max-width: 500px) {
+    .checkout-progress {
+      margin-top: 28px;
+    }
+    .checkout-progress ol {
+      gap: 8px;
+    }
+    .checkout-progress li,
+    .checkout-progress a {
+      gap: 7px;
+      font-size: 11px;
+    }
+    .checkout-section-heading h2,
+    .checkout-shipping legend {
+      font-size: 26px;
+    }
+  }
+  @media (max-width: 600px) {
+    .checkout-fields-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>
@@ -151,6 +386,12 @@ import Layout from '../../layouts/Layout.astro';
   let q: Awaited<ReturnType<typeof quote>>;
   async function refresh() {
     button.disabled = true;
+    const summary = document.querySelector<HTMLElement>('.checkout-summary')!;
+    const list = document.querySelector<HTMLElement>('[data-checkout-lines]')!;
+    summary.setAttribute('aria-busy', 'true');
+    list.textContent = 'Przeliczamy koszyk…';
+    message.textContent = '';
+    message.setAttribute('role', 'status');
     try {
       q = await quote(readCart(), methods.value || undefined);
       shipping.hidden = !q.physical;
@@ -160,30 +401,38 @@ import Layout from '../../layouts/Layout.astro';
       digital.querySelector('input')!.required = q.digital;
       if (!methods.options.length)
         q.methods.forEach((m) => methods.add(new Option(`${m.name} — ${money(m.price)}`, m.id)));
-      const list = document.querySelector('[data-checkout-lines]')!;
       list.replaceChildren();
       q.lines.forEach((p) => {
-        const row = document.createElement('p');
-        row.className = 'flex justify-between gap-4 mb-3 text-sm';
+        const row = document.createElement('div');
+        row.className = 'checkout-line';
         const label = document.createElement('span');
         label.textContent = `${p.name} × ${p.quantity}`;
+        label.className = 'checkout-line-name';
         const price = document.createElement('span');
         price.textContent = money(p.price * p.quantity);
+        price.className = 'checkout-line-price';
         row.append(label, price);
         list.append(row);
       });
-      document.querySelector('[data-checkout-shipping]')!.textContent = money(q.shipping);
+      document.querySelector('[data-checkout-subtotal]')!.textContent = money(q.subtotal);
+      document.querySelector('[data-checkout-shipping]')!.textContent = q.physical
+        ? money(q.shipping)
+        : 'Bezpłatnie';
       document.querySelector('[data-checkout-total]')!.textContent = money(q.total);
       if (q.lines.some((p) => p.productType === 'physical' && p.quantity > p.stock))
         throw new Error('Stan magazynowy uległ zmianie. Wróć do koszyka.');
       button.disabled = false;
       message.textContent = '';
+      summary.setAttribute('aria-busy', 'false');
     } catch (e) {
       message.textContent = readCart().length
         ? e instanceof Error
           ? e.message
           : 'Nie udało się wycenić koszyka.'
-        : 'Koszyk jest pusty. Wybierz produkty przed złożeniem zamówienia.';
+        : 'Koszyk jest pusty. Wróć do koszyka i dodaj produkty.';
+      message.setAttribute('role', 'alert');
+      list.replaceChildren();
+      summary.setAttribute('aria-busy', 'false');
     }
   }
   methods.addEventListener('change', () => void refresh());
@@ -198,6 +447,7 @@ import Layout from '../../layouts/Layout.astro';
     if (button.disabled) return;
     button.disabled = true;
     message.textContent = 'Zapisujemy zamówienie…';
+    message.setAttribute('role', 'status');
     try {
       const data = new FormData(form);
       const get = (key: string) => String(data.get(key) || '');
@@ -261,6 +511,7 @@ import Layout from '../../layouts/Layout.astro';
         e instanceof Error
           ? e.message
           : 'Błąd połączenia. Sprawdź status zamówienia przed kolejną próbą.';
+      message.setAttribute('role', 'alert');
       button.disabled = false;
     }
   });

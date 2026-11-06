@@ -7,6 +7,9 @@ export default defineConfig({
   output: 'server',
   adapter: process.env.NETLIFY ? netlify() : node({ mode: 'standalone' }),
   site: process.env.SITE_URL || 'http://localhost:4321',
+  image: {
+    remotePatterns: [{ protocol: 'https', hostname: 'cdn.sanity.io' }],
+  },
   server: { host: '0.0.0.0', port: 4321 },
   vite: {
     plugins: [tailwindcss()],

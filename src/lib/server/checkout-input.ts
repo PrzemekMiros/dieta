@@ -12,9 +12,9 @@ export const checkoutSchema = z.object({
   lastName: z.string().trim().min(1).max(60),
   email: z
     .email()
-    .max(50)
+    .max(254)
     .transform((v) => v.toLowerCase()),
-  phone: z.string().max(25).optional(),
+  phone: z.string().trim().min(7).max(25),
   shippingMethod: z.string().max(40).optional(),
   address: z
     .object({

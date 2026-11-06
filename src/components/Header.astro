@@ -1,9 +1,4 @@
 ---
-import type { SiteSettings } from '../lib/types';
-interface Props {
-  settings: SiteSettings;
-}
-const { settings } = Astro.props;
 const links = [
   ['O mnie', '/o-nas'],
   ['Ebooki', '/ebooki'],
@@ -19,14 +14,7 @@ const links = [
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="/" aria-label="Twoja Dietetyczka — strona główna">
-      {settings.logo ? (
-        <img src={settings.logo} width="160" height="50" alt="Twoja Dietetyczka" />
-      ) : (
-        <>
-          <span>TWOJA DIETETYCZKA</span>
-          <small>zdrowe nawyki, bez presji</small>
-        </>
-      )}
+      <img src="/images/logo.png" width="235" height="42" alt="Twoja Dietetyczka" />
     </a>
     <nav aria-label="Główna" id="main-nav">
       {links.map(([label, href]) => (
@@ -73,19 +61,13 @@ const links = [
     min-height: 100px;
   }
   .brand {
-    display: grid;
-    text-align: center;
+    display: block;
     flex-shrink: 0;
   }
-  .brand span {
-    font-family: var(--font-serif);
-    font-size: 24px;
-    letter-spacing: 0.01em;
-  }
-  .brand small {
-    font-size: 8px;
-    letter-spacing: 0.19em;
-    text-transform: uppercase;
+  .brand img {
+    width: 235px;
+    height: 42px;
+    object-fit: contain;
   }
   nav {
     display: flex;
@@ -137,11 +119,9 @@ const links = [
       min-height: 82px;
       gap: 4px;
     }
-    .brand span {
-      font-size: 16px;
-    }
-    .brand small {
-      font-size: 6px;
+    .brand img {
+      width: 132px;
+      height: 54px;
     }
     .header-actions {
       gap: 4px;

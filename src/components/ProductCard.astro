@@ -1,9 +1,26 @@
 ---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import { money, type Product } from '../lib/types';
+import img5522 from '../assets/product-images/IMG_5522.webp';
+import img7254 from '../assets/product-images/IMG_7254.webp';
+import img7344 from '../assets/product-images/IMG_7344.webp';
+import img7423 from '../assets/product-images/IMG_7423.webp';
+import img7495 from '../assets/product-images/IMG_7495.webp';
+import img8219 from '../assets/product-images/IMG_8219.webp';
 interface Props {
   product: Product;
 }
 const { product: p } = Astro.props;
+const demoImages: Record<string, ImageMetadata> = {
+  '/images/IMG_5522.png': img5522,
+  '/images/IMG_7254.png': img7254,
+  '/images/IMG_7344.png': img7344,
+  '/images/IMG_7423.png': img7423,
+  '/images/IMG_7495.png': img7495,
+  '/images/IMG_8219.png': img8219,
+};
+const demoImage = p.demo ? demoImages[p.image] : undefined;
 ---
 
 <article class="product-card" data-reveal>
@@ -19,27 +36,38 @@ const { product: p } = Astro.props;
         <img src={p.image} alt="" width="400" height="400" loading="lazy" />
         <small>PRZEPISY · WSKAZÓWKI · INSPIRACJE</small>
       </div>
+    ) : demoImage ? (
+      <Image
+        src={demoImage}
+        width={450}
+        height={506}
+        alt="Ilustracja koncepcyjna — produkt demonstracyjny"
+        loading="lazy"
+      />
     ) : (
-      <img
+      <Image
         src={p.image || '/images/cake-editorial.webp'}
-        width="600"
-        height="660"
-        alt={p.demo ? 'Ilustracja koncepcyjna — produkt demonstracyjny' : p.name}
+        width={450}
+        height={506}
+        alt={p.name}
         loading="lazy"
       />
     )}
-    <span class="product-tag">
-      {p.productType === 'digital' ? 'Ebook · PDF' : 'Pieczywo'}
-    </span>
+    <span class="product-tag">{p.productType === 'digital' ? 'Ebook · PDF' : 'Pieczywo'}</span>
   </a>
-  <div class="flex justify-between gap-4 mt-6">
+  <div class="flex justify-between gap-4 mt-6 mb-2">
     <h3>
       <a href={`/produkt/${p.slug}`}>{p.name}</a>
     </h3>
     <span class="price">{money(p.price)}</span>
   </div>
-  <p class="muted text-sm mt-3 mb-5">{p.shortDescription}</p>
-  <button type="button" class="text-link" data-add={p._id} disabled={!p.active || p.stock === 0}>
+  <p class="muted text-sm mt-6 mb-5">{p.shortDescription}</p>
+  <button
+    type="button"
+    class="text-link mt-6"
+    data-add={p._id}
+    disabled={!p.active || p.stock === 0}
+  >
     {p.stock === 0 ? 'Niedostępny' : 'Dodaj do koszyka'} <span aria-hidden="true">+</span>
   </button>
 </article>

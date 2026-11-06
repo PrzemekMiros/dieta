@@ -65,14 +65,14 @@ const dayNames = settings.days
             </p>
           </div>
           <section class="time-section" data-time-section hidden aria-labelledby="time-title">
-            <h3 id="time-title">Wybierz godzinę</h3>
+            <h3 id="time-title"><span class="booking-step-number">1</span> Wybierz godzinę</h3>
             <p class="selected-day" data-selected-day></p>
             <div class="time-options" data-time-options></div>
             <p class="booking-feedback" data-booking-feedback role="status" aria-live="polite"></p>
           </section>
 
           <form class="booking-form" data-booking-form hidden>
-            <h3>Twoje dane</h3>
+            <h3><span class="booking-step-number">2</span> Twoje dane</h3>
             <p class="booking-summary" data-booking-summary></p>
             <label class="field">
               Imię
@@ -236,7 +236,6 @@ const dayNames = settings.days
   .month-heading {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 16px;
     margin-bottom: 16px;
   }
@@ -321,6 +320,19 @@ const dayNames = settings.days
   .booking-form h3,
   .booking-result h3 {
     font-size: 22px;
+  }
+  .booking-step-number {
+    display: inline-grid;
+    place-items: center;
+    width: 25px;
+    height: 25px;
+    margin-right: 7px;
+    border: 1px solid #c98172;
+    border-radius: 50%;
+    color: #e8a295;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    vertical-align: 3px;
   }
   .time-options {
     display: grid;

@@ -100,15 +100,35 @@ export async function renderCart() {
   if (!root) return;
   const items = readCart();
   const total = document.querySelector<HTMLElement>('[data-cart-summary]');
+  const itemCount = document.querySelector<HTMLElement>('[data-cart-items]');
+  if (itemCount) itemCount.textContent = '';
   root.replaceChildren();
   if (!items.length) {
-    root.append(element('p', 'Twój koszyk czeka na coś dobrego.'));
+    root.classList.add('cart-empty');
+    root.setAttribute('aria-busy', 'false');
+    root.append(
+      element('p', 'TWÓJ KOSZYK', 'eyebrow'),
+      element('h2', 'Koszyk czeka na coś dobrego.'),
+      element(
+        'p',
+        'Wybierz produkty, które Cię interesują. Dodane pozycje będą tutaj czekać na Ciebie.',
+      ),
+    );
+    const browse = element('a', 'Zobacz produkty', 'btn') as HTMLAnchorElement;
+    browse.href = '/sklep';
+    root.append(browse);
     if (total) total.hidden = true;
     return;
   }
+  root.classList.remove('cart-empty');
+  root.setAttribute('aria-busy', 'true');
   try {
     const q = await quote();
     if (total) total.hidden = false;
+    if (itemCount) {
+      const count = q.lines.reduce((sum, item) => sum + item.quantity, 0);
+      itemCount.textContent = `${count} ${count === 1 ? 'produkt' : count < 5 ? 'produkty' : 'produktów'}`;
+    }
     for (const item of q.lines) {
       const row = element('div', undefined, 'cart-row');
       const image = element('img') as HTMLImageElement;
@@ -119,14 +139,31 @@ export async function renderCart() {
       const details = element('div');
       const link = element('a', item.name);
       link.setAttribute('href', `/produkt/${item.slug}`);
-      details.append(link, element('p', money(item.price), 'muted text-sm'));
-      const label = element('label', 'Ilość', 'text-xs');
+      details.append(
+        link,
+        element('p', `${money(item.price)} / szt.`, 'muted text-sm'),
+        element('p', money(item.price * item.quantity), 'cart-line-total'),
+      );
+      const quantityControl = element('div', undefined, 'cart-quantity-control');
+      quantityControl.append(element('span', 'Ilość', 'cart-quantity-label'));
+      const stepper = element('div', undefined, 'cart-quantity-stepper');
+      const decrease = element('button', undefined, 'cart-quantity-button') as HTMLButtonElement;
+      decrease.type = 'button';
+      decrease.disabled = item.quantity <= 1;
+      decrease.setAttribute('aria-label', `Zmniejsz ilość: ${item.name}`);
+      decrease.append(element('span', '−'));
       const input = element('input') as HTMLInputElement;
+      input.className = 'cart-quantity-input';
       input.type = 'number';
       input.min = '1';
       input.max = String(item.productType === 'digital' ? 1 : Math.min(item.stock, 20));
       input.value = String(item.quantity);
       input.setAttribute('aria-label', `Ilość: ${item.name}`);
+      const increase = element('button', undefined, 'cart-quantity-button') as HTMLButtonElement;
+      increase.type = 'button';
+      increase.disabled = item.quantity >= Number(input.max);
+      increase.setAttribute('aria-label', `Zwiększ ilość: ${item.name}`);
+      increase.append(element('span', '+'));
       input.addEventListener('change', async () => {
         const quantity = Number(input.value);
         if (!Number.isInteger(quantity) || quantity < 1 || quantity > Number(input.max)) {
@@ -136,7 +173,16 @@ export async function renderCart() {
         writeCart(readCart().map((i) => (i.id === item._id ? { ...i, quantity } : i)));
         await renderCart();
       });
-      label.append(input);
+      decrease.addEventListener('click', () => {
+        input.value = String(item.quantity - 1);
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+      increase.addEventListener('click', () => {
+        input.value = String(item.quantity + 1);
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+      stepper.append(decrease, input, increase);
+      quantityControl.append(stepper);
       const remove = element('button', 'Usuń', 'text-link') as HTMLButtonElement;
       remove.type = 'button';
       remove.setAttribute('aria-label', `Usuń ${item.name}`);
@@ -144,7 +190,7 @@ export async function renderCart() {
         writeCart(readCart().filter((i) => i.id !== item._id));
         void renderCart();
       });
-      row.append(image, details, label, remove);
+      row.append(image, details, quantityControl, remove);
       root.append(row);
     }
     document.querySelector('[data-subtotal]')!.textContent = money(q.subtotal);
@@ -152,6 +198,7 @@ export async function renderCart() {
       ? `od ${money(q.shipping)}`
       : 'Bezpłatnie';
     document.querySelector('[data-total]')!.textContent = money(q.total);
+    root.setAttribute('aria-busy', 'false');
   } catch (e) {
     root.append(
       element('p', e instanceof Error ? e.message : 'Nie udało się odczytać koszyka.', 'error'),
@@ -163,6 +210,7 @@ export async function renderCart() {
     });
     root.append(clear);
     if (total) total.hidden = true;
+    root.setAttribute('aria-busy', 'false');
   }
 }
 updateCount();

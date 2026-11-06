@@ -7,10 +7,16 @@ interface Props {
 }
 const { section: s, home } = Astro.props;
 const features = [
-  ['Dieta bez presji', 'Skupiamy się na zdrowiu, a nie na zakazach. Zdrowe wybory stają się prostsze i trwalsze.'],
+  [
+    'Dieta bez presji',
+    'Skupiamy się na zdrowiu, a nie na zakazach. Zdrowe wybory stają się prostsze i trwalsze.',
+  ],
   ['Plan dopasowany do Ciebie', 'Uwzględniam Twoje potrzeby, codzienność, preferencje i cele.'],
   ['Przejrzyste zasady', 'Wiele małych zmian daje lepsze efekty niż drastyczny reżim.'],
-  ['Wsparcie na co dzień', 'Jestem przy Tobie na każdym etapie, żebyś nie czuła się sama z wyzwaniem.'],
+  [
+    'Wsparcie na co dzień',
+    'Jestem przy Tobie na każdym etapie, żebyś nie czuła się sama z wyzwaniem.',
+  ],
 ];
 ---
 
@@ -75,8 +81,8 @@ const features = [
               'Jako dietetyczka wspieram osoby, które chcą poprawić swoje odżywianie, zadbać o zdrowie i wprowadzić trwałe zmiany bez frustracji.'}
           </p>
           <p>
-            Każda konsultacja jest dopasowana do Ciebie — nie do szablonu. Pomagam przełożyć wiedzę na
-            praktykę, która działa w realnym życiu.
+            Każda konsultacja jest dopasowana do Ciebie — nie do szablonu. Pomagam przełożyć wiedzę
+            na praktykę, która działa w realnym życiu.
           </p>
         </div>
         <a class="text-link mt-8" href="/o-nas">
@@ -138,7 +144,11 @@ const features = [
                 ? 'Na co dzień · bez chaosu'
                 : 'Motywacja · edukacja · regularność'}
           </p>
-          <a href={href} class="text-link" data-booking-open={href === '/kontakt' ? true : undefined}>
+          <a
+            href={href}
+            class="text-link"
+            data-booking-open={href === '/kontakt' ? true : undefined}
+          >
             {cta} <span>→</span>
           </a>
         </article>
@@ -153,10 +163,16 @@ const features = [
       <h2 data-reveal>{s.title || 'Prosty i wspierający proces.'}</h2>
       <div class="steps-grid">
         {[
-          ['Umów rozmowę', 'Zaczynamy od rozmowy o Twoich potrzebach, celach i codziennym stylu życia.'],
+          [
+            'Umów rozmowę',
+            'Zaczynamy od rozmowy o Twoich potrzebach, celach i codziennym stylu życia.',
+          ],
           ['Oceń potrzeby', 'Analizuję Twoje nawyki, preferencje i obszary, które warto poprawić.'],
           ['Otrzymaj plan', 'Przygotowuję konkretne zalecenia i prosty plan działania.'],
-          ['Działaj z wsparciem', 'Zostajesz pod opieką i otrzymujesz regularne wsparcie na każdym etapie.'],
+          [
+            'Działaj z wsparciem',
+            'Zostajesz pod opieką i otrzymujesz regularne wsparcie na każdym etapie.',
+          ],
         ].map(([title, body], i) => (
           <div data-reveal>
             <span>0{i + 1}</span>
@@ -229,6 +245,9 @@ const features = [
           codziennym samopoczuciu, energii i relacji z jedzeniem.
         </p>
       )}
+      <button class="btn testimonials-booking" type="button" data-booking-open>
+        Umów konsultację <span aria-hidden="true">↗</span>
+      </button>
     </div>
   </section>
 )}
@@ -281,7 +300,7 @@ const features = [
     <div class="container split">
       <div data-reveal>
         <p class="eyebrow">{s.subtitle || 'Zdrowe porady'}</p>
-        <h2>{s.title || 'Zapisz się na małe inspiracje do zdrowego życia.'}</h2>
+        <h2>{s.title || 'Zapisz się na inspiracje do zdrowego życia.'}</h2>
         <p class="intro muted">
           Otrzymuj praktyczne rady, ciekawostki i informacje o nowych konsultacjach i materiałach.
         </p>
@@ -456,6 +475,14 @@ const features = [
   .testimonials {
     text-align: center;
     max-width: 900px;
+  }
+  .testimonials > .intro {
+    max-width: 680px;
+    margin-inline: auto;
+    text-align: center;
+  }
+  .testimonials-booking {
+    margin-top: 28px;
   }
   .review-track {
     display: flex;

@@ -27,6 +27,13 @@ test('kalendarz konsultacji otwiera się jako pełnoekranowy podgląd', async ({
   await expect(dialog.locator('[data-time]:not(:disabled)')).toHaveCount(1);
   await dialog.locator('[data-time]:not(:disabled)').first().click();
   await expect(dialog.locator('[data-booking-form]')).toBeVisible();
+  await expect(dialog.locator('[data-booking-form] h3')).toContainText('2');
+  await expect(dialog.locator('[data-booking-summary]')).toContainText(
+    'konsultacja online, 60 minut',
+  );
+  await expect(dialog.locator('[data-booking-form]')).toContainText(
+    'Imię i e-mail zostaną zapisane w Kalendarzu Google.',
+  );
 
   await dialog.locator('[name="name"]').fill('Anna');
   await dialog.locator('[name="email"]').fill('anna@example.test');
@@ -40,6 +47,13 @@ test('kalendarz konsultacji otwiera się jako pełnoekranowy podgląd', async ({
   await expect(page).toHaveURL('/');
   await dialog.getByRole('button', { name: 'Zamknij kalendarz' }).click();
   await expect(dialog).toBeHidden();
+});
+
+test('przycisk konsultacji w sekcji opinii otwiera kalendarz', async ({ page }) => {
+  await page.goto('/');
+  const testimonials = page.locator('.testimonials');
+  await testimonials.getByRole('button', { name: /Umów konsultację/ }).click();
+  await expect(page.locator('.booking-dialog')).toBeVisible();
 });
 
 test('kalendarz zajmuje pełną szerokość, a dni i opis są obok siebie', async ({ page }) => {

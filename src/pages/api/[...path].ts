@@ -47,11 +47,26 @@ export const ALL: APIRoute = async (ctx) => {
           .regex(/^[a-f0-9]{64}$/)
           .parse(url.searchParams.get('token'));
         const [order] = await db()
-          .select({ id: t.orders.id, status: t.orders.status, total: t.orders.total })
+          .select({
+            id: t.orders.id,
+            status: t.orders.status,
+            total: t.orders.total,
+            email: t.orders.email,
+            shipping: t.orders.shipping,
+            shippingMethod: t.orders.shippingMethod,
+          })
           .from(t.orders)
           .where(eq(t.orders.accessHash, hash(access)));
         if (!order) throw new HttpError(404, 'Nie znaleziono zamówienia.');
-        return json(order);
+        const items = await db()
+          .select({
+            name: t.orderItems.name,
+            quantity: t.orderItems.quantity,
+            unitPrice: t.orderItems.unitPrice,
+          })
+          .from(t.orderItems)
+          .where(eq(t.orderItems.orderId, order.id));
+        return json({ ...order, items });
       }
       if (path === 'download') {
         const access = z
