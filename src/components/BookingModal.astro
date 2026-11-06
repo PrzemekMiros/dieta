@@ -65,30 +65,36 @@ const dayNames = settings.days
             </p>
           </div>
           <section class="time-section" data-time-section hidden aria-labelledby="time-title">
-            <h3 id="time-title"><span class="booking-step-number">1</span> Wybierz godzinę</h3>
+            <h3 id="time-title">
+              <span class="booking-step-number">1</span> Wybierz godzinę
+            </h3>
             <p class="selected-day" data-selected-day></p>
             <div class="time-options" data-time-options></div>
-            <p class="booking-feedback" data-booking-feedback role="status" aria-live="polite"></p>
+            <p class="booking-feedback" data-time-feedback role="status" aria-live="polite"></p>
           </section>
 
           <form class="booking-form" data-booking-form hidden>
-            <h3><span class="booking-step-number">2</span> Twoje dane</h3>
+            <h3>
+              <span class="booking-step-number">2</span> Twoje dane
+            </h3>
             <p class="booking-summary" data-booking-summary></p>
-            <label class="field">
-              Imię
-              <input name="name" required maxlength="80" autocomplete="name" />
-            </label>
-            <label class="field">
-              Adres e-mail
-              <input
-                name="email"
-                type="email"
-                required
-                maxlength="254"
-                autocomplete="email"
-                placeholder="twoj@email.pl"
-              />
-            </label>
+            <div class="booking-fields-grid">
+              <label class="field">
+                Imię
+                <input name="name" required maxlength="80" autocomplete="name" />
+              </label>
+              <label class="field">
+                Adres e-mail
+                <input
+                  name="email"
+                  type="email"
+                  required
+                  maxlength="254"
+                  autocomplete="email"
+                  placeholder="twoj@email.pl"
+                />
+              </label>
+            </div>
             <label class="field booking-consent">
               <input name="privacyAccepted" type="checkbox" required />
               <span>
@@ -102,6 +108,7 @@ const dayNames = settings.days
             <button class="btn" type="submit" data-booking-submit>
               Zarezerwuj termin <span aria-hidden="true">↗</span>
             </button>
+            <p class="booking-feedback" data-booking-feedback role="status" aria-live="polite"></p>
           </form>
 
           <div class="booking-result" data-booking-result role="status" tabindex="-1" hidden>
@@ -362,6 +369,19 @@ const dayNames = settings.days
   .booking-form .field {
     margin-bottom: 14px;
   }
+  .booking-fields-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .booking-fields-grid .field {
+    min-width: 0;
+  }
+  .booking-consent,
+  .booking-form > .btn,
+  .booking-form > .booking-feedback {
+    grid-column: 1 / -1;
+  }
   .booking-form .booking-consent {
     display: flex;
     align-items: flex-start;
@@ -434,6 +454,10 @@ const dayNames = settings.days
     .time-options {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+    .booking-fields-grid {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
   }
 </style>
 
@@ -448,6 +472,7 @@ const dayNames = settings.days
   const bookingSummary = dialog?.querySelector<HTMLElement>('[data-booking-summary]');
   const bookingResult = dialog?.querySelector<HTMLElement>('[data-booking-result]');
   const bookingResultMessage = dialog?.querySelector<HTMLElement>('[data-booking-result-message]');
+  const timeFeedback = dialog?.querySelector<HTMLElement>('[data-time-feedback]');
   const bookingFeedback = dialog?.querySelector<HTMLElement>('[data-booking-feedback]');
   const submitButton = dialog?.querySelector<HTMLButtonElement>('[data-booking-submit]');
   const bookingConfig = JSON.parse(dialog?.dataset.bookingConfig || '{}') as {
@@ -536,13 +561,13 @@ const dayNames = settings.days
   }
 
   async function loadTimes(dateKey: string) {
-    if (!timeSection || !timeOptions || !selectedDay || !bookingFeedback) return;
+    if (!timeSection || !timeOptions || !selectedDay || !timeFeedback) return;
     const requestId = ++availabilityRequest;
     selectedDay.textContent = formatDate(dateFromKey(dateKey));
     timeSection.hidden = false;
     timeOptions.replaceChildren();
-    bookingFeedback.textContent = 'Sprawdzam dostępne godziny…';
-    bookingFeedback.setAttribute('role', 'status');
+    timeFeedback.textContent = 'Sprawdzam dostępne godziny…';
+    timeFeedback.setAttribute('role', 'status');
     try {
       const response = await fetch(`/api/booking/availability?date=${encodeURIComponent(dateKey)}`);
       const result = (await response.json()) as { times?: unknown; error?: string };
@@ -560,14 +585,12 @@ const dayNames = settings.days
         button.textContent = time;
         timeOptions.append(button);
       });
-      bookingFeedback.textContent = result.times.length
-        ? ''
-        : 'Brak wolnych godzin w wybranym dniu.';
+      timeFeedback.textContent = result.times.length ? '' : 'Brak wolnych godzin w wybranym dniu.';
     } catch (error) {
       if (requestId !== availabilityRequest || dateKey !== chosenDateKey) return;
-      bookingFeedback.textContent =
+      timeFeedback.textContent =
         error instanceof Error ? error.message : 'Nie udało się sprawdzić dostępności.';
-      bookingFeedback.setAttribute('role', 'alert');
+      timeFeedback.setAttribute('role', 'alert');
     }
   }
 
@@ -581,6 +604,7 @@ const dayNames = settings.days
     if (timeSection) timeSection.hidden = true;
     if (bookingForm) bookingForm.hidden = true;
     if (bookingResult) bookingResult.hidden = true;
+    if (timeFeedback) timeFeedback.textContent = '';
     if (bookingFeedback) bookingFeedback.textContent = '';
     if (submitButton) submitButton.disabled = false;
     renderCalendar();
@@ -639,6 +663,7 @@ const dayNames = settings.days
         bookingSummary.textContent = `${formatDate(chosenDate)} o ${chosenTime} · konsultacja online, ${bookingConfig.durationMinutes} minut`;
         bookingFeedback.textContent = '';
       }
+      if (timeSection) timeSection.hidden = true;
       if (bookingForm) bookingForm.hidden = false;
       if (bookingResult) bookingResult.hidden = true;
       return;

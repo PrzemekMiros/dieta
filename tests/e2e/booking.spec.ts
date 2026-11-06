@@ -27,7 +27,9 @@ test('kalendarz konsultacji otwiera się jako pełnoekranowy podgląd', async ({
   await expect(dialog.locator('[data-time]:not(:disabled)')).toHaveCount(1);
   await dialog.locator('[data-time]:not(:disabled)').first().click();
   await expect(dialog.locator('[data-booking-form]')).toBeVisible();
+  await expect(dialog.locator('[data-time-section]')).toBeHidden();
   await expect(dialog.locator('[data-booking-form] h3')).toContainText('2');
+  await expect(dialog.locator('[data-booking-summary]')).toContainText('o 09:00');
   await expect(dialog.locator('[data-booking-summary]')).toContainText(
     'konsultacja online, 60 minut',
   );
@@ -47,6 +49,33 @@ test('kalendarz konsultacji otwiera się jako pełnoekranowy podgląd', async ({
   await expect(page).toHaveURL('/');
   await dialog.getByRole('button', { name: 'Zamknij kalendarz' }).click();
   await expect(dialog).toBeHidden();
+});
+
+test('po wybraniu godziny krok wyboru zastępują dane w dwóch równych kolumnach', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/');
+  await page.route('**/api/booking/availability?date=*', async (route) => {
+    const date = new URL(route.request().url()).searchParams.get('date');
+    await route.fulfill({ json: { date, times: ['15:00'] } });
+  });
+  await page.locator('.site-header [data-booking-open]').click();
+
+  const dialog = page.locator('.booking-dialog');
+  await dialog.locator('[data-date]:not(:disabled)').first().click();
+  await dialog.locator('[data-time]:not(:disabled)').first().click();
+
+  await expect(dialog.locator('[data-time-section]')).toBeHidden();
+  await expect(dialog.locator('[data-booking-form]')).toBeVisible();
+  await expect(dialog.locator('[data-booking-summary]')).toContainText('15:00');
+  const fields = dialog.locator('.booking-fields-grid > .field');
+  const boxes = await fields.evaluateAll((elements) =>
+    elements.map((element) => element.getBoundingClientRect()),
+  );
+  expect(boxes).toHaveLength(2);
+  expect(Math.abs(boxes[0]!.width - boxes[1]!.width)).toBeLessThan(2);
+  expect(Math.abs(boxes[0]!.y - boxes[1]!.y)).toBeLessThan(2);
 });
 
 test('przycisk konsultacji w sekcji opinii otwiera kalendarz', async ({ page }) => {
