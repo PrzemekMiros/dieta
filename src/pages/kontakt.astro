@@ -28,12 +28,22 @@ const s = await settings();
           {s.email} ↗
         </a>
       ) : (
-        <p class="notice">Dane kontaktowe pojawią się tutaj po ustaleniu terminu konsultacji.</p>
+        <div class="mt-6">
+          <p class="text-xs muted">Przykładowy adres e-mail</p>
+          <a class="text-link" href="mailto:kontakt@example.com">
+            kontakt@example.com ↗
+          </a>
+        </div>
       )}
-      {s.phone && (
+      {s.phone ? (
         <p class="mt-4">
           <a href={`tel:${s.phone}`}>{s.phone}</a>
         </p>
+      ) : (
+        <div class="mt-4">
+          <p class="text-xs muted">Przykładowy numer telefonu</p>
+          <p>+48 000 000 000</p>
+        </div>
       )}
       {s.companyName && <p class="mt-8">{s.companyName}</p>}
       {s.address && <p>{s.address}</p>}

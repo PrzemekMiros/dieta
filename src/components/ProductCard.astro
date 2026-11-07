@@ -77,7 +77,7 @@ const demoImage = p.demo ? demoImages[p.image] : undefined;
     display: grid;
     place-items: center;
     aspect-ratio: 4/4.5;
-    background: #e8e1da;
+    background: var(--color-surface-product);
     border-radius: 190px 190px 8px 8px;
     overflow: hidden;
   }
@@ -95,7 +95,7 @@ const demoImage = p.demo ? demoImages[p.image] : undefined;
     left: 16px;
     padding: 5px 12px;
     border-radius: 30px;
-    background: #f7f6f4e8;
+    background: var(--color-surface-badge);
     font-size: 10px;
   }
   .product-card h3 {
@@ -112,9 +112,9 @@ const demoImage = p.demo ? demoImages[p.image] : undefined;
     padding: 22px 18px 12px;
     display: flex;
     flex-direction: column;
-    background: #f5eee5;
-    box-shadow: 10px 15px 25px #382b2825;
-    border-left: 6px solid #d5c6b7;
+    background: var(--color-surface-book);
+    box-shadow: 10px 15px 25px var(--color-shadow-product);
+    border-left: 6px solid var(--color-border-book);
     transform: rotate(-7deg);
     text-align: center;
   }
@@ -137,7 +137,7 @@ const demoImage = p.demo ? demoImages[p.image] : undefined;
     margin-top: 10px;
   }
   .product-card:nth-child(2n) .ebook {
-    background: #e0d4ce;
+    background: var(--color-surface-product-alt);
   }
   .product-card:nth-child(2n) .book {
     transform: rotate(5deg);

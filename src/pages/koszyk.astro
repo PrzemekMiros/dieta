@@ -35,7 +35,7 @@ import Layout from '../layouts/Layout.astro';
           <span>Dostawa</span>
           <span data-shipping></span>
         </div>
-        <div class="flex justify-between border-t border-[#d9d3cc] mt-6 pt-6 gap-4">
+        <div class="flex justify-between border-t border-border mt-6 pt-6 gap-4">
           <strong>Razem</strong>
           <strong data-total></strong>
         </div>
@@ -78,9 +78,9 @@ import Layout from '../layouts/Layout.astro';
     display: flex;
     align-items: center;
     gap: 10px;
-    border-bottom: 2px solid #d9d3cc;
+    border-bottom: 2px solid var(--color-border);
     padding-bottom: 12px;
-    color: #77716c;
+    color: var(--color-text-step);
     font-size: 13px;
   }
   .checkout-progress li[aria-current='step'] {
@@ -121,12 +121,12 @@ import Layout from '../layouts/Layout.astro';
   .cart-safe-note {
     margin-top: 20px;
     padding-top: 16px;
-    border-top: 1px solid #e1dcd6;
+    border-top: 1px solid var(--color-border-divider);
     font-size: 11px;
   }
   .cart-safe-note span {
     margin-right: 5px;
-    color: #52745c;
+    color: var(--color-success);
   }
   .cart-continue {
     margin-top: 36px;
@@ -137,7 +137,7 @@ import Layout from '../layouts/Layout.astro';
     gap: 22px;
     align-items: center;
     padding: 24px 0;
-    border-bottom: 1px solid #d9d3cc;
+    border-bottom: 1px solid var(--color-border);
   }
   .cart-row img {
     border-radius: 8px;
@@ -150,7 +150,7 @@ import Layout from '../layouts/Layout.astro';
     gap: 10px;
   }
   .cart-quantity-label {
-    color: #746c65;
+    color: var(--color-text-cart);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.06em;
@@ -161,9 +161,9 @@ import Layout from '../layouts/Layout.astro';
     align-items: center;
     gap: 4px;
     padding: 3px;
-    border: 1px solid #d9d3cc;
+    border: 1px solid var(--color-border);
     border-radius: 10px;
-    background: #fffdfa;
+    background: var(--color-surface-raised);
   }
   .cart-row .cart-quantity-button {
     display: grid;
@@ -173,7 +173,7 @@ import Layout from '../layouts/Layout.astro';
     place-items: center;
     border: 0;
     border-radius: 7px;
-    background: transparent;
+    background: var(--color-transparent);
     color: var(--color-ink);
     font-size: 20px;
     line-height: 1;
@@ -182,7 +182,7 @@ import Layout from '../layouts/Layout.astro';
       color 160ms ease;
   }
   .cart-row .cart-quantity-button:hover:not(:disabled) {
-    background: #f0ece7;
+    background: var(--color-surface-hover);
     color: var(--color-action);
   }
   .cart-row .cart-quantity-button:focus-visible {
@@ -190,8 +190,8 @@ import Layout from '../layouts/Layout.astro';
     outline-offset: 1px;
   }
   .cart-row .cart-quantity-button:disabled {
-    background: #f0ece7;
-    color: #746c65;
+    background: var(--color-surface-hover);
+    color: var(--color-text-cart);
     cursor: not-allowed;
     opacity: 1;
   }
@@ -201,7 +201,7 @@ import Layout from '../layouts/Layout.astro';
     padding: 4px 0 !important;
     border: 0;
     border-radius: 4px;
-    background: transparent;
+    background: var(--color-transparent);
     color: var(--color-ink);
     font-size: 15px;
     font-variant-numeric: tabular-nums;
@@ -211,10 +211,10 @@ import Layout from '../layouts/Layout.astro';
   }
   .cart-row .cart-quantity-input:focus-visible {
     outline: none;
-    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--color-action) 55%, transparent);
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--color-action) 55%, var(--color-transparent));
   }
   .cart-row .cart-quantity-label {
-    color: #746c65;
+    color: var(--color-text-cart);
     white-space: nowrap;
   }
   .cart-row > div > a {
@@ -232,22 +232,22 @@ import Layout from '../layouts/Layout.astro';
     font-weight: 600;
   }
   .cart-row > button {
-    color: #6b625e;
+    color: var(--color-text-summary);
     font-size: 12px;
   }
   .cart-empty {
     max-width: 600px;
     padding: clamp(28px, 5vw, 52px);
-    border: 1px solid #e0d9d1;
+    border: 1px solid var(--color-border-summary);
     border-radius: var(--radius);
-    background: #fffdfa;
+    background: var(--color-surface-raised);
   }
   .cart-empty h2 {
     font-size: 32px;
   }
   .cart-empty p {
     margin-block: 12px 24px;
-    color: #646464;
+    color: var(--color-muted);
     font-size: 14px;
   }
   @media (max-width: 900px) {

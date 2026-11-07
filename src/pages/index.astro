@@ -33,7 +33,7 @@ const featured = home.featuredProducts?.length
       </h1>
       <p class="hero-description" data-reveal>
         {home.heroDescription ||
-          'Pomagam kobietom i rodzinom wprowadzać zdrowe nawyki, które naprawdę da się utrzymać. Tworzę plan żywieniowy dopasowany do Twojego stylu życia, potrzeb i codziennych obowiązków — bez głodu, bez stresu i bez wyrzutów.'}
+          'Wspieram dorosłych, dzieci i rodziców oraz kobiety w ciąży. Łączę wiedzę akademicką z życiowym podejściem, tworząc zalecenia dopasowane do Twoich potrzeb. Wierzę, że to dieta ma pasować do Ciebie i Twojego życia, a nie na odwrót.'}
       </p>
       <div class="flex flex-wrap gap-3 mt-8" data-reveal>
         {(home.primaryHref || '/kontakt').startsWith('/kontakt') ? (
@@ -80,7 +80,7 @@ const featured = home.featuredProducts?.length
       <div class="hero-circle" data-parallax></div>
       <img
         class="hero-photo"
-        src="/images/Natalia.png"
+        src="/images/IMG_5522.png"
         alt="Natalia, dietetyczka"
         width="1400"
         height="2000"
@@ -130,7 +130,7 @@ const featured = home.featuredProducts?.length
   .hero-description {
     max-width: 490px;
     font-size: 14px;
-    color: #646464;
+    color: var(--color-muted);
     margin-top: 26px;
   }
   .hero-visual {
@@ -152,7 +152,7 @@ const featured = home.featuredProducts?.length
     top: -85px;
     right: -24px;
     border-radius: 50%;
-    background: #deddd0;
+    background: var(--color-surface-hero);
   }
   .vertical-note {
     position: absolute;
@@ -165,7 +165,7 @@ const featured = home.featuredProducts?.length
   .hero-details {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    border-top: 1px solid #ded9d2;
+    border-top: 1px solid var(--color-border-hero);
     margin-top: 48px;
     padding-top: 24px;
     gap: 20px;
@@ -174,18 +174,18 @@ const featured = home.featuredProducts?.length
   .hero-details span {
     font-family: var(--font-serif);
     font-style: italic;
-    color: #9c8d73;
+    color: var(--color-text-stat);
     font-size: 34px;
   }
   .hero-details p {
     font-size: 13px;
-    color: #68625b;
+    color: var(--color-text-caption);
     margin-top: 6px;
     line-height: 1.5;
   }
   .brand-strip {
     background: var(--color-ink);
-    color: #e8e3dc;
+    color: var(--color-text-inverse);
     padding: 20px 0;
     font-size: 11px;
   }
@@ -196,7 +196,7 @@ const featured = home.featuredProducts?.length
     gap: 20px;
   }
   .brand-strip b {
-    color: #cb968b;
+    color: var(--color-accent-banner);
   }
   .hero-visual {
     isolation: isolate;

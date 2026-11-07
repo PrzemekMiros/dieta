@@ -114,7 +114,7 @@ import Layout from '../../layouts/Layout.astro';
       <aside class="card checkout-summary" aria-busy="true">
         <p class="eyebrow">Podsumowanie</p>
         <h2 class="!text-3xl mb-12">Twoje zamówienie</h2>
-        <div class="my-6 border-b border-[#d9d3cc]"></div>
+        <div class="my-6 border-b border-border"></div>
         <div data-checkout-lines aria-live="polite">
           Przeliczamy koszyk…
         </div>
@@ -126,7 +126,7 @@ import Layout from '../../layouts/Layout.astro';
           <span>Dostawa</span>
           <span data-checkout-shipping></span>
         </div>
-        <div class="flex justify-between border-t border-[#d9d3cc] pt-6 mt-6">
+        <div class="flex justify-between border-t border-border pt-6 mt-6">
           <strong>Razem brutto</strong>
           <strong data-checkout-total></strong>
         </div>
@@ -197,9 +197,9 @@ import Layout from '../../layouts/Layout.astro';
     display: flex;
     align-items: center;
     gap: 10px;
-    border-bottom: 2px solid #d9d3cc;
+    border-bottom: 2px solid var(--color-border);
     padding-bottom: 12px;
-    color: #77716c;
+    color: var(--color-text-step);
     font-size: 13px;
   }
   .checkout-progress li[aria-current='step'] {
@@ -240,7 +240,7 @@ import Layout from '../../layouts/Layout.astro';
     margin: 0;
     padding: 0 0 28px;
     border: 0;
-    border-bottom: 1px solid #e1dcd6;
+    border-bottom: 1px solid var(--color-border-divider);
   }
   .checkout-section + .checkout-section {
     margin-top: 28px;
@@ -262,7 +262,7 @@ import Layout from '../../layouts/Layout.astro';
   .checkout-section-heading p,
   .checkout-section-description {
     margin-top: 7px;
-    color: #6c665f;
+    color: var(--color-text-warm);
     font-size: 12px;
   }
   .checkout-shipping {
@@ -310,24 +310,24 @@ import Layout from '../../layouts/Layout.astro';
   }
   .checkout-security {
     margin-top: 16px;
-    color: #5c665d;
+    color: var(--color-text-delivery);
     font-size: 11px;
     text-align: center;
   }
   .checkout-security span {
     margin-right: 4px;
-    color: #52745c;
+    color: var(--color-success);
   }
   .checkout-message:not(:empty) {
     padding: 12px 14px;
     border-radius: 6px;
-    background: #f7e9e6;
-    color: #842d2d;
+    background: var(--color-surface-error);
+    color: var(--color-text-error);
   }
   .checkout-back-link {
     display: block;
     margin-top: 18px;
-    color: #6c665f;
+    color: var(--color-text-warm);
     font-size: 12px;
     text-align: center;
   }

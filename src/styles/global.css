@@ -1,14 +1,100 @@
 ﻿@import 'tailwindcss';
 @import '@fontsource-variable/cormorant-garamond';
 @import '@fontsource-variable/dm-sans';
-@theme {
+@theme static {
   --font-sans: 'DM Sans Variable', sans-serif;
   --font-serif: 'Cormorant Garamond Variable', Georgia, serif;
+
+  /* Podstawowa paleta */
   --color-paper: #f7f6f4;
   --color-beige: #e5ded7;
   --color-ink: #2d2f30;
   --color-rose: #b66e67;
   --color-action: #92514b;
+  --color-white: #fff;
+  --color-transparent: transparent;
+  /* Tekst i akcje */
+  --color-muted: #646464;
+  --color-eyebrow: #796e57;
+  --color-section-eyebrow: #847761;
+  --color-action-hover: #79403b;
+  --color-ink-hover: #454748;
+  --color-selection: #dfc4bc;
+  --color-text-warm: #6c665f;
+  --color-text-step: #77716c;
+  --color-text-cart: #746c65;
+  --color-text-summary: #6b625e;
+  --color-text-detail: #625c56;
+  --color-text-subtle: #807970;
+  /* Powierzchnie i obramowania */
+  --color-border: #d9d3cc;
+  --color-border-strong: #a9a39c;
+  --color-border-link: #b3a9a1;
+  --color-border-input: #b9b3ad;
+  --color-border-divider: #e1dcd6;
+  --color-border-summary: #e0d9d1;
+  --color-border-feature: #c7bdb3;
+  --color-border-tab: #c8c0b8;
+  --color-border-list: #cfc8c0;
+  --color-surface-notice: #eee5df;
+  --color-surface-raised: #fffdfa;
+  --color-surface-hover: #f0ece7;
+  --color-surface-code: #f7f5f2;
+  --color-surface-nav: #e8e2dc;
+  /* Strona g??wna i karty produkt?w */
+  --color-surface-product: #e8e1da;
+  --color-surface-book: #f5eee5;
+  --color-border-book: #d5c6b7;
+  --color-surface-product-alt: #e0d4ce;
+  --color-surface-hero: #deddd0;
+  --color-border-hero: #ded9d2;
+  --color-text-stat: #9c8d73;
+  --color-text-caption: #68625b;
+  --color-text-inverse: #e8e3dc;
+  --color-accent-banner: #cb968b;
+  --color-accent-inverse: #d8afa7;
+  --color-eyebrow-inverse: #cfbba0;
+  --color-accent-quote: #ce9389;
+  --color-muted-inverse: #d0ceca;
+  /* Komunikaty i statusy */
+  --color-error: #952c2c;
+  --color-success: #52745c;
+  --color-text-delivery: #5c665d;
+  --color-surface-error: #f7e9e6;
+  --color-text-error: #842d2d;
+  --color-border-success: #c9d8ca;
+  --color-surface-success: #edf3ed;
+  --color-text-success: #42644b;
+  --color-border-warning: #e8d9b8;
+  --color-surface-warning: #fbf5e9;
+  --color-text-warning: #725a2d;
+  --color-border-danger: #e8caca;
+  --color-surface-danger: #fbefef;
+  --color-text-danger: #874747;
+  /* Okno rezerwacji */
+  --color-booking-text: #f4f1ed;
+  --color-booking-background: #171717;
+  --color-booking-accent: #c98172;
+  --color-booking-surface: #303030;
+  --color-booking-accent-soft: #e8c1b8;
+  --color-booking-border: #3e3e3e;
+  --color-booking-field: #242424;
+  --color-booking-border-input: #555;
+  --color-booking-selected: #38302e;
+  --color-booking-divider: #414141;
+  --color-booking-muted: #c4c0bc;
+  --color-booking-disabled: #747474;
+  --color-booking-secondary: #bcb8b4;
+  --color-booking-link: #e8a295;
+  --color-booking-placeholder: #aaa39d;
+  --color-booking-border-hover: #777;
+  /* Przezroczysto?ci i cienie */
+  --color-surface-badge: #f7f6f4e8;
+  --color-shadow-product: #382b2825;
+  --color-shadow-card: #32282013;
+  --color-border-header: #d9d3cc80;
+  --color-shadow-header: #0000000a;
+  --color-shadow-toast: #0002;
 }
 :root {
   --section-space: clamp(2rem, 4vw, 4rem);
@@ -70,7 +156,7 @@ a,
 input,
 select,
 textarea {
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: var(--color-transparent);
 }
 button {
   cursor: pointer;
@@ -89,7 +175,7 @@ img {
   outline-offset: 5px;
 }
 ::selection {
-  background: #dfc4bc;
+  background: var(--color-selection);
 }
 .container {
   width: min(1240px, calc(100% - 64px));
@@ -103,11 +189,11 @@ img {
   font-weight: 600;
   letter-spacing: 0.19em;
   text-transform: uppercase;
-  color: #796e57;
+  color: var(--color-eyebrow);
   margin-bottom: 20px;
 }
 .muted {
-  color: #646464;
+  color: var(--color-muted);
 }
 .intro {
   max-width: 540px;
@@ -121,24 +207,24 @@ img {
   justify-content: center;
   align-items: center;
   gap: 24px;
-  border: 1px solid transparent;
+  border: 1px solid var(--color-transparent);
   border-radius: 999px;
   padding: 13px 24px;
   font-size: 13px;
   font-weight: 500;
   background: var(--color-action);
-  color: white;
+  color: var(--color-white);
   transition:
     background 0.2s,
     transform 0.2s;
 }
 .btn:hover {
-  background: #79403b;
+  background: var(--color-action-hover);
   transform: translateY(-2px);
 }
 .btn-outline {
-  border-color: #a9a39c;
-  background: transparent;
+  border-color: var(--color-border-strong);
+  background: var(--color-transparent);
   color: var(--color-ink);
 }
 .btn-outline:hover {
@@ -148,12 +234,12 @@ img {
   background: var(--color-ink);
 }
 .btn-dark:hover {
-  background: #454748;
+  background: var(--color-ink-hover);
 }
 .text-link {
   display: inline-flex;
   gap: 24px;
-  border-bottom: 1px solid #b3a9a1;
+  border-bottom: 1px solid var(--color-border-link);
   padding-bottom: 6px;
   font-size: 13px;
 }
@@ -170,7 +256,7 @@ img {
   margin-bottom: 48px;
 }
 .card {
-  border: 1px solid #d9d3cc;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: 32px;
 }
@@ -186,9 +272,9 @@ select {
   width: 100%;
   min-width: 0;
   padding: 13px 15px;
-  border: 1px solid #b9b3ad;
+  border: 1px solid var(--color-border-input);
   border-radius: 5px;
-  background: #fff;
+  background: var(--color-white);
   color: var(--color-ink);
 }
 input[type='checkbox'] {
@@ -210,12 +296,12 @@ input[type='checkbox'] {
 .notice {
   padding: 16px 20px;
   border-left: 3px solid var(--color-action);
-  background: #eee5df;
+  background: var(--color-surface-notice);
   margin-block: 20px;
   font-size: 14px;
 }
 .error {
-  color: #952c2c;
+  color: var(--color-error);
 }
 [hidden] {
   display: none !important;
@@ -239,7 +325,7 @@ input[type='checkbox'] {
   top: 8px;
   left: 8px;
   padding: 12px;
-  background: white;
+  background: var(--color-white);
   transform: translateY(-150%);
 }
 .skip:focus {
@@ -257,7 +343,7 @@ th,
 td {
   padding: 14px;
   text-align: left;
-  border-bottom: 1px solid #d9d3cc;
+  border-bottom: 1px solid var(--color-border);
 }
 th {
   font-weight: 600;

@@ -86,10 +86,10 @@ import Layout from '../../layouts/Layout.astro';
     height: 64px;
     margin: 0 auto 22px;
     place-items: center;
-    border: 1px solid #c9d8ca;
+    border: 1px solid var(--color-border-success);
     border-radius: 50%;
-    background: #edf3ed;
-    color: #42644b;
+    background: var(--color-surface-success);
+    color: var(--color-text-success);
   }
   .order-icon svg {
     width: 30px;
@@ -110,23 +110,23 @@ import Layout from '../../layouts/Layout.astro';
     display: inline-flex;
     margin-top: 20px;
     padding: 7px 12px;
-    border: 1px solid #e8d9b8;
+    border: 1px solid var(--color-border-warning);
     border-radius: 999px;
-    background: #fbf5e9;
-    color: #725a2d;
+    background: var(--color-surface-warning);
+    color: var(--color-text-warning);
     font-size: 12px;
     font-weight: 600;
   }
   .order-status[data-status='paid'] {
-    border-color: #c9d8ca;
-    background: #edf3ed;
-    color: #42644b;
+    border-color: var(--color-border-success);
+    background: var(--color-surface-success);
+    color: var(--color-text-success);
   }
   .order-status[data-status='cancelled'],
   .order-status[data-status='payment_review'] {
-    border-color: #e8caca;
-    background: #fbefef;
-    color: #874747;
+    border-color: var(--color-border-danger);
+    background: var(--color-surface-danger);
+    color: var(--color-text-danger);
   }
   .order-summary {
     padding: clamp(22px, 5vw, 40px);
@@ -137,14 +137,14 @@ import Layout from '../../layouts/Layout.astro';
     justify-content: space-between;
     gap: 20px;
     padding-bottom: 22px;
-    border-bottom: 1px solid #e1dcd6;
+    border-bottom: 1px solid var(--color-border-divider);
   }
   .order-summary-heading h2 {
     margin-top: 5px;
     font-size: 30px;
   }
   .order-number {
-    color: #6c665f;
+    color: var(--color-text-warm);
     font-size: 12px;
     overflow-wrap: anywhere;
   }
@@ -170,19 +170,19 @@ import Layout from '../../layouts/Layout.astro';
   }
   .order-totals {
     padding-top: 8px;
-    border-top: 1px solid #e1dcd6;
+    border-top: 1px solid var(--color-border-divider);
   }
   .order-totals dt {
-    color: #625c56;
+    color: var(--color-text-detail);
   }
   #shipping-method {
-    color: #807970;
+    color: var(--color-text-subtle);
     font-size: 12px;
   }
   .order-grand-total {
     margin-top: 6px;
     padding-top: 18px !important;
-    border-top: 1px solid #e1dcd6;
+    border-top: 1px solid var(--color-border-divider);
     font-size: 17px !important;
   }
   .order-grand-total dt,
@@ -197,7 +197,7 @@ import Layout from '../../layouts/Layout.astro';
     margin-top: 20px;
     padding: 17px;
     border-radius: 10px;
-    background: #f7f5f2;
+    background: var(--color-surface-code);
     font-size: 13px;
     line-height: 1.6;
   }

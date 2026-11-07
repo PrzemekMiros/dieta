@@ -37,30 +37,51 @@ const productImages = [
   '/images/IMG_7254.png',
   '/images/IMG_5522.png',
 ];
-export const demoProducts: Product[] = names.map((name, i) => ({
-  _id: `demo-${i + 1}`,
-  name,
-  slug: slugs[i]!,
-  sku: `DD-DEMO-${i + 1}`,
+export const demoProducts: Product[] = names
+  .map<Product>((name, i) => ({
+    _id: `demo-${i + 1}`,
+    name,
+    slug: slugs[i]!,
+    sku: `DD-DEMO-${i + 1}`,
+    description:
+      'Przykładowa pozycja demonstracyjna. Możesz ją łatwo zastąpić rzeczywistymi ebookami lub produktami piekarniczymi w Sanity.',
+    shortDescription:
+      i < 3
+        ? [
+            'Prosty plan, który pomaga lepiej jeść bez reżimu i wyrzutów.',
+            'Gotowy program na spokojną, trwałą zmianę nawyków.',
+            'Zdrowy wybór na co dzień — smaczny, sycący i prosty w przygotowaniu.',
+          ][i]!
+        : 'Smaczne i pożywne pieczywo wspierające codzienną dietę.',
+    image: productImages[i % productImages.length]!,
+    price: [8900, 6900, 5900, 2900, 7900, 4900, 1900, 1200, 2400, 5900, 14900, 11900, 9900][i]!,
+    productType: i < 3 ? 'digital' : 'physical',
+    featured: [0, 1, 3, 12].includes(i),
+    active: true,
+    stock: i < 3 ? 999 : 10,
+    taxRate: i < 3 ? 5 : 23,
+    demo: true,
+  }))
+  .filter((product) => product.slug !== 'zdrowe-pieczywo-na-co-dzien');
+demoProducts.push({
+  _id: 'demo-14',
+  name: 'Spersonalizowana Paczka Przepisów',
+  slug: 'spersonalizowana-paczka-przepisow',
+  sku: 'DD-DEMO-14',
   description:
-    'Przykładowa pozycja demonstracyjna. Możesz ją łatwo zastąpić rzeczywistymi ebookami lub produktami piekarniczymi w Sanity.',
-  shortDescription:
-    i < 3
-      ? [
-          'Prosty plan, który pomaga lepiej jeść bez reżimu i wyrzutów.',
-          'Gotowy program na spokojną, trwałą zmianę nawyków.',
-          'Zdrowy wybór na co dzień — smaczny, sycący i prosty w przygotowaniu.',
-        ][i]!
-      : 'Smaczne i pożywne pieczywo wspierające codzienną dietę.',
-  image: productImages[i % productImages.length]!,
-  price: [8900, 6900, 5900, 2900, 7900, 4900, 1900, 1200, 2400, 5900, 14900, 11900, 9900][i]!,
-  productType: i < 3 ? 'digital' : 'physical',
-  featured: [0, 1, 3, 12].includes(i),
+    'Spersonalizowana paczka przepisów w formie ebooka — indywidualny plan posiłków na 14 dni, dopasowany do Twoich potrzeb i preferencji żywieniowych.',
+  shortDescription: 'Indywidualny 14-dniowy plan posiłków.',
+  image: '/images/IMG_7495.png',
+  price: 9900,
+  productType: 'digital',
+  category: 'Ebook · PDF',
+  featured: true,
   active: true,
-  stock: i < 3 ? 999 : 10,
-  taxRate: i < 3 ? 5 : 23,
+  stock: 999,
+  taxRate: 5,
   demo: true,
-}));
+});
+
 export const demoPosts: Post[] = [
   {
     title: 'Dobry tort zaczyna się od planu',

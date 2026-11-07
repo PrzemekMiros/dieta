@@ -140,11 +140,11 @@ const dayNames = settings.days
     padding: 0;
     overflow: auto;
     border: 0;
-    background: #f4f1ed;
-    color: #f4f1ed;
+    background: var(--color-booking-text);
+    color: var(--color-booking-text);
   }
   .booking-dialog::backdrop {
-    background: #171717;
+    background: var(--color-booking-background);
   }
   .booking-shell {
     width: 100%;
@@ -157,9 +157,9 @@ const dayNames = settings.days
     align-items: center;
     justify-content: center;
     gap: 10px;
-    border: 1px solid #c8c0b8;
+    border: 1px solid var(--color-border-tab);
     border-radius: 999px;
-    background: transparent;
+    background: var(--color-transparent);
     color: inherit;
   }
   .booking-content {
@@ -169,15 +169,15 @@ const dayNames = settings.days
     max-width: 420px;
     margin-top: 24px;
     padding: 14px 16px;
-    border-left: 3px solid #c98172;
-    background: #303030;
-    color: #e8e2dc;
+    border-left: 3px solid var(--color-booking-accent);
+    background: var(--color-booking-surface);
+    color: var(--color-surface-nav);
     font-size: 12px;
   }
   .booking-feedback {
     min-height: 1.2em;
     margin-top: 10px;
-    color: #e8c1b8;
+    color: var(--color-booking-accent-soft);
     font-size: 12px;
   }
   .booking-calendar {
@@ -188,9 +188,9 @@ const dayNames = settings.days
     gap: clamp(20px, 3vw, 42px);
     width: 100%;
     padding: 48px clamp(16px, 2.5vw, 30px) clamp(16px, 2.5vw, 30px);
-    border: 1px solid #3e3e3e;
+    border: 1px solid var(--color-booking-border);
     border-radius: 10px;
-    background: #242424;
+    background: var(--color-booking-field);
   }
   .booking-close {
     position: absolute;
@@ -201,14 +201,14 @@ const dayNames = settings.days
     width: 36px;
     height: 36px;
     padding: 0;
-    border: 1px solid #555;
+    border: 1px solid var(--color-booking-border-input);
     border-radius: 50%;
-    background: #242424;
-    color: #f4f1ed;
+    background: var(--color-booking-field);
+    color: var(--color-booking-text);
   }
   .booking-close:hover {
-    border-color: #c98172;
-    background: #38302e;
+    border-color: var(--color-booking-accent);
+    background: var(--color-booking-selected);
   }
   .booking-close svg {
     width: 19px;
@@ -226,7 +226,7 @@ const dayNames = settings.days
   }
   .booking-summary-card {
     padding-bottom: 18px;
-    border-bottom: 1px solid #414141;
+    border-bottom: 1px solid var(--color-booking-divider);
   }
   .booking-summary-card .eyebrow {
     margin-bottom: 12px;
@@ -237,7 +237,7 @@ const dayNames = settings.days
   }
   .booking-summary-card > p:last-child {
     margin-top: 14px;
-    color: #c4c0bc;
+    color: var(--color-booking-muted);
     font-size: 12px;
   }
   .month-heading {
@@ -263,8 +263,8 @@ const dayNames = settings.days
     font-size: 14px;
   }
   .month-controls button:hover {
-    border-color: #c98172;
-    background: #38302e;
+    border-color: var(--color-booking-accent);
+    background: var(--color-booking-selected);
   }
   .calendar-grid {
     display: grid;
@@ -274,7 +274,7 @@ const dayNames = settings.days
   }
   .calendar-grid > span {
     padding-bottom: 5px;
-    color: #c4c0bc;
+    color: var(--color-booking-muted);
     font-size: 10px;
     font-weight: 600;
   }
@@ -288,32 +288,32 @@ const dayNames = settings.days
   .calendar-day {
     display: grid;
     place-items: center;
-    border: 1px solid transparent;
+    border: 1px solid var(--color-transparent);
     border-radius: 50%;
-    background: transparent;
-    color: #f4f1ed;
+    background: var(--color-transparent);
+    color: var(--color-booking-text);
     font-size: 11px;
   }
   .calendar-day:not(:disabled):hover {
-    border-color: #c98172;
+    border-color: var(--color-booking-accent);
   }
   .calendar-day:disabled {
-    color: #747474;
+    color: var(--color-booking-disabled);
     cursor: not-allowed;
   }
   .calendar-day[aria-pressed='true'] {
-    border-color: #c98172;
-    background: #c98172;
-    color: #171717;
+    border-color: var(--color-booking-accent);
+    background: var(--color-booking-accent);
+    color: var(--color-booking-background);
     font-weight: 700;
   }
   .calendar-day.today {
-    border-color: #c98172;
+    border-color: var(--color-booking-accent);
   }
   .calendar-help,
   .selected-day {
     margin-top: 8px;
-    color: #bcb8b4;
+    color: var(--color-booking-secondary);
     font-size: 10px;
   }
   .time-section,
@@ -321,7 +321,7 @@ const dayNames = settings.days
   .booking-result {
     margin-top: 18px;
     padding-top: 15px;
-    border-top: 1px solid #414141;
+    border-top: 1px solid var(--color-booking-divider);
   }
   .time-section h3,
   .booking-form h3,
@@ -334,9 +334,9 @@ const dayNames = settings.days
     width: 25px;
     height: 25px;
     margin-right: 7px;
-    border: 1px solid #c98172;
+    border: 1px solid var(--color-booking-accent);
     border-radius: 50%;
-    color: #e8a295;
+    color: var(--color-booking-link);
     font-family: var(--font-sans);
     font-size: 12px;
     vertical-align: 3px;
@@ -349,21 +349,21 @@ const dayNames = settings.days
   }
   .time-option {
     padding: 6px 3px;
-    border: 1px solid #555;
+    border: 1px solid var(--color-booking-border-input);
     border-radius: 6px;
-    background: #303030;
-    color: #f4f1ed;
+    background: var(--color-booking-surface);
+    color: var(--color-booking-text);
     font-size: 10px;
   }
   .time-option[aria-pressed='true'] {
-    border-color: #c98172;
-    background: #c98172;
-    color: #171717;
+    border-color: var(--color-booking-accent);
+    background: var(--color-booking-accent);
+    color: var(--color-booking-background);
     font-weight: 600;
   }
   .booking-form .booking-summary {
     margin-block: 10px 20px;
-    color: #c4c0bc;
+    color: var(--color-booking-muted);
     font-size: 12px;
   }
   .booking-form .field {
@@ -386,38 +386,38 @@ const dayNames = settings.days
     display: flex;
     align-items: flex-start;
     gap: 9px;
-    color: #c4c0bc;
+    color: var(--color-booking-muted);
     font-size: 11px;
   }
   .booking-consent input {
     margin-top: 2px;
   }
   .booking-consent a {
-    color: #f4f1ed;
+    color: var(--color-booking-text);
     text-decoration: underline;
   }
   .booking-result p {
     margin-block: 12px 20px;
-    color: #c4c0bc;
+    color: var(--color-booking-muted);
     font-size: 13px;
   }
   .booking-calendar .field {
-    color: #e8e2dc;
+    color: var(--color-surface-nav);
   }
   .booking-calendar input:not([type='checkbox']) {
-    border-color: #555;
-    background: #303030;
-    color: #f4f1ed;
+    border-color: var(--color-booking-border-input);
+    background: var(--color-booking-surface);
+    color: var(--color-booking-text);
   }
   .booking-calendar input::placeholder {
-    color: #aaa39d;
+    color: var(--color-booking-placeholder);
   }
   .booking-calendar .btn-outline {
-    border-color: #777;
-    color: #f4f1ed;
+    border-color: var(--color-booking-border-hover);
+    color: var(--color-booking-text);
   }
   .booking-calendar .btn-outline:hover {
-    background: #38302e;
+    background: var(--color-booking-selected);
   }
   @media (max-width: 820px) {
     .booking-content {
