@@ -1,0 +1,32 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { entitlementFor } from '../../lib/server/digital';
+let valid = false;
+let message = '';
+try {
+  await entitlementFor(Astro.params.token!);
+  valid = true;
+} catch {
+  Astro.response.status = 410;
+  message = 'Ten link wygasł lub jest nieaktywny. Skontaktuj się z nami, aby otrzymać nowy.';
+}
+---
+
+<Layout title="Twój ebook" noindex>
+  <section class="container section">
+    <p class="eyebrow">Twoja słodka biblioteka</p>
+    <h1>{valid ? 'Coś dobrego do przeczytania.' : 'Link jest nieaktywny.'}</h1>
+    <p class="intro muted">
+      {valid ? 'Kliknij poniżej, aby pobrać plik PDF. Zachowaj go na swoim urządzeniu.' : message}
+    </p>
+    {valid ? (
+      <a href={`/api/download?token=${Astro.params.token}`} class="btn mt-8" rel="nofollow">
+        Pobierz ebook ↓
+      </a>
+    ) : (
+      <a href="/kontakt" class="btn mt-8">
+        Kontakt ze sklepem →
+      </a>
+    )}
+  </section>
+</Layout>

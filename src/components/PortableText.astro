@@ -1,0 +1,14 @@
+---
+import type { Block } from '../lib/types';
+interface Props {
+  blocks?: Block[];
+}
+const { blocks = [] } = Astro.props;
+---
+
+<div class="prose">
+  {blocks.map((block) => {
+    const Tag = block.style === 'h2' ? 'h2' : block.style === 'h3' ? 'h3' : 'p';
+    return <Tag>{block.children?.map((child) => child.text).join('')}</Tag>;
+  })}
+</div>

@@ -1,0 +1,382 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Dziękujemy za zamówienie" noindex>
+  <section class="container section order-result">
+    <div class="order-thanks">
+      <div class="order-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="m5 12.5 4.5 4L19 7" />
+        </svg>
+      </div>
+      <p class="eyebrow">Twoje zamówienie</p>
+      <h1 id="status-title">Dziękujemy za złożenie zamówienia.</h1>
+      <p class="order-description muted" id="status-description" role="status" aria-live="polite">
+        Pobieramy szczegóły zamówienia.
+      </p>
+      <span class="order-status" id="status-badge">
+        Wczytujemy status
+      </span>
+    </div>
+
+    <div class="order-summary card" aria-busy="true">
+      <div class="order-summary-heading">
+        <div>
+          <p class="eyebrow">Podsumowanie</p>
+          <h2>Twoje zamówienie</h2>
+        </div>
+        <p class="order-number" id="status-id">
+          Numer zamówienia: —
+        </p>
+      </div>
+      <div class="order-lines" id="order-lines" aria-live="polite">
+        <p class="muted">Wczytujemy produkty…</p>
+      </div>
+      <dl class="order-totals">
+        <div>
+          <dt>
+            Dostawa <span id="shipping-method"></span>
+          </dt>
+          <dd id="shipping-total">—</dd>
+        </div>
+        <div class="order-grand-total">
+          <dt>Razem brutto</dt>
+          <dd id="order-total">—</dd>
+        </div>
+      </dl>
+      <div class="order-email">
+        <span class="order-email-icon" aria-hidden="true">
+          ✉
+        </span>
+        <p>
+          Potwierdzenie i informacje o realizacji wyślemy na
+          <strong id="order-email">podany adres e-mail</strong>.
+          <span class="muted">Sprawdź też folder spam.</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="order-actions">
+      <button id="status-refresh" class="btn btn-outline">
+        Odśwież status zamówienia
+      </button>
+      <a href="/sklep" class="text-link">
+        Wróć do sklepu →
+      </a>
+    </div>
+    <p class="order-help muted">
+      Masz pytania? Napisz do nas przez <a href="/kontakt">stronę kontaktową</a>.
+    </p>
+  </section>
+</Layout>
+
+<style is:global>
+  .order-result {
+    max-width: 860px;
+  }
+  .order-thanks {
+    max-width: 660px;
+    margin: 0 auto 36px;
+    text-align: center;
+  }
+  .order-icon {
+    display: grid;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 22px;
+    place-items: center;
+    border: 1px solid var(--color-border-success);
+    border-radius: 50%;
+    background: var(--color-surface-success);
+    color: var(--color-text-success);
+  }
+  .order-icon svg {
+    width: 30px;
+    height: 30px;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+  }
+  .order-thanks h1 {
+    margin-top: 10px;
+  }
+  .order-description {
+    max-width: 540px;
+    margin: 14px auto 0;
+  }
+  .order-status {
+    display: inline-flex;
+    margin-top: 20px;
+    padding: 7px 12px;
+    border: 1px solid var(--color-border-warning);
+    border-radius: 999px;
+    background: var(--color-surface-warning);
+    color: var(--color-text-warning);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .order-status[data-status='paid'] {
+    border-color: var(--color-border-success);
+    background: var(--color-surface-success);
+    color: var(--color-text-success);
+  }
+  .order-status[data-status='cancelled'],
+  .order-status[data-status='payment_review'] {
+    border-color: var(--color-border-danger);
+    background: var(--color-surface-danger);
+    color: var(--color-text-danger);
+  }
+  .order-summary {
+    padding: clamp(22px, 5vw, 40px);
+  }
+  .order-summary-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--color-border-divider);
+  }
+  .order-summary-heading h2 {
+    margin-top: 5px;
+    font-size: 30px;
+  }
+  .order-number {
+    color: var(--color-text-warm);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+  }
+  .order-lines {
+    padding-block: 8px;
+  }
+  .order-line,
+  .order-totals > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding-block: 12px;
+    font-size: 14px;
+  }
+  .order-line-name {
+    overflow-wrap: anywhere;
+  }
+  .order-line-price,
+  .order-totals dd {
+    flex: 0 0 auto;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+  .order-totals {
+    padding-top: 8px;
+    border-top: 1px solid var(--color-border-divider);
+  }
+  .order-totals dt {
+    color: var(--color-text-detail);
+  }
+  #shipping-method {
+    color: var(--color-text-subtle);
+    font-size: 12px;
+  }
+  .order-grand-total {
+    margin-top: 6px;
+    padding-top: 18px !important;
+    border-top: 1px solid var(--color-border-divider);
+    font-size: 17px !important;
+  }
+  .order-grand-total dt,
+  .order-grand-total dd {
+    color: var(--color-ink);
+    font-weight: 700;
+  }
+  .order-email {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    margin-top: 20px;
+    padding: 17px;
+    border-radius: 10px;
+    background: var(--color-surface-code);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .order-email-icon {
+    color: var(--color-action);
+    font-size: 18px;
+  }
+  .order-email strong {
+    overflow-wrap: anywhere;
+  }
+  .order-email .muted {
+    display: block;
+    margin-top: 2px;
+    font-size: 12px;
+  }
+  .order-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 18px 26px;
+    margin-top: 28px;
+  }
+  .order-help {
+    margin-top: 24px;
+    font-size: 12px;
+    text-align: center;
+  }
+  .order-help a {
+    color: var(--color-action);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  @media (max-width: 600px) {
+    .order-summary-heading {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .order-summary-heading h2 {
+      font-size: 26px;
+    }
+    .order-line,
+    .order-totals > div {
+      gap: 12px;
+      font-size: 13px;
+    }
+    .order-actions {
+      align-items: stretch;
+      flex-direction: column;
+    }
+    .order-actions > * {
+      text-align: center;
+    }
+  }
+</style>
+
+<script>
+  import { money } from '../../lib/types';
+
+  type OrderStatus = 'pending' | 'paid' | 'cancelled' | 'payment_review' | string;
+  type OrderResult = {
+    id: string;
+    status: OrderStatus;
+    total: number;
+    email: string;
+    shipping: number;
+    shippingMethod: string | null;
+    paymentMethod: 'p24' | 'cod';
+    items: { name: string; quantity: number; unitPrice: number }[];
+  };
+
+  const access = new URLSearchParams(location.search).get('token');
+  let polls = 0;
+  let timer: ReturnType<typeof setTimeout>;
+  const title = document.querySelector<HTMLElement>('#status-title')!;
+  const description = document.querySelector<HTMLElement>('#status-description')!;
+  const badge = document.querySelector<HTMLElement>('#status-badge')!;
+  const summary = document.querySelector<HTMLElement>('.order-summary')!;
+  const refreshButton = document.querySelector<HTMLButtonElement>('#status-refresh')!;
+
+  function showStatus(status: OrderStatus, paymentMethod: OrderResult['paymentMethod']) {
+    badge.dataset.status = status;
+    if (status === 'paid') {
+      title.textContent = 'Dziękujemy za zakup!';
+      description.textContent = 'Płatność została potwierdzona. Przygotowujemy Twoje zamówienie.';
+      badge.textContent = 'Płatność potwierdzona';
+      localStorage.removeItem('tc-cart-v1');
+      sessionStorage.removeItem('tc-attempt');
+      refreshButton.hidden = true;
+    } else if (status === 'cancelled') {
+      title.textContent = 'Zamówienie zostało anulowane.';
+      description.textContent =
+        'Jeśli płatność została pobrana, skontaktuj się z nami — sprawdzimy jej status.';
+      badge.textContent = 'Zamówienie anulowane';
+      refreshButton.hidden = true;
+    } else if (status === 'payment_review') {
+      title.textContent = 'Sprawdzamy Twoją płatność.';
+      description.textContent =
+        'Płatność wpłynęła do anulowanego zamówienia. Skontaktujemy się z Tobą w sprawie realizacji lub zwrotu.';
+      badge.textContent = 'Płatność w trakcie wyjaśniania';
+      refreshButton.hidden = true;
+    } else if (paymentMethod === 'cod') {
+      title.textContent = 'Zamówienie przyjęte.';
+      description.textContent =
+        'Zapłacisz gotówką przy odbiorze przesyłki. Zamówienie nie jest jeszcze opłacone.';
+      badge.textContent = 'Płatność przy odbiorze';
+      localStorage.removeItem('tc-cart-v1');
+      sessionStorage.removeItem('tc-attempt');
+      refreshButton.hidden = false;
+    } else {
+      title.textContent = 'Dziękujemy za złożenie zamówienia!';
+      description.textContent =
+        'Zamówienie zostało zapisane. Czekamy na potwierdzenie płatności — nie musisz składać go ponownie.';
+      badge.textContent = 'Oczekujemy na płatność';
+      refreshButton.hidden = false;
+    }
+  }
+
+  function showSummary(order: OrderResult) {
+    document.querySelector('#status-id')!.textContent = `Numer zamówienia: ${order.id}`;
+    document.querySelector('#order-email')!.textContent = order.email;
+    document.querySelector('#shipping-method')!.textContent = order.shippingMethod
+      ? `· ${order.shippingMethod}`
+      : '';
+    document.querySelector('#shipping-total')!.textContent =
+      order.shipping > 0 ? money(order.shipping) : 'Bezpłatnie';
+    document.querySelector('#order-total')!.textContent = money(order.total);
+
+    const lines = document.querySelector<HTMLElement>('#order-lines')!;
+    lines.replaceChildren();
+    for (const item of order.items) {
+      const row = document.createElement('div');
+      row.className = 'order-line';
+      const name = document.createElement('span');
+      name.className = 'order-line-name';
+      name.textContent = `${item.name} × ${item.quantity}`;
+      const price = document.createElement('span');
+      price.className = 'order-line-price';
+      price.textContent = money(item.unitPrice * item.quantity);
+      row.append(name, price);
+      lines.append(row);
+    }
+    summary.setAttribute('aria-busy', 'false');
+  }
+
+  async function check() {
+    clearTimeout(timer);
+    refreshButton.disabled = true;
+    try {
+      const response = await fetch(`/api/status?token=${encodeURIComponent(access || '')}`);
+      const result = (await response.json()) as OrderResult | { error: string };
+      if (!response.ok || !('id' in result))
+        throw new Error('Nie możemy odczytać danych zamówienia. Spróbuj ponownie.');
+      const order = result;
+      showSummary(order);
+      showStatus(order.status, order.paymentMethod);
+      if (
+        order.paymentMethod !== 'cod' &&
+        !['paid', 'cancelled', 'payment_review'].includes(order.status) &&
+        ++polls < 20
+      )
+        timer = setTimeout(check, 5000);
+    } catch (error) {
+      title.textContent = 'Nie możemy odczytać statusu zamówienia.';
+      description.textContent =
+        error instanceof Error ? error.message : 'Spróbuj ponownie za chwilę.';
+      badge.textContent = 'Nie udało się wczytać';
+      refreshButton.hidden = false;
+      summary.setAttribute('aria-busy', 'false');
+    } finally {
+      refreshButton.disabled = false;
+    }
+  }
+
+  refreshButton.addEventListener('click', () => {
+    polls = 0;
+    void check();
+  });
+  window.addEventListener('pagehide', () => clearTimeout(timer));
+  void check();
+</script>

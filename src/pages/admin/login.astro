@@ -1,0 +1,54 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Logowanie administratora" noindex>
+  <section class="section container max-w-xl">
+    <p class="eyebrow">Panel sklepu</p>
+    <h1 class="!text-5xl mb-10">Witaj ponownie.</h1>
+    <form id="login-form">
+      <label class="field">
+        E-mail
+        <input type="email" name="email" autocomplete="username" required />
+      </label>
+      <label class="field">
+        Hasło
+        <input
+          type="password"
+          name="password"
+          autocomplete="current-password"
+          required
+          maxlength="200"
+        />
+      </label>
+      <button class="btn" type="submit">
+        Zaloguj się →
+      </button>
+      <p role="alert" class="error mt-5"></p>
+    </form>
+  </section>
+</Layout>
+<script>
+  document.querySelector<HTMLFormElement>('#login-form')!.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.currentTarget as HTMLFormElement;
+    const button = form.querySelector('button')!;
+    button.disabled = true;
+    try {
+      const data = new FormData(form);
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(data)),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error);
+      location.assign('/admin');
+    } catch (e) {
+      form.querySelector('[role=alert]')!.textContent =
+        e instanceof Error ? e.message : 'Błąd połączenia.';
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>

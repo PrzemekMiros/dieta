@@ -1,0 +1,153 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { db } from '../../lib/server/db';
+import { orders, orderItems, payments, emailOutbox } from '../../lib/server/schema';
+import { and, eq, desc, ilike, or, sql, isNull } from 'drizzle-orm';
+import { money } from '../../lib/types';
+const search = Astro.url.searchParams.get('q') || '',
+  status = Astro.url.searchParams.get('status') || '';
+const page = Math.max(1, Number(Astro.url.searchParams.get('p')) || 1);
+const filter = and(
+  search
+    ? or(
+        ilike(orders.email, `%${search}%`),
+        ilike(orders.name, `%${search}%`),
+        sql`${orders.id}::text ilike ${'%' + search + '%'}`,
+      )
+    : undefined,
+  status ? eq(orders.status, status) : undefined,
+);
+const [list, stats, top, lastPayments, failedMail] = await Promise.all([
+  db()
+    .select()
+    .from(orders)
+    .where(filter)
+    .orderBy(desc(orders.createdAt))
+    .limit(30)
+    .offset((page - 1) * 30),
+  db()
+    .select({
+      count: sql<number>`count(*)::int`,
+      revenue: sql<number>`coalesce(sum(case when status='paid' then total else 0 end),0)::bigint`,
+      pending: sql<number>`count(*) filter (where status='pending')::int`,
+    })
+    .from(orders),
+  db()
+    .select({ name: orderItems.name, quantity: sql<number>`sum(${orderItems.quantity})::int` })
+    .from(orderItems)
+    .innerJoin(orders, eq(orders.id, orderItems.orderId))
+    .where(eq(orders.status, 'paid'))
+    .groupBy(orderItems.name)
+    .orderBy(sql`sum(${orderItems.quantity}) desc`)
+    .limit(5),
+  db().select().from(payments).orderBy(desc(payments.createdAt)).limit(5),
+  db()
+    .select({ count: sql<number>`count(*)::int` })
+    .from(emailOutbox)
+    .where(and(isNull(emailOutbox.sentAt), sql`${emailOutbox.attempts}>=12`)),
+]);
+---
+
+<AdminLayout title="Panel sklepu">
+  <p class="eyebrow">Tortowe Ciocho / administracja</p>
+  <h1 class="!text-5xl">Przegląd sklepu.</h1>
+  <div class="grid md:grid-cols-3 gap-5 my-10">
+    {[
+      ['Zamówienia', stats[0]?.count || 0],
+      ['Przychód brutto', money(Number(stats[0]?.revenue || 0))],
+      ['Oczekujące', stats[0]?.pending || 0],
+    ].map(([label, value]) => (
+      <div class="card">
+        <p class="text-xs muted">{label}</p>
+        <p class="text-3xl mt-3">{value}</p>
+      </div>
+    ))}
+  </div>
+  {Number(failedMail[0]?.count) > 0 && (
+    <p class="notice">
+      Wiadomości wymagające interwencji: {failedMail[0]?.count}. Sprawdź SMTP i ponów z panelu
+      zamówienia.
+    </p>
+  )}
+  <form class="flex flex-wrap gap-4 mb-6">
+    <input
+      name="q"
+      value={search}
+      placeholder="Szukaj: numer, klient, e-mail"
+      aria-label="Szukaj zamówień"
+      class="!w-auto"
+    />
+    <select name="status" aria-label="Status" class="!w-auto">
+      <option value="">Wszystkie statusy</option>
+      {['pending', 'paid', 'cancelled', 'payment_review'].map((s) => (
+        <option value={s} selected={s === status}>
+          {s}
+        </option>
+      ))}
+    </select>
+    <button class="btn btn-outline">Filtruj</button>
+  </form>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Numer / data</th>
+          <th>Klient</th>
+          <th>Status</th>
+          <th>Kwota</th>
+        </tr>
+      </thead>
+      <tbody>
+        {list.map((o) => (
+          <tr>
+            <td>
+              <a class="underline" href={`/admin/zamowienia/${o.id}`}>
+                {o.id.slice(0, 8)}
+              </a>
+              <br />
+              {o.createdAt.toLocaleDateString('pl-PL')}
+            </td>
+            <td>
+              {o.name}
+              <br />
+              {o.email}
+            </td>
+            <td>{o.status}</td>
+            <td>{money(o.total)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    {!list.length && <p class="py-8">Brak zamówień spełniających kryteria.</p>}
+  </div>
+  <div class="flex gap-6 mt-6">
+    {page > 1 && (
+      <a href={`?${new URLSearchParams({ q: search, status, p: String(page - 1) })}`}>
+        ← Poprzednia
+      </a>
+    )}
+    {list.length === 30 && (
+      <a href={`?${new URLSearchParams({ q: search, status, p: String(page + 1) })}`}>Następna →</a>
+    )}
+  </div>
+  <div class="grid md:grid-cols-2 gap-10 mt-16">
+    <div>
+      <h2 class="!text-3xl mb-6">Najpopularniejsze produkty</h2>
+      {top.map((p) => (
+        <p class="flex justify-between border-b py-3">
+          <span>{p.name}</span>
+          <span>{p.quantity} szt.</span>
+        </p>
+      ))}
+    </div>
+    <div>
+      <h2 class="!text-3xl mb-6">Ostatnie płatności</h2>
+      {lastPayments.map((p) => (
+        <p class="flex justify-between border-b py-3 text-sm">
+          <a href={`/admin/zamowienia/${p.orderId}`}>{p.orderId.slice(0, 8)}</a>
+          <span>{p.status}</span>
+        </p>
+      ))}
+    </div>
+  </div>
+</AdminLayout>

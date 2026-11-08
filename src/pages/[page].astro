@@ -1,0 +1,28 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PortableText from '../components/PortableText.astro';
+import { contentPage } from '../lib/catalog';
+const titles: Record<string, string> = {
+  regulamin: 'Regulamin',
+  'polityka-prywatnosci': 'Polityka prywatności',
+  'dostawa-i-zwroty': 'Dostawa i zwroty',
+};
+const slug = Astro.params.page!;
+if (!titles[slug]) return Astro.redirect('/404');
+const page = await contentPage(slug);
+---
+
+<Layout title={titles[slug]!}>
+  <section class="container section">
+    <p class="eyebrow">Warto wiedzieć</p>
+    <h1>{page?.title || titles[slug]}</h1>
+    {page ? (
+      <PortableText blocks={page.content} />
+    ) : (
+      <div class="notice max-w-3xl mt-10">
+        Dokument jest w przygotowaniu. Sklep nie przyjmuje jeszcze zamówień. Przed rozpoczęciem
+        sprzedaży właściciel opublikuje pełną treść i dane przedsiębiorcy.
+      </div>
+    )}
+  </section>
+</Layout>

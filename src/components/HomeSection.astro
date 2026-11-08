@@ -1,0 +1,1105 @@
+---
+import type { Section, Product, HomeContent } from '../lib/types';
+interface Props {
+  section: Section;
+  products: Product[];
+  home: HomeContent;
+}
+const { section: s, home } = Astro.props;
+const features = [
+  [
+    'Dieta bez presji',
+    'Skupiamy się na zdrowiu, a nie na zakazach. Zdrowe wybory stają się prostsze i trwalsze.',
+  ],
+  ['Plan dopasowany do Ciebie', 'Uwzględniam Twoje potrzeby, codzienność, preferencje i cele.'],
+  ['Przejrzyste zasady', 'Wiele małych zmian daje lepsze efekty niż drastyczny reżim.'],
+  [
+    'Wsparcie na co dzień',
+    'Jestem przy Tobie na każdym etapie, żebyś nie czuła się sama z wyzwaniem.',
+  ],
+];
+---
+
+{s.key === 'philosophy' && (
+  <section class="section container split" id="filozofia">
+    <div data-reveal>
+      <p class="eyebrow">{s.subtitle || 'Moja filozofia'}</p>
+      <h2>{s.title || 'Zdrowie to nie restrykcja, tylko codzienny komfort.'}</h2>
+      <div class="intro muted">
+        <p>
+          {s.body ||
+            'Nie wierzę w sztywne schematy, restrykcje czy idealne jadłospisy z podręcznika. Tworzę spersonalizowane zalecenia i daję Ci proste narzędzia do pracy nad zdrowiem na co dzień.'}
+        </p>
+        <p>
+          Elastyczność to klucz do sukcesu: to zmiana ma pasować do Ciebie i Twojego życia, a nie na
+          odwrót.
+        </p>
+      </div>
+    </div>
+    <div>
+      {features.map(([title, body], i) => (
+        <div class="feature" data-reveal>
+          <span>0{i + 1}</span>
+          <div>
+            <h3>{title}</h3>
+            <p>{body}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+)}
+{s.key === 'about' && (
+  <section class="section bg-beige" id="o-nas">
+    <div class="container split">
+      <div class="about-images" data-reveal>
+        <img
+          class="about-main"
+          src="/images/IMG_8219.png"
+          alt="Miska pożywnego śniadania z malinami i owocami"
+          width="640"
+          height="800"
+          loading="lazy"
+        />
+        <div class="about-small">
+          <img
+            src="/images/Natalia.png"
+            alt="Placuszki z owocami na zdrowe śniadanie"
+            width="280"
+            height="320"
+            loading="lazy"
+          />
+          <span>spokojnie, skutecznie, bez presji.</span>
+        </div>
+      </div>
+      <div data-reveal>
+        <p class="eyebrow">{s.subtitle || 'Poznaj mnie'}</p>
+        <h2>{s.title || 'Kim jestem'}</h2>
+        <div class="intro muted">
+          <p>
+            {s.body ||
+              'Jestem dyplomowanym dietetykiem, absolwentką Szkoły Głównej Gospodarstwa Wiejskiego w Warszawie i mamą. Prowadzę profil @dietetyka_dla_smyka, na którym pokazuję, jak budować prawidłowe nawyki żywieniowe u maluchów i nie tylko.'}
+          </p>
+          <p>
+            W mojej praktyce łączę wiedzę akademicką z życiowym podejściem. Wierzę, że to dieta ma
+            pasować do Ciebie i Twojego życia, a nie na odwrót.
+          </p>
+          <p>
+            Co mnie wyróżnia? Indywidualne spojrzenie na zdrowie oraz nieustanne poszukiwanie
+            rozwiązań skrojonych na miarę Twoich potrzeb. Priorytetem jest dla mnie osiągnięcie
+            Twoich celów, rozwiązanie problemów żywieniowych oraz zapewnienie Ci pełnego wsparcia w
+            drodze do lepszego samopoczucia.
+          </p>
+        </div>
+        <a class="text-link mt-8" href="/o-nas">
+          Dowiedz się więcej <span>↗</span>
+        </a>
+        <div class="about-note">
+          Małe zmiany.
+          <br />
+          <em>Duży efekt.</em>
+        </div>
+      </div>
+    </div>
+  </section>
+)}
+{s.key === 'categories' && (
+  <section class="section container" id="oferta">
+    <div class="section-heading" data-reveal>
+      <div>
+        <p class="eyebrow">{s.subtitle || 'W czym pomagam'}</p>
+        <h2>{s.title || 'Wybierz wsparcie, które odpowiada Twoim potrzebom.'}</h2>
+        <p class="intro muted">
+          Każdy plan powstaje z myślą o Tobie — Twoim rytmie, celach i codzienności.
+        </p>
+      </div>
+    </div>
+    <div class="category-grid">
+      {[
+        [
+          'Dorośli',
+          'Zdrowie i nawyki na co dzień',
+          'Dietoterapia w zaburzeniach zdrowotnych, zmiana nawyków żywieniowych, redukcja masy ciała, nauka bilansowania posiłków i elastyczne podejście do diety.',
+          '/kontakt',
+          'Umów konsultację',
+        ],
+        [
+          'Dzieci i rodzice',
+          'Dobre nawyki od pierwszych posiłków',
+          'Rozszerzanie diety u niemowląt, bilansowanie posiłków maluchów i wsparcie przy braku apetytu.',
+          '/kontakt',
+          'Zobacz ofertę',
+        ],
+        [
+          'Kobiety w ciąży',
+          'Wsparcie na każdym etapie ciąży',
+          'Wsparcie żywieniowe na każdym etapie ciąży, dobór celowanej suplementacji i modyfikacja diety przy ewentualnych dolegliwościach lub wyzwaniach zdrowotnych.',
+          '/kontakt',
+          'Skontaktuj się',
+        ],
+      ].map(([label, title, body, href, cta], i) => (
+        <article class:list={['card category-card', { 'dark-card': i === 2 }]} data-reveal>
+          <p class="eyebrow">{label}</p>
+          <h3>{title}</h3>
+          <p>{body}</p>
+          <div class="category-rule" />
+          <p class="text-xs">
+            {i === 0
+              ? 'Zdrowie · nawyki · elastyczność'
+              : i === 1
+                ? 'Rozszerzanie diety · posiłki · apetyt'
+                : 'Żywienie · suplementacja · wsparcie'}
+          </p>
+          <a
+            href={href}
+            class="text-link"
+            data-booking-open={href === '/kontakt' ? true : undefined}
+          >
+            {cta} <span>→</span>
+          </a>
+        </article>
+      ))}
+    </div>
+  </section>
+)}
+<!-- 
+{s.key === 'steps' && (
+  <section class="section steps">
+    <div class="container">
+      <p class="eyebrow">{s.subtitle || 'Jak wygląda współpraca i wizyta'}</p>
+      <h2 data-reveal>{s.title || 'Prosty i wspierający proces.'}</h2>
+      <div class="steps-grid">
+        {[
+          [
+            'Przed wizytą',
+            'Wypełniasz szczegółowy formularz wywiadu żywieniowo-zdrowotnego i dzienniczek żywieniowy.',
+          ],
+          [
+            'Analiza dokumentów',
+            'Przed konsultacją analizuję Twój wywiad, dzienniczek oraz wyniki badań laboratoryjnych.',
+          ],
+          [
+            'Podczas konsultacji',
+            'Całe spotkanie przeznaczamy na omówienie Twoich dotychczasowych nawyków, edukację i odpowiedź na Twoje pytania.',
+          ],
+          [
+            'Zamiast sztywnego jadłospisu',
+            'Otrzymasz spersonalizowany zestaw wskazówek, modyfikacji Twoich ulubionych posiłków, propozycji zamienników oraz indywidualnie dobraną suplementację.',
+          ],
+        ].map(([title, body], i) => (
+          <div data-reveal>
+            <span>0{i + 1}</span>
+            <h3>{title}</h3>
+            <p>{body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+-->
+{s.key === 'products' && (
+  <section class="section consultation-section" id="jak-pomagam">
+    <div class="consultation-panel">
+      <div class="consultation-visual" aria-hidden="true">
+        <div class="consultation-tablet">
+          <div class="consultation-camera" />
+          <img src="/images/Natalia.png" alt="" width="1151" height="1770" loading="lazy" />
+          <div class="consultation-screen-label">
+            <span>Twoja Dietetyczka</span>
+            <small>Blisko Ciebie. Także online.</small>
+          </div>
+          <div class="consultation-call">
+            <span>•••</span>
+            <span>♫</span>
+            <span class="consultation-hangup">⌁</span>
+          </div>
+        </div>
+        <div class="consultation-phone">
+          <div class="consultation-phone-camera" />
+          <img src="/images/IMG_5522.png" alt="" width="2200" height="2933" loading="lazy" />
+          <div class="consultation-phone-copy">
+            <small>TWÓJ RYTM. TWOJE POTRZEBY.</small>
+            <span>
+              Zdrowe wybory
+              <br />
+              <em>na co dzień.</em>
+            </span>
+          </div>
+        </div>
+        <div class="consultation-badge">
+          <strong>60</strong>
+          <span>
+            minut tylko
+            <br />
+            dla Ciebie
+          </span>
+        </div>
+      </div>
+      <div class="consultation-copy">
+        <p class="eyebrow">{s.subtitle || 'Spotkajmy się online'}</p>
+        <h2>{s.title || 'Konsultacja dietetyczna online'}</h2>
+        <p class="consultation-lead">
+          To czas poświęcony w pełni Twoim potrzebom, zdrowiu i celom żywieniowym.
+        </p>
+        <ul class="consultation-benefits">
+          <li>60 minut spokojnej rozmowy i konkretnych rozwiązań</li>
+          <li>Spersonalizowane wskazówki, zamienniki i modyfikacje ulubionych posięk?w</li>
+          <li>Spotkanie online przez Google Meet — w wygodnym dla Ciebie miejscu</li>
+        </ul>
+        <button type="button" class="btn consultation-cta" data-booking-open>
+          Umów konsultację <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </div>
+  </section>
+)}
+{s.key === 'testimonials' && (
+  <section class="section bg-beige">
+    <div class="container testimonials">
+      <p class="eyebrow">{s.subtitle || 'Opinie klientów'}</p>
+      <h2 data-reveal>{s.title || 'Dobrze jest czuć się lepiej.'}</h2>
+      {home.testimonials?.length ? (
+        <>
+          <div class="review-track" tabindex="0" aria-label="Opinie klientów">
+            {home.testimonials.map((t) => (
+              <figure>
+                <blockquote>{t.quote}</blockquote>
+                <figcaption>{t.author}</figcaption>
+              </figure>
+            ))}
+          </div>
+          <div class="flex justify-center gap-3 mt-6">
+            <button class="btn btn-outline" data-review="-1" aria-label="Poprzednia opinia">
+              ←
+            </button>
+            <button class="btn btn-outline" data-review="1" aria-label="Następna opinia">
+              →
+            </button>
+          </div>
+        </>
+      ) : (
+        <p class="intro mx-auto muted">
+          Wiele osób zaczyna od małej zmiany i dopiero potem widzi, jak dużo może zmienić się w ich
+          codziennym samopoczuciu, energii i relacji z jedzeniem.
+        </p>
+      )}
+      <button class="btn testimonials-booking" type="button" data-booking-open>
+        Umów konsultację <span aria-hidden="true">↗</span>
+      </button>
+    </div>
+  </section>
+)}
+{s.key === 'faq' && (
+  <section class="section container split faq">
+    <div data-reveal>
+      <p class="eyebrow">{s.subtitle || 'Najczęstsze pytania'}</p>
+      <h2>{s.title || 'Masz wątpliwości? Odpowiem na najważniejsze.'}</h2>
+      <p class="intro muted">Zawsze chętnie pomogę dobrać właściwy typ wsparcia.</p>
+      <a href="/kontakt" class="text-link mt-8">
+        Przejdź do kontaktu <span>↗</span>
+      </a>
+    </div>
+    <div>
+      {[
+        [
+          'Co otrzymam po konsultacji?',
+          'Zamiast sztywnego jadłospisu otrzymasz spersonalizowany zestaw wskazówek, modyfikacji Twoich ulubionych posiłków, propozycji zamienników oraz indywidualnie dobraną suplementację.',
+        ],
+        [
+          'Czy mogę zacząć bez dużych zmian?',
+          'Tak. Współpraca polega na małych, trwałych krokach, które łatwiej utrzymać w codzienności.',
+        ],
+        [
+          'Czy konsultacje są prowadzone online?',
+          'Tak. Konsultacja trwa 60 minut i odbywa się przez Google Meet. Link do dołączenia otrzymasz automatycznie w potwierdzeniu rezerwacji.',
+        ],
+        [
+          'Czy pomagasz w przypadku problemów zdrowotnych?',
+          'Wspieram w zakresie odżywiania i stylu życia, a w razie potrzeby współpracuję z innymi specjalistami.',
+        ],
+        [
+          'Czy mogę wrócić do Ciebie po pewnym czasie?',
+          'Oczywiście. Regularne wsparcie to ważny element utrwalania zdrowych nawyków i dbania o siebie.',
+        ],
+      ].map(([q, a]) => (
+        <details>
+          <summary>
+            {q}
+            <span aria-hidden="true">+</span>
+          </summary>
+          <p>{a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+)}
+{s.key === 'newsletter' && (
+  <section class="section newsletter-section" aria-labelledby="newsletter-title">
+    <div class="newsletter-panel">
+      <div class="newsletter-copy" data-reveal>
+        <p class="eyebrow">{s.subtitle || 'Newsletter'}</p>
+        <h2 id="newsletter-title">{s.title || 'Zapisz się na inspiracje do zdrowego życia.'}</h2>
+        <p class="newsletter-intro">
+          {s.body ||
+            'Darmowa porcja wiedzy, która pomoże Ci lepiej zadbać o zdrowie, wyniki badań i relację z jedzeniem.'}
+        </p>
+      </div>
+      <form id="newsletter-form" class="newsletter-form">
+        <div class="newsletter-fields">
+          <label class="field">
+            <span class="sr-only">Twoje imię</span>
+            <input
+              name="name"
+              required
+              maxlength="80"
+              autocomplete="given-name"
+              placeholder="Imię"
+            />
+          </label>
+          <label class="field">
+            <span class="sr-only">Twój e-mail</span>
+            <input
+              name="email"
+              type="email"
+              required
+              maxlength="254"
+              autocomplete="email"
+              placeholder="twoj@email.pl"
+            />
+          </label>
+        </div>
+        <label class="check">
+          <input name="consent" type="checkbox" required />
+          <span>
+            Chcę otrzymywać wiadomości o zdrowych nawykach i aktualnych ofertach. Znam{' '}
+            <a href="/polityka-prywatnosci">politykę prywatności</a>. Mogę zrezygnować w każdej
+            chwili.
+          </span>
+        </label>
+        <button class="btn newsletter-submit" type="submit">
+          Zapisuję się
+        </button>
+        <p class="newsletter-message" role="status" data-form-message></p>
+      </form>
+    </div>
+  </section>
+)}
+<style>
+  .newsletter-section {
+    padding: clamp(40px, 6vw, 96px) clamp(16px, 4vw, 64px);
+  }
+  .newsletter-panel {
+    max-width: 1530px;
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: clamp(40px, 6vw, 96px);
+    padding: clamp(36px, 5vw, 80px);
+    border-radius: 36px;
+    color: var(--color-paper);
+    background:
+      radial-gradient(
+        ellipse at 0% 0%,
+        color-mix(in srgb, var(--color-rose) 35%, var(--color-transparent)),
+        var(--color-transparent) 42%
+      ),
+      radial-gradient(
+        ellipse at 100% 100%,
+        color-mix(in srgb, var(--color-surface-hero) 32%, var(--color-transparent)),
+        var(--color-transparent) 38%
+      ),
+      var(--color-ink);
+  }
+  .newsletter-copy,
+  .newsletter-form {
+    min-width: 0;
+  }
+  .newsletter-copy .eyebrow {
+    color: var(--color-surface-hero);
+    margin-bottom: 26px;
+  }
+  .newsletter-copy h2 {
+    font-size: clamp(42px, 4.6vw, 76px);
+    font-weight: 400;
+    line-height: 1.08;
+    max-width: 650px;
+  }
+  .newsletter-intro {
+    max-width: 550px;
+    margin-top: 28px;
+    color: var(--color-muted-inverse);
+    font-size: clamp(16px, 1.2vw, 20px);
+    line-height: 1.65;
+  }
+  .newsletter-form {
+    border: 1px solid color-mix(in srgb, var(--color-white) 16%, var(--color-transparent));
+    border-radius: 32px;
+    padding: 12px 12px 28px;
+    background: color-mix(in srgb, var(--color-white) 7%, var(--color-transparent));
+  }
+  .newsletter-fields {
+    display: grid;
+    gap: 12px;
+  }
+  .newsletter-fields .field {
+    margin: 0;
+    display: block;
+  }
+  .newsletter-fields input {
+    width: 100%;
+    min-height: 68px;
+    padding: 18px 26px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--color-white) 16%, var(--color-transparent));
+    background: color-mix(in srgb, var(--color-white) 7%, var(--color-transparent));
+    color: var(--color-paper);
+    font-size: 18px;
+  }
+  .newsletter-fields input::placeholder {
+    color: var(--color-booking-muted);
+    opacity: 1;
+  }
+  .newsletter-form .check {
+    margin: 18px 12px;
+    color: var(--color-muted-inverse);
+    line-height: 1.55;
+  }
+  .newsletter-form .check input {
+    margin-top: 2px;
+    accent-color: var(--color-accent-banner);
+  }
+  .newsletter-form .check a {
+    color: var(--color-paper);
+    text-underline-offset: 3px;
+  }
+  .newsletter-submit {
+    width: 100%;
+    min-height: 58px;
+    font-size: 17px;
+    background: var(--color-action);
+  }
+  .newsletter-submit:hover {
+    background: var(--color-action-hover);
+  }
+  .newsletter-form :focus-visible {
+    outline-color: var(--color-accent-inverse);
+    outline-offset: 3px;
+  }
+  .newsletter-message {
+    margin: 16px 12px 0;
+    font-size: 14px;
+    color: var(--color-paper);
+  }
+  .newsletter-message:empty {
+    display: none;
+  }
+  @media (max-width: 900px) {
+    .newsletter-panel {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+  }
+  @media (max-width: 480px) {
+    .newsletter-panel {
+      padding: 32px 20px;
+      border-radius: 28px;
+    }
+    .newsletter-copy h2 {
+      font-size: 42px;
+    }
+    .newsletter-form {
+      padding: 10px 10px 20px;
+      border-radius: 26px;
+    }
+    .newsletter-fields input {
+      min-height: 58px;
+      padding: 15px 20px;
+      font-size: 16px;
+    }
+    .newsletter-form .check {
+      margin-inline: 4px;
+    }
+  }
+  .consultation-section {
+    padding-inline: clamp(16px, 2.2vw, 40px);
+  }
+  .consultation-panel {
+    max-width: 1530px;
+    margin-inline: auto;
+    padding: clamp(32px, 5.5vw, 88px);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px clamp(40px, 6vw, 96px);
+    align-items: center;
+    border-radius: clamp(28px, 3.2vw, 52px);
+    color: var(--color-paper);
+    overflow: hidden;
+    background:
+      radial-gradient(
+        ellipse at 0% 0%,
+        color-mix(in srgb, var(--color-rose) 25%, var(--color-transparent)),
+        var(--color-transparent) 55%
+      ),
+      radial-gradient(
+        ellipse at 100% 100%,
+        color-mix(in srgb, var(--color-rose) 10%, var(--color-transparent)),
+        var(--color-transparent) 45%
+      ),
+      var(--color-ink);
+  }
+  .consultation-copy {
+    min-width: 0;
+  }
+  .consultation-copy .eyebrow {
+    color: var(--color-eyebrow-inverse);
+    margin-bottom: 30px;
+  }
+  .consultation-copy h2 {
+    font-size: clamp(46px, 5.6vw, 88px);
+    line-height: 1.02;
+    font-weight: 400;
+  }
+  .consultation-lead {
+    margin-top: 28px;
+    font-size: clamp(16px, 1.4vw, 21px);
+    line-height: 1.7;
+    color: var(--color-muted-inverse);
+  }
+  .consultation-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 30px 0 36px;
+    display: grid;
+    gap: 16px;
+    color: var(--color-muted-inverse);
+  }
+  .consultation-benefits li {
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    gap: 12px;
+  }
+  .consultation-benefits li::before {
+    content: '✓';
+    color: var(--color-accent-quote);
+    font-size: 22px;
+    line-height: 1.2;
+  }
+  .consultation-cta {
+    padding: 20px 30px;
+    background: var(--color-action);
+    font-size: 15px;
+  }
+  .consultation-cta:hover {
+    background: var(--color-action-hover);
+  }
+  .consultation-visual {
+    position: relative;
+    width: 100%;
+    max-width: 540px;
+    margin: 25px auto;
+    aspect-ratio: 1 / 1.18;
+  }
+  .consultation-tablet {
+    position: absolute;
+    inset: 0 18% 0 0;
+    border: 2px solid var(--color-booking-border-hover);
+    background: var(--color-booking-background);
+    padding: 22px 13px 18px;
+    border-radius: 34px;
+    box-shadow: 0 30px 45px var(--color-shadow-toast);
+    transform: rotate(-3deg);
+    overflow: hidden;
+  }
+  .consultation-camera {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-booking-border-hover);
+    position: absolute;
+    top: 9px;
+    left: 50%;
+  }
+  .consultation-tablet img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 65%;
+    border-radius: 18px;
+  }
+  .consultation-screen-label {
+    position: absolute;
+    bottom: 88px;
+    left: 25px;
+    right: 25px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: var(--color-surface-badge);
+    color: var(--color-ink);
+  }
+  .consultation-screen-label span {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: clamp(20px, 2.1vw, 30px);
+  }
+  .consultation-screen-label small {
+    display: block;
+    font-size: 10px;
+  }
+  .consultation-call {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+  }
+  .consultation-call span {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--color-ink);
+    display: grid;
+    place-items: center;
+  }
+  .consultation-call .consultation-hangup {
+    background: var(--color-action);
+  }
+  .consultation-phone {
+    position: absolute;
+    right: 0;
+    bottom: -12px;
+    width: 36%;
+    height: 62%;
+    padding: 8px;
+    background: var(--color-booking-background);
+    border: 2px solid var(--color-booking-border-hover);
+    border-radius: 28px;
+    transform: rotate(5deg);
+    overflow: hidden;
+    box-shadow: 0 20px 40px var(--color-shadow-toast);
+  }
+  .consultation-phone-camera {
+    position: absolute;
+    top: 14px;
+    width: 38%;
+    height: 12px;
+    left: 31%;
+    border-radius: 12px;
+    background: var(--color-booking-background);
+  }
+  .consultation-phone img {
+    width: 100%;
+    height: 65%;
+    border-radius: 19px 19px 0 0;
+  }
+  .consultation-phone-copy {
+    height: 35%;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    padding: 12px 10px;
+    border-radius: 0 0 18px 18px;
+  }
+  .consultation-phone-copy small {
+    display: block;
+    font-size: clamp(5px, 0.5vw, 8px);
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+  .consultation-phone-copy span {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: clamp(18px, 2vw, 28px);
+    line-height: 1.05;
+  }
+  .consultation-badge {
+    position: absolute;
+    top: 6%;
+    right: -3%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    border-radius: 18px;
+    background: var(--color-beige);
+    color: var(--color-ink);
+    transform: rotate(4deg);
+    box-shadow: 0 10px 30px var(--color-shadow-toast);
+  }
+  .consultation-badge strong {
+    font-family: var(--font-serif);
+    font-size: 44px;
+    font-weight: 400;
+    line-height: 1;
+  }
+  .consultation-badge span {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  .consultation-details {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--color-booking-border-hover);
+  }
+  .consultation-details details {
+    border-bottom: 1px solid var(--color-booking-border-hover);
+  }
+  .consultation-details summary {
+    padding: 22px 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    cursor: pointer;
+    list-style: none;
+    font-size: 17px;
+  }
+  .consultation-details summary::-webkit-details-marker {
+    display: none;
+  }
+  .consultation-details summary span {
+    color: var(--color-accent-quote);
+    font-size: 24px;
+    line-height: 1;
+  }
+  .consultation-details details[open] summary span {
+    transform: rotate(45deg);
+  }
+  .consultation-details-body {
+    max-width: 900px;
+    padding-bottom: 26px;
+    color: var(--color-muted-inverse);
+  }
+  .consultation-details-body p + p {
+    margin-top: 16px;
+  }
+  @media (max-width: 900px) {
+    .consultation-panel {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .consultation-copy {
+      grid-row: 1;
+    }
+    .consultation-copy h2 {
+      max-width: 620px;
+    }
+    .consultation-visual {
+      max-width: 420px;
+      margin-block: 8px 24px;
+    }
+    .consultation-phone-copy span {
+      font-size: 24px;
+    }
+    .consultation-phone-copy small {
+      font-size: 6px;
+    }
+  }
+  @media (max-width: 480px) {
+    .consultation-panel {
+      padding: 32px 24px;
+    }
+    .consultation-copy h2 {
+      font-size: 44px;
+      overflow-wrap: anywhere;
+    }
+    .consultation-visual {
+      width: 95%;
+    }
+    .consultation-screen-label {
+      bottom: 70px;
+      padding: 8px;
+    }
+    .consultation-screen-label span {
+      font-size: 20px;
+    }
+    .consultation-screen-label small {
+      font-size: 8px;
+    }
+    .consultation-phone-copy {
+      padding: 8px 5px;
+    }
+    .consultation-phone-copy span {
+      font-size: 18px;
+    }
+    .consultation-phone-copy small {
+      font-size: 5px;
+      margin-bottom: 4px;
+    }
+    .consultation-badge {
+      padding: 10px;
+      right: -6%;
+    }
+    .consultation-badge strong {
+      font-size: 32px;
+    }
+    .consultation-badge span {
+      font-size: 9px;
+    }
+    .consultation-cta {
+      width: 100%;
+      padding-inline: 18px;
+    }
+  }
+
+  .feature {
+    display: flex;
+    gap: 24px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .feature > span {
+    color: var(--color-section-eyebrow);
+    font-size: 12px;
+    padding-top: 6px;
+  }
+  .feature h3 {
+    font-size: 27px;
+  }
+  .feature p {
+    font-size: 13px;
+    color: var(--color-muted);
+    margin-top: 9px;
+  }
+  .about-images {
+    position: relative;
+    padding-right: 55px;
+    padding-bottom: 45px;
+  }
+  .about-main {
+    width: 100%;
+    height: 560px;
+    border-radius: 220px 220px 6px 6px;
+  }
+  .about-small {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 45%;
+    padding: 8px;
+    background: var(--color-paper);
+    box-shadow: 0 12px 40px var(--color-shadow-card);
+    transform: rotate(3deg);
+  }
+  .about-small img {
+    height: 210px;
+    width: 100%;
+    object-position: 50% 40%;
+  }
+  .about-small span {
+    display: block;
+    text-align: center;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 22px;
+    padding: 6px;
+  }
+  .about-note {
+    margin-top: 40px;
+    border-top: 1px solid var(--color-border-feature);
+    padding-top: 24px;
+    font-family: var(--font-serif);
+    font-size: 29px;
+    line-height: 1.2;
+  }
+  .about-note em {
+    color: var(--color-action);
+  }
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .category-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 390px;
+  }
+  .category-card > p:not(.eyebrow) {
+    margin-top: 24px;
+    font-size: 13px;
+  }
+  .category-card .text-link {
+    margin-top: 30px;
+    align-self: start;
+  }
+  .category-rule {
+    margin-top: auto;
+    padding-top: 30px;
+    border-bottom: 1px solid var(--color-border-tab);
+  }
+  .dark-card {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    border-color: var(--color-ink);
+  }
+  .dark-card .eyebrow {
+    color: var(--color-accent-inverse);
+  }
+  .steps {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .steps .eyebrow {
+    color: var(--color-eyebrow-inverse);
+  }
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+    margin-top: 70px;
+  }
+  .steps-grid span {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 48px;
+    color: var(--color-accent-quote);
+  }
+  .steps-grid h3 {
+    font-size: 27px;
+    margin: 16px 0;
+  }
+  .steps-grid p {
+    font-size: 12px;
+    color: var(--color-muted-inverse);
+  }
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .testimonials {
+    text-align: center;
+    max-width: 900px;
+  }
+  .testimonials > .intro {
+    max-width: 680px;
+    margin-inline: auto;
+    text-align: center;
+  }
+  .testimonials-booking {
+    margin-top: 28px;
+  }
+  .review-track {
+    display: flex;
+    overflow: auto;
+    scroll-snap-type: x mandatory;
+  }
+  .review-track figure {
+    min-width: 100%;
+    margin: 48px 0 0;
+    scroll-snap-align: start;
+  }
+  .review-track blockquote {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    line-height: 1.35;
+  }
+  .review-track figcaption {
+    font-size: 12px;
+    margin-top: 24px;
+  }
+  details {
+    border-bottom: 1px solid var(--color-border-list);
+    padding: 22px 0;
+  }
+  summary {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    font-size: 14px;
+    list-style: none;
+  }
+  details p {
+    font-size: 13px;
+    color: var(--color-muted);
+    margin-top: 16px;
+  }
+  details[open] summary span {
+    transform: rotate(45deg);
+  }
+  .faq {
+    align-items: start;
+  }
+  @media (max-width: 1023px) {
+    .product-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .steps-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .category-grid {
+      gap: 14px;
+    }
+    .category-card {
+      padding: 24px;
+    }
+  }
+  @media (max-width: 767px) {
+    .category-grid {
+      grid-template-columns: 1fr;
+    }
+    .category-card {
+      min-height: 320px;
+    }
+    .about-main {
+      height: 430px;
+    }
+    .about-small img {
+      height: 150px;
+    }
+    .steps-grid {
+      gap: 30px;
+      margin-top: 40px;
+    }
+    .product-grid {
+      gap: 28px 16px;
+    }
+    .about-images {
+      max-width: 500px;
+    }
+    .product-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-review]').forEach((button) =>
+    button.addEventListener('click', () => {
+      const track = document.querySelector('.review-track');
+      track?.scrollBy({
+        left: track.clientWidth * Number(button.dataset.review),
+        behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+      });
+    }),
+  );
+  document
+    .querySelector<HTMLFormElement>('#newsletter-form')
+    ?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.currentTarget as HTMLFormElement;
+      const message = form.querySelector<HTMLElement>('[data-form-message]')!;
+      const button = form.querySelector('button')!;
+      button.disabled = true;
+      try {
+        const data = new FormData(form);
+        const response = await fetch('/api/newsletter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: data.get('name'),
+            email: data.get('email'),
+            consent: data.get('consent') === 'on',
+          }),
+        });
+        const result = await response.json();
+        message.textContent = result.message || result.error;
+        if (response.ok) form.reset();
+      } catch {
+        message.textContent = 'Nie udało się połączyć. Spróbuj ponownie.';
+      } finally {
+        button.disabled = false;
+      }
+    });
+</script>

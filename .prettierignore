@@ -1,0 +1,9 @@
+node_modules
+.tools
+.astro
+.work
+dist
+package-lock.json
+drizzle/meta
+playwright-report
+test-results

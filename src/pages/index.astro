@@ -1,0 +1,261 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HomeSection from '../components/HomeSection.astro';
+import { homepage, products } from '../lib/catalog';
+const [home, catalog] = await Promise.all([homepage(), products()]);
+const sections = home.sections?.length
+  ? home.sections
+  : [
+      'philosophy',
+      'about',
+      'categories',
+      'steps',
+      'products',
+      'testimonials',
+      'faq',
+      'newsletter',
+    ].map((key) => ({ key }));
+const featured = home.featuredProducts?.length
+  ? home.featuredProducts
+  : catalog.filter((p) => p.featured);
+---
+
+<Layout title="Zdrowie zaczyna się od małych zmian">
+  <section class="hero container">
+    <div class="hero-copy">
+      <p class="eyebrow" data-reveal>
+        Konsultacje dietetyczne · zdrowe nawyki · realne efekty
+      </p>
+      <h1 data-reveal>
+        {home.heroTitle || 'Zdrowe jedzenie,'}
+        <br />
+        <em>{home.heroAccent || 'bez presji i reżimu.'}</em>
+      </h1>
+      <p class="hero-description" data-reveal>
+        {home.heroDescription ||
+          'Wspieram dorosłych, dzieci i rodziców oraz kobiety w ciąży. Łączę wiedzę akademicką z życiowym podejściem, tworząc zalecenia dopasowane do Twoich potrzeb. Wierzę, że to dieta ma pasować do Ciebie i Twojego życia, a nie na odwrót.'}
+      </p>
+      <div class="flex flex-wrap gap-3 mt-8" data-reveal>
+        {(home.primaryHref || '/kontakt').startsWith('/kontakt') ? (
+          <button class="btn" type="button" data-booking-open>
+            {home.primaryLabel || 'Umów konsultację'} <span>↗</span>
+          </button>
+        ) : (
+          <a class="btn" href={home.primaryHref}>
+            {home.primaryLabel || 'Umów konsultację'} <span>↗</span>
+          </a>
+        )}
+        <a class="btn btn-outline" href={home.secondaryHref || '/o-nas'}>
+          {home.secondaryLabel || 'Poznaj mnie'}
+        </a>
+      </div>
+      <div class="hero-details" data-reveal>
+        <div>
+          <span>01</span>
+          <p>
+            Rozmowa i
+            <br />
+            diagnoza
+          </p>
+        </div>
+        <div>
+          <span>02</span>
+          <p>
+            Plan dopasowany
+            <br />
+            do Ciebie
+          </p>
+        </div>
+        <div>
+          <span>03</span>
+          <p>
+            Wsparcie
+            <br />
+            krok po kroku
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-circle" data-parallax></div>
+      <img
+        class="hero-photo"
+        src="/images/IMG_5522.png"
+        alt="Natalia, dietetyczka"
+        width="1400"
+        height="2000"
+        fetchpriority="high"
+      />
+      <span class="vertical-note">ZDROWIE · ENERGIA · BALANS</span>
+    </div>
+  </section>
+  <div class="brand-strip">
+    <div class="container">
+      <span>Zdrowe nawyki</span>
+      <b>✦</b>
+      <span>Współpraca bez presji</span>
+      <b>✦</b>
+      <span>Realne efekty</span>
+      <b>✦</b>
+      <span>Lepsze samopoczucie</span>
+      <b>✦</b>
+    </div>
+  </div>
+  {sections.map((section) => (
+    <HomeSection section={section} products={featured} home={home} />
+  ))}
+</Layout>
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: 1.03fr 1fr;
+    gap: 65px;
+    align-items: center;
+    padding-top: 68px;
+    padding-bottom: 76px;
+    min-height: 720px;
+  }
+  .hero-copy {
+    position: relative;
+    z-index: 2;
+  }
+  .hero-copy .eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+  }
+  .hero h1 em {
+    color: var(--color-rose);
+    font-weight: 400;
+  }
+  .hero-description {
+    max-width: 490px;
+    font-size: 14px;
+    color: var(--color-muted);
+    margin-top: 26px;
+  }
+  .hero-visual {
+    position: relative;
+    padding: 0 40px 0 0;
+  }
+  .hero-photo {
+    width: 100%;
+    height: 560px;
+    border-radius: 260px 260px 90px 90px;
+    position: relative;
+    object-position: center;
+  }
+  .hero-circle {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    max-width: 100%;
+    top: -85px;
+    right: -24px;
+    border-radius: 50%;
+    background: var(--color-surface-hero);
+  }
+  .vertical-note {
+    position: absolute;
+    right: 8px;
+    top: 70px;
+    writing-mode: vertical-rl;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+  }
+  .hero-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--color-border-hero);
+    margin-top: 48px;
+    padding-top: 24px;
+    gap: 20px;
+    max-width: 470px;
+  }
+  .hero-details span {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--color-text-stat);
+    font-size: 34px;
+  }
+  .hero-details p {
+    font-size: 13px;
+    color: var(--color-text-caption);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+  .brand-strip {
+    background: var(--color-ink);
+    color: var(--color-text-inverse);
+    padding: 20px 0;
+    font-size: 11px;
+  }
+  .brand-strip .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
+  .brand-strip b {
+    color: var(--color-accent-banner);
+  }
+  .hero-visual {
+    isolation: isolate;
+  }
+  @media (max-width: 1023px) {
+    .hero {
+      gap: 28px;
+    }
+    .hero-photo {
+      height: 500px;
+    }
+    .hero-circle {
+      right: 0;
+    }
+    .hero h1 {
+      font-size: 4.1rem;
+    }
+  }
+  @media (max-width: 767px) {
+    .hero {
+      grid-template-columns: 1fr;
+      padding-top: 46px;
+      gap: 60px;
+      padding-bottom: 44px;
+    }
+    .hero h1 {
+      font-size: 3.5rem;
+    }
+    .hero-photo {
+      height: 480px;
+    }
+    .hero-visual {
+      padding-right: 24px;
+      max-width: 500px;
+      width: 100%;
+      margin: auto;
+    }
+    .hero-circle {
+      width: 290px;
+      height: 290px;
+      top: -30px;
+      right: -10px;
+    }
+    .hero-details {
+      margin-top: 32px;
+    }
+    .brand-strip .container {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px 20px;
+    }
+    .brand-strip b:last-child {
+      display: none;
+    }
+    .vertical-note {
+      right: 0;
+    }
+    .hero-copy .eyebrow {
+      font-size: 8px;
+    }
+  }
+</style>

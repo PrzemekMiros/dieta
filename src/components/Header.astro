@@ -1,0 +1,179 @@
+---
+const links = [
+  ['O mnie', '/o-nas'],
+  ['Ebooki', '/ebooki'],
+  ['Pieczywo', '/produkty'],
+  ['Blog', '/blog'],
+  ['Kontakt', '/kontakt'],
+];
+---
+
+<a class="skip" href="#main">
+  Przejdź do treści
+</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="Twoja Dietetyczka — strona główna">
+      <img src="/images/logo.png" width="235" height="42" alt="Twoja Dietetyczka" />
+    </a>
+    <nav aria-label="Główna" id="main-nav">
+      {links.map(([label, href]) => (
+        <a href={href} aria-current={Astro.url.pathname === href ? 'page' : undefined}>
+          {label}
+        </a>
+      ))}
+      <a href="/koszyk" aria-current={Astro.url.pathname === '/koszyk' ? 'page' : undefined}>
+        Koszyk{' '}
+        <span class="cart-count" data-cart-count aria-label="produktów w koszyku">
+          0
+        </span>
+      </a>
+    </nav>
+    <div class="header-actions">
+      <button class="btn btn-dark shop-link" type="button" data-booking-open>
+        <span class="shop-label">Umów konsultację</span>
+        <span class="shop-short-label">Umów</span>
+        <span aria-hidden="true">↗</span>
+      </button>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-label="Przełącz menu nawigacji"
+        aria-controls="main-nav"
+        aria-expanded="false"
+      >
+        <span class="menu-label">Menu</span> <span aria-hidden="true">☰</span>
+      </button>
+    </div>
+  </div>
+</header>
+<style>
+  .site-header {
+    position: relative;
+    z-index: 20;
+    border-bottom: 1px solid var(--color-border-header);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    min-height: 100px;
+  }
+  .brand {
+    display: block;
+    flex-shrink: 0;
+  }
+  .brand img {
+    width: 235px;
+    height: 42px;
+    object-fit: contain;
+  }
+  nav {
+    display: flex;
+    gap: 28px;
+    font-size: 12px;
+  }
+  nav a:hover,
+  nav a[aria-current] {
+    color: var(--color-action);
+  }
+  .cart-count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 18px;
+    height: 18px;
+    margin-left: 3px;
+    padding-inline: 5px;
+    border-radius: 999px;
+    background: var(--color-surface-nav);
+    color: var(--color-ink);
+    font-size: 10px;
+    line-height: 1;
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+  .shop-link {
+    white-space: nowrap;
+  }
+  .shop-short-label {
+    display: none;
+  }
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: 0;
+    padding: 10px;
+    font-size: 12px;
+  }
+  @media (max-width: 1023px) {
+    nav {
+      gap: 16px;
+    }
+  }
+  @media (max-width: 767px) {
+    .header-inner {
+      min-height: 82px;
+      gap: 4px;
+    }
+    .brand img {
+      width: 132px;
+      height: 54px;
+    }
+    .header-actions {
+      gap: 4px;
+    }
+    .shop-link {
+      padding: 8px 10px;
+      gap: 6px;
+      font-size: 10px;
+    }
+    .shop-label,
+    .menu-label {
+      display: none;
+    }
+    .shop-short-label {
+      display: inline;
+    }
+    .menu-toggle {
+      display: block;
+      padding: 8px;
+    }
+    nav {
+      display: none;
+      position: absolute;
+      top: 82px;
+      left: 0;
+      right: 0;
+      background: var(--color-paper);
+      padding: 24px;
+      box-shadow: 0 12px 20px var(--color-shadow-header);
+    }
+    nav[data-open] {
+      display: flex;
+      flex-direction: column;
+    }
+    nav a {
+      padding: 9px;
+      font-size: 16px;
+    }
+  }
+</style>
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const nav = document.querySelector('#main-nav');
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') !== 'true';
+    toggle.setAttribute('aria-expanded', String(open));
+    nav?.toggleAttribute('data-open', open);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      toggle?.setAttribute('aria-expanded', 'false');
+      nav?.removeAttribute('data-open');
+    }
+  });
+</script>

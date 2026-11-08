@@ -1,0 +1,104 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { products } from '../../lib/catalog';
+import { db } from '../../lib/server/db';
+import { inventory, inventoryMovements } from '../../lib/server/schema';
+import { desc } from 'drizzle-orm';
+const [catalog, stock, moves] = await Promise.all([
+  products(true),
+  db().select().from(inventory),
+  db().select().from(inventoryMovements).orderBy(desc(inventoryMovements.createdAt)).limit(50),
+]);
+---
+
+<AdminLayout title="Magazyn">
+  <h1 class="!text-5xl mb-10">Stany magazynowe.</h1>
+  <p class="notice">
+    Dostępny stan uwzględnia rezerwacje nieopłaconych zamówień. Korekty są zapisywane w historii.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Produkt</th>
+          <th>Dostępne</th>
+          <th>Korekta (+ / −)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {catalog
+          .filter((p) => p.productType === 'physical')
+          .map((p) => (
+            <tr>
+              <td>
+                {p.name}
+                <br />
+                <small>{p.sku}</small>
+              </td>
+              <td>{stock.find((s) => s.productId === p._id)?.available || 0}</td>
+              <td>
+                <form data-inventory class="flex flex-wrap gap-3">
+                  <input type="hidden" name="productId" value={p._id} />
+                  <input
+                    type="number"
+                    name="delta"
+                    required
+                    min="-10000"
+                    max="10000"
+                    aria-label="Zmiana stanu"
+                    class="!w-24"
+                  />
+                  <input
+                    name="reason"
+                    required
+                    minlength="3"
+                    placeholder="Powód korekty"
+                    aria-label="Powód korekty"
+                    class="!w-auto"
+                  />
+                  <button class="btn btn-outline">Zapisz</button>
+                  <p role="alert"></p>
+                </form>
+              </td>
+            </tr>
+          ))}
+      </tbody>
+    </table>
+  </div>
+  <h2 class="!text-3xl mt-12 mb-6">Ostatnie ruchy</h2>
+  <div class="table-wrap">
+    <table>
+      <tbody>
+        {moves.map((m) => (
+          <tr>
+            <td>{m.createdAt.toLocaleString('pl-PL')}</td>
+            <td>{m.productId}</td>
+            <td>{m.kind}</td>
+            <td>{m.quantity}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</AdminLayout>
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-inventory]').forEach((form) =>
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form));
+      try {
+        const r = await fetch('/api/admin/inventory', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...data, delta: Number(data.delta) }),
+        });
+        const body = await r.json();
+        if (!r.ok) throw new Error(body.error);
+        location.reload();
+      } catch (e) {
+        form.querySelector('[role=alert]')!.textContent =
+          e instanceof Error ? e.message : 'Błąd zapisu.';
+      }
+    }),
+  );
+</script>

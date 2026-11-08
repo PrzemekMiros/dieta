@@ -1,0 +1,381 @@
+﻿@import 'tailwindcss';
+@import '@fontsource-variable/cormorant-garamond';
+@import '@fontsource-variable/dm-sans';
+@theme static {
+  --font-sans: 'DM Sans Variable', sans-serif;
+  --font-serif: 'Cormorant Garamond Variable', Georgia, serif;
+
+  /* Podstawowa paleta */
+  --color-paper: #f7f6f4;
+  --color-beige: #e5ded7;
+  --color-ink: #2d2f30;
+  --color-rose: #b66e67;
+  --color-action: #92514b;
+  --color-white: #fff;
+  --color-transparent: transparent;
+  /* Tekst i akcje */
+  --color-muted: #646464;
+  --color-eyebrow: #796e57;
+  --color-section-eyebrow: #847761;
+  --color-action-hover: #79403b;
+  --color-ink-hover: #454748;
+  --color-selection: #dfc4bc;
+  --color-text-warm: #6c665f;
+  --color-text-step: #77716c;
+  --color-text-cart: #746c65;
+  --color-text-summary: #6b625e;
+  --color-text-detail: #625c56;
+  --color-text-subtle: #807970;
+  /* Powierzchnie i obramowania */
+  --color-border: #d9d3cc;
+  --color-border-strong: #a9a39c;
+  --color-border-link: #b3a9a1;
+  --color-border-input: #b9b3ad;
+  --color-border-divider: #e1dcd6;
+  --color-border-summary: #e0d9d1;
+  --color-border-feature: #c7bdb3;
+  --color-border-tab: #c8c0b8;
+  --color-border-list: #cfc8c0;
+  --color-surface-notice: #eee5df;
+  --color-surface-raised: #fffdfa;
+  --color-surface-hover: #f0ece7;
+  --color-surface-code: #f7f5f2;
+  --color-surface-nav: #e8e2dc;
+  /* Strona g??wna i karty produkt?w */
+  --color-surface-product: #e8e1da;
+  --color-surface-book: #f5eee5;
+  --color-border-book: #d5c6b7;
+  --color-surface-product-alt: #e0d4ce;
+  --color-surface-hero: #deddd0;
+  --color-border-hero: #ded9d2;
+  --color-text-stat: #9c8d73;
+  --color-text-caption: #68625b;
+  --color-text-inverse: #e8e3dc;
+  --color-accent-banner: #cb968b;
+  --color-accent-inverse: #d8afa7;
+  --color-eyebrow-inverse: #cfbba0;
+  --color-accent-quote: #ce9389;
+  --color-muted-inverse: #d0ceca;
+  /* Komunikaty i statusy */
+  --color-error: #952c2c;
+  --color-success: #52745c;
+  --color-text-delivery: #5c665d;
+  --color-surface-error: #f7e9e6;
+  --color-text-error: #842d2d;
+  --color-border-success: #c9d8ca;
+  --color-surface-success: #edf3ed;
+  --color-text-success: #42644b;
+  --color-border-warning: #e8d9b8;
+  --color-surface-warning: #fbf5e9;
+  --color-text-warning: #725a2d;
+  --color-border-danger: #e8caca;
+  --color-surface-danger: #fbefef;
+  --color-text-danger: #874747;
+  /* Okno rezerwacji */
+  --color-booking-text: #f4f1ed;
+  --color-booking-background: #171717;
+  --color-booking-accent: #c98172;
+  --color-booking-surface: #303030;
+  --color-booking-accent-soft: #e8c1b8;
+  --color-booking-border: #3e3e3e;
+  --color-booking-field: #242424;
+  --color-booking-border-input: #555;
+  --color-booking-selected: #38302e;
+  --color-booking-divider: #414141;
+  --color-booking-muted: #c4c0bc;
+  --color-booking-disabled: #747474;
+  --color-booking-secondary: #bcb8b4;
+  --color-booking-link: #e8a295;
+  --color-booking-placeholder: #aaa39d;
+  --color-booking-border-hover: #777;
+  /* Przezroczysto?ci i cienie */
+  --color-surface-badge: #f7f6f4e8;
+  --color-shadow-product: #382b2825;
+  --color-shadow-card: #32282013;
+  --color-border-header: #d9d3cc80;
+  --color-shadow-header: #0000000a;
+  --color-shadow-toast: #0002;
+}
+:root {
+  --section-space: clamp(2rem, 4vw, 4rem);
+  --radius: 12px;
+  --ease: cubic-bezier(0.2, 0.65, 0.3, 1);
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.7;
+}
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+}
+h1 {
+  font-size: clamp(3rem, 5.3vw, 5.5rem);
+}
+h2 {
+  font-size: clamp(2.5rem, 3.8vw, 4rem);
+}
+h3 {
+  font-size: 2rem;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: var(--color-transparent);
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+img {
+  display: block;
+  max-width: 100%;
+  object-fit: cover;
+}
+:focus-visible {
+  outline: 2px solid var(--color-action);
+  outline-offset: 5px;
+}
+::selection {
+  background: var(--color-selection);
+}
+.container {
+  width: min(1240px, calc(100% - 64px));
+  margin-inline: auto;
+}
+.section {
+  padding-block: var(--section-space);
+}
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  color: var(--color-eyebrow);
+  margin-bottom: 20px;
+}
+.muted {
+  color: var(--color-muted);
+}
+.intro {
+  max-width: 540px;
+  margin-top: 24px;
+}
+.intro p + p {
+  margin-top: 16px;
+}
+.btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  border: 1px solid var(--color-transparent);
+  border-radius: 999px;
+  padding: 13px 24px;
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--color-action);
+  color: var(--color-white);
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+.btn:hover {
+  background: var(--color-action-hover);
+  transform: translateY(-2px);
+}
+.btn-outline {
+  border-color: var(--color-border-strong);
+  background: var(--color-transparent);
+  color: var(--color-ink);
+}
+.btn-outline:hover {
+  background: var(--color-beige);
+}
+.btn-dark {
+  background: var(--color-ink);
+}
+.btn-dark:hover {
+  background: var(--color-ink-hover);
+}
+.text-link {
+  display: inline-flex;
+  gap: 24px;
+  border-bottom: 1px solid var(--color-border-link);
+  padding-bottom: 6px;
+  font-size: 13px;
+}
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 8vw, 120px);
+}
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: end;
+  margin-bottom: 48px;
+}
+.card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 32px;
+}
+.field {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+input:not([type='checkbox']),
+textarea,
+select {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  padding: 13px 15px;
+  border: 1px solid var(--color-border-input);
+  border-radius: 5px;
+  background: var(--color-white);
+  color: var(--color-ink);
+}
+input[type='checkbox'] {
+  accent-color: var(--color-action);
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+.check {
+  display: flex;
+  align-items: start;
+  gap: 12px;
+  font-size: 13px;
+  margin-block: 18px;
+}
+.check a {
+  text-decoration: underline;
+}
+.notice {
+  padding: 16px 20px;
+  border-left: 3px solid var(--color-action);
+  background: var(--color-surface-notice);
+  margin-block: 20px;
+  font-size: 14px;
+}
+.error {
+  color: var(--color-error);
+}
+[hidden] {
+  display: none !important;
+}
+.prose {
+  max-width: 760px;
+}
+.prose p {
+  margin-block: 22px;
+}
+.prose h2 {
+  font-size: 2.5rem;
+  margin-top: 40px;
+}
+.prose h3 {
+  margin-top: 30px;
+}
+.skip {
+  position: fixed;
+  z-index: 100;
+  top: 8px;
+  left: 8px;
+  padding: 12px;
+  background: var(--color-white);
+  transform: translateY(-150%);
+}
+.skip:focus {
+  transform: none;
+}
+.table-wrap {
+  overflow: auto;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+}
+th,
+td {
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+th {
+  font-weight: 600;
+}
+@media (max-width: 767px) {
+  .container {
+    width: calc(100% - 40px);
+  }
+  .split {
+    grid-template-columns: 1fr;
+    gap: 44px;
+  }
+  .section-heading {
+    align-items: start;
+    flex-direction: column;
+  }
+  h1 {
+    font-size: 3.2rem;
+  }
+  .card {
+    padding: 24px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

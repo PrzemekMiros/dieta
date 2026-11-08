@@ -1,0 +1,155 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { money, type Product } from '../lib/types';
+import img5522 from '../assets/product-images/IMG_5522.webp';
+import img7254 from '../assets/product-images/IMG_7254.webp';
+import img7344 from '../assets/product-images/IMG_7344.webp';
+import img7423 from '../assets/product-images/IMG_7423.webp';
+import img7495 from '../assets/product-images/IMG_7495.webp';
+import img8219 from '../assets/product-images/IMG_8219.webp';
+interface Props {
+  product: Product;
+}
+const { product: p } = Astro.props;
+const demoImages: Record<string, ImageMetadata> = {
+  '/images/IMG_5522.png': img5522,
+  '/images/IMG_7254.png': img7254,
+  '/images/IMG_7344.png': img7344,
+  '/images/IMG_7423.png': img7423,
+  '/images/IMG_7495.png': img7495,
+  '/images/IMG_8219.png': img8219,
+};
+const demoImage = p.demo ? demoImages[p.image] : undefined;
+---
+
+<article class="product-card" data-reveal>
+  <a
+    href={`/produkt/${p.slug}`}
+    class:list={['product-image', { ebook: p.productType === 'digital' }]}
+    aria-label={`Zobacz ${p.name}`}
+  >
+    {p.productType === 'digital' && p.demo ? (
+      <div class="book">
+        <span>TORTOWE CIOCHO</span>
+        <h3>{p.name}</h3>
+        {demoImage ? (
+          <Image src={demoImage} alt="" width={400} height={400} loading="lazy" />
+        ) : (
+          <Image
+            src={p.image || '/images/cake-editorial.webp'}
+            alt=""
+            width={400}
+            height={400}
+            loading="lazy"
+          />
+        )}
+        <small>PRZEPISY · WSKAZÓWKI · INSPIRACJE</small>
+      </div>
+    ) : demoImage ? (
+      <Image
+        src={demoImage}
+        width={450}
+        height={506}
+        alt="Ilustracja koncepcyjna"
+        loading="lazy"
+      />
+    ) : (
+      <Image
+        src={p.image || '/images/cake-editorial.webp'}
+        width={450}
+        height={506}
+        alt={p.name}
+        loading="lazy"
+      />
+    )}
+    <span class="product-tag">{p.productType === 'digital' ? 'Ebook · PDF' : 'Pieczywo'}</span>
+  </a>
+  <div class="flex justify-between gap-4 mt-6 mb-2">
+    <h3>
+      <a href={`/produkt/${p.slug}`}>{p.name}</a>
+    </h3>
+    <span class="price">{money(p.price)}</span>
+  </div>
+  <p class="muted text-sm mt-6 mb-5">{p.shortDescription}</p>
+  <button
+    type="button"
+    class="text-link mt-6"
+    data-add={p._id}
+    disabled={!p.active || p.stock === 0}
+  >
+    {p.stock === 0 ? 'Niedostępny' : 'Dodaj do koszyka'} <span aria-hidden="true">+</span>
+  </button>
+</article>
+<style>
+  .product-image {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4/4.5;
+    background: var(--color-surface-product);
+    border-radius: 190px 190px 8px 8px;
+    overflow: hidden;
+  }
+  .product-image > img {
+    height: 100%;
+    width: 100%;
+    transition: transform 0.7s;
+  }
+  .product-image:hover > img {
+    transform: scale(1.035);
+  }
+  .product-tag {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    padding: 5px 12px;
+    border-radius: 30px;
+    background: var(--color-surface-badge);
+    font-size: 10px;
+  }
+  .product-card h3 {
+    font-size: 26px;
+  }
+  .price {
+    white-space: nowrap;
+    font-size: 13px;
+    padding-top: 6px;
+  }
+  .book {
+    width: 65%;
+    height: 78%;
+    padding: 22px 18px 12px;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-surface-book);
+    box-shadow: 10px 15px 25px var(--color-shadow-product);
+    border-left: 6px solid var(--color-border-book);
+    transform: rotate(-7deg);
+    text-align: center;
+  }
+  .book > span {
+    font-size: 8px;
+    letter-spacing: 0.1em;
+  }
+  .book h3 {
+    font-size: 27px;
+    margin: 18px 0;
+  }
+  .book img {
+    min-height: 0;
+    flex: 1;
+    width: 100%;
+    border-radius: 100px 100px 0 0;
+  }
+  .book small {
+    font-size: 6px;
+    margin-top: 10px;
+  }
+  .product-card:nth-child(2n) .ebook {
+    background: var(--color-surface-product-alt);
+  }
+  .product-card:nth-child(2n) .book {
+    transform: rotate(5deg);
+  }
+</style>

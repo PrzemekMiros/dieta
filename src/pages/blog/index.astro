@@ -1,0 +1,33 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { posts } from '../../lib/catalog';
+const articles = await posts();
+---
+
+<Layout title="Blog zdrowotny">
+  <section class="container section">
+    <p class="eyebrow">Zdrowe inspiracje</p>
+    <h1>Na co dzień, bez presji.</h1>
+    <div class="grid md:grid-cols-3 gap-10 mt-16">
+      {articles.map((p) => (
+        <article>
+          <a href={`/blog/${p.slug}`}>
+            <img
+              src={p.image || '/images/baking-editorial.webp'}
+              alt={p.imageAlt || p.title}
+              width="600"
+              height="460"
+              class="w-full aspect-[4/3] rounded-xl"
+              loading="lazy"
+            />
+            <p class="eyebrow mt-6">{new Date(p.publishedAt).toLocaleDateString('pl-PL')}</p>
+            <h2 class="!text-3xl">{p.title}</h2>
+            <p class="mt-4 muted text-sm">{p.excerpt}</p>
+            <span class="text-link mt-6">Czytaj dalej ↗</span>
+          </a>
+        </article>
+      ))}
+    </div>
+    {!articles.length && <p class="intro">Pierwsze wpisy pojawią się wkrótce.</p>}
+  </section>
+</Layout>

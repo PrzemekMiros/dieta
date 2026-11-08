@@ -1,0 +1,209 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { db } from '../../../lib/server/db';
+import * as t from '../../../lib/server/schema';
+import { eq, desc } from 'drizzle-orm';
+import { money } from '../../../lib/types';
+import { z } from 'zod';
+const parsed = z.uuid().safeParse(Astro.params.id);
+if (!parsed.success) return Astro.redirect('/admin');
+const id = parsed.data;
+const [order] = await db().select().from(t.orders).where(eq(t.orders.id, id));
+if (!order) return Astro.redirect('/admin');
+const [items, payment, shipment, entitlements, audit, events] = await Promise.all([
+  db().select().from(t.orderItems).where(eq(t.orderItems.orderId, id)),
+  db().select().from(t.payments).where(eq(t.payments.orderId, id)),
+  db().select().from(t.shipments).where(eq(t.shipments.orderId, id)),
+  db().select().from(t.entitlements).where(eq(t.entitlements.orderId, id)),
+  db()
+    .select()
+    .from(t.auditLogs)
+    .where(eq(t.auditLogs.orderId, id))
+    .orderBy(desc(t.auditLogs.createdAt)),
+  db()
+    .select()
+    .from(t.paymentEvents)
+    .where(eq(t.paymentEvents.orderId, id))
+    .orderBy(desc(t.paymentEvents.createdAt)),
+]);
+---
+
+<AdminLayout title={`Zamówienie ${id.slice(0, 8)}`}>
+  <p class="eyebrow">{id}</p>
+  <h1 class="!text-5xl mb-8">Zamówienie {id.slice(0, 8)}.</h1>
+  <div class="grid md:grid-cols-3 gap-6">
+    <div class="card">
+      <h2 class="!text-2xl">Klient</h2>
+      <p class="mt-4">{order.name}</p>
+      <p class="break-all">{order.email}</p>
+      <p>{order.phone}</p>
+      {order.address && <p class="mt-4">{Object.values(order.address).join(', ')}</p>}
+      {order.invoice && <p class="mt-4">Faktura: {Object.values(order.invoice).join(', ')}</p>}
+    </div>
+    <div class="card">
+      <h2 class="!text-2xl">Płatność</h2>
+      <p class="mt-4">Zamówienie: {order.status}</p>
+      {payment[0]?.status.startsWith('cod_') ? (
+        <p>
+          Za pobraniem:{' '}
+          {payment[0].status === 'cod_pending'
+            ? 'oczekuje na odbiór'
+            : payment[0].status === 'cod_collected'
+              ? 'płatność odebrana'
+              : 'anulowana'}
+        </p>
+      ) : (
+        <>
+          <p>P24: {payment[0]?.status || '—'}</p>
+          <p>ID P24: {payment[0]?.p24OrderId || '—'}</p>
+        </>
+      )}
+      <p class="mt-4 text-xl">{money(order.total)}</p>
+      <p class="text-xs">w tym dostawa: {money(order.shipping)}</p>
+      {payment[0]?.lastError && (
+        <p class="notice">
+          Rejestracja wymaga sprawdzenia w P24. Nie rejestruj nowej płatności bez uzgodnienia
+          poprzedniej.
+        </p>
+      )}
+    </div>
+    <div class="card">
+      <h2 class="!text-2xl">Działania</h2>
+      <form data-order-action data-id={id} class="mt-4">
+        <label class="field">
+          Działanie
+          <select name="action">
+            <option value="resend-email">Ponów ostatnie potwierdzenie</option>
+            {entitlements.length > 0 && (
+              <option value="resend-links">Nowe linki i e-mail do ebooków</option>
+            )}
+            {payment[0]?.status === 'cod_pending' && (
+              <option value="confirm-cod">Potwierdź odbiór gotówki</option>
+            )}
+            {order.status === 'pending' &&
+              (payment[0]?.status !== 'cod_pending' || shipment[0]?.status === 'preparing') && (
+                <option value="cancel">Anuluj i zwolnij magazyn</option>
+              )}
+          </select>
+        </label>
+        <button class="btn btn-outline">Wykonaj</button>
+        <p role="alert" class="text-sm mt-3"></p>
+      </form>
+    </div>
+  </div>
+  <h2 class="!text-3xl mt-12 mb-6">Pozycje zamówienia</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Produkt</th>
+          <th>Typ</th>
+          <th>Szt.</th>
+          <th>Cena</th>
+          <th>VAT</th>
+        </tr>
+      </thead>
+      <tbody>
+        {items.map((i) => (
+          <tr>
+            <td>
+              {i.name}
+              <br />
+              <small>{i.sku}</small>
+            </td>
+            <td>{i.type}</td>
+            <td>{i.quantity}</td>
+            <td>{money(i.unitPrice)}</td>
+            <td>{i.taxRate}%</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  {shipment[0] && (
+    <section class="card mt-10">
+      <h2 class="!text-3xl mb-6">Realizacja i przesyłka</h2>
+      <p class="mb-6">Metoda: {order.shippingMethod}</p>
+      <form data-order-action data-id={id} class="grid md:grid-cols-3 gap-5 items-end">
+        <input type="hidden" name="action" value="shipment" />
+        <label class="field">
+          Status
+          <select name="status">
+            {['preparing', 'shipped', 'delivered'].map((s) => (
+              <option value={s} selected={shipment[0]?.status === s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label class="field">
+          Numer przesyłki
+          <input name="tracking" value={shipment[0].tracking || ''} maxlength="150" />
+        </label>
+        <button class="btn mb-5">Zapisz i powiadom</button>
+        <p role="alert"></p>
+      </form>
+    </section>
+  )}
+  {entitlements.length > 0 && (
+    <section class="mt-10">
+      <h2 class="!text-3xl mb-6">Uprawnienia do ebooków</h2>
+      {entitlements.map((e) => (
+        <p class="text-sm border-b py-3">
+          {items.find((i) => i.id === e.itemId)?.name} — {e.active ? 'aktywne' : 'wyłączone'}
+        </p>
+      ))}
+    </section>
+  )}
+  <div class="grid md:grid-cols-2 gap-10 mt-12">
+    <section>
+      <h2 class="!text-3xl mb-6">Historia działań</h2>
+      {audit.map((a) => (
+        <p class="text-sm border-b py-3">
+          {a.createdAt.toLocaleString('pl-PL')} · {a.action}
+        </p>
+      ))}
+    </section>
+    <section>
+      <h2 class="!text-3xl mb-6">Zdarzenia płatności</h2>
+      {events.map((e) => (
+        <p class="text-sm border-b py-3">
+          {e.createdAt.toLocaleString('pl-PL')} · {e.kind}
+        </p>
+      ))}
+    </section>
+  </div>
+</AdminLayout>
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-order-action]').forEach((form) =>
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const button = form.querySelector('button')!;
+      button.disabled = true;
+      const values = Object.fromEntries(new FormData(form));
+      if (
+        values.action === 'cancel' &&
+        !confirm(
+          'Anulować zamówienie i zwolnić rezerwację? Upewnij się, że nie przekazano przesyłki kurierowi.',
+        )
+      ) {
+        button.disabled = false;
+        return;
+      }
+      try {
+        const response = await fetch('/api/admin/order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...values, orderId: form.dataset.id }),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error);
+        location.reload();
+      } catch (e) {
+        form.querySelector('[role=alert]')!.textContent =
+          e instanceof Error ? e.message : 'Błąd operacji.';
+        button.disabled = false;
+      }
+    }),
+  );
+</script>

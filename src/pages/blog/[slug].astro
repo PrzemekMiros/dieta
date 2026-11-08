@@ -1,0 +1,28 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PortableText from '../../components/PortableText.astro';
+import { posts } from '../../lib/catalog';
+const p = (await posts()).find((p) => p.slug === Astro.params.slug);
+if (!p) return Astro.redirect('/404');
+---
+
+<Layout title={p.seoTitle || p.title} description={p.seoDescription || p.excerpt} image={p.image}>
+  <article class="container section">
+    <a href="/blog" class="text-link mb-10">
+      ← Blog zdrowotny
+    </a>
+    <p class="eyebrow">{new Date(p.publishedAt).toLocaleDateString('pl-PL')}</p>
+    <h1 class="max-w-4xl">{p.title}</h1>
+    <p class="intro muted mb-10">{p.excerpt}</p>
+    {p.image && (
+      <img
+        src={p.image}
+        width="1200"
+        height="650"
+        alt={p.imageAlt || p.title}
+        class="max-h-[500px] w-full rounded-xl mb-12"
+      />
+    )}
+    <PortableText blocks={p.content} />
+  </article>
+</Layout>

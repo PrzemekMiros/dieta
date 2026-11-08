@@ -1,0 +1,114 @@
+﻿---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BookingModal from '../components/BookingModal.astro';
+import CookieConsent from '../components/CookieConsent.astro';
+import { settings } from '../lib/catalog';
+import { isDemo, siteUrl } from '../lib/server/env';
+interface Props {
+  title: string;
+  description?: string;
+  noindex?: boolean;
+  image?: string;
+}
+const {
+  title,
+  description = 'Konsultacje dietetyczne, planowanie żywienia i wsparcie w budowaniu zdrowych nawyków. Twoja Dietetyczka.',
+  noindex = false,
+  image = '/images/cake-editorial.webp',
+} = Astro.props;
+const config = await settings();
+const gtmId = import.meta.env.PUBLIC_GTM_ID || '';
+const canonical = new URL(Astro.url.pathname, siteUrl()).href;
+const org = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Twoja Dietetyczka',
+  url: siteUrl(),
+  email: config.email,
+  logo: config.logo,
+};
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title} | Twoja Dietetyczka</title>
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(image, siteUrl()).href} />
+    <meta name="theme-color" content="#f7f6f4" />
+    <script is:inline define:vars={{ gtmId }}>
+      window.cookieconsentConfig = { gtmId, consentStorageMaxAgeDays: 365 };
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+      const consentRegions = ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH'];
+      const defaults = { functionality_storage: 'granted', security_storage: 'granted', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', personalization_storage: 'denied', analytics_storage: 'denied', wait_for_update: 500, region: consentRegions };
+      window.gtag('set', 'url_passthrough', true);
+      window.gtag('consent', 'default', defaults);
+      window.gtag('set', 'ads_data_redaction', true);
+      try {
+        const record = JSON.parse(localStorage.getItem('consentMode'));
+        if (record?.schemaVersion === 1 && record?.consentMode && Date.parse(record.expiresAt) > Date.now()) {
+          window.gtag('consent', 'update', record.consentMode);
+          window.gtag('set', 'ads_data_redaction', record.consentMode.ad_storage === 'denied');
+        }
+      } catch {}
+      if (gtmId && /^GTM-[A-Z0-9]+$/.test(gtmId)) {
+        window.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+        const gtmScript = document.createElement('script');
+        gtmScript.async = true;
+        gtmScript.src = 'https://www.googletagmanager.com/gtm.js?id=' + encodeURIComponent(gtmId);
+        gtmScript.dataset.gtmLoader = 'true';
+        document.head.appendChild(gtmScript);
+      }
+    </script>
+    {(noindex || isDemo()) && <meta name="robots" content="noindex,nofollow" />}
+    <script type="application/ld+json" set:html={JSON.stringify(org).replace(/</g, '\\u003c')} />
+  </head>
+  <body>
+    <Header />
+    <div class="site-banner">Zdrowie zaczyna się od dobrych wyborów.</div>
+    <main id="main">
+      <slot />
+    </main>
+    <Footer settings={config} />
+    <BookingModal />
+    <CookieConsent />
+    <div id="cart-toast" class="toast" role="status" aria-live="polite" hidden></div>
+    <script>
+      import '../scripts/cart';
+      import '../scripts/motion';
+    </script>
+  </body>
+</html>
+<style>
+  .site-banner {
+    text-align: center;
+    padding: 5px 12px;
+    background: var(--color-beige);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+  }
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: calc(100% - 32px);
+    padding: 14px 24px;
+    background: var(--color-ink);
+    color: var(--color-white);
+    border-radius: 8px;
+    z-index: 100;
+    font-size: 13px;
+    box-shadow: 0 4px 20px var(--color-shadow-toast);
+  }
+</style>
