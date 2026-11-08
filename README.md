@@ -1,6 +1,4 @@
-﻿# Tortowe Ciocho
-
-Sklep w Astro SSR + TypeScript, Tailwind CSS 4 i GSAP/ScrollTrigger, z Sanity Studio, PostgreSQL/Drizzle, integracją Przelewy24, prywatnymi ebookami i osobnym panelem zamówień.
+﻿Sklep w Astro SSR + TypeScript, Tailwind CSS 4 i GSAP/ScrollTrigger, z Sanity Studio, PostgreSQL/Drizzle, integracją Przelewy24, prywatnymi ebookami i osobnym panelem zamówień.
 
 ## Wdrożenie na Netlify
 
