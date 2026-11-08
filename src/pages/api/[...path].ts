@@ -21,6 +21,7 @@ import { cartSchema, checkoutSchema } from '../../lib/server/checkout-input';
 import { calculate } from '../../lib/server/pricing';
 import {
   createOrder,
+  salesReady,
   acceptPayment,
   cancelOrder,
   confirmCashOnDelivery,
@@ -148,7 +149,8 @@ export const ALL: APIRoute = async (ctx) => {
       // Private asset keys never leave the server.
       return json({
         ...q,
-        codAvailable: env('COD_ENABLED') === 'true' && q.physical && !q.digital,
+        codAvailable: !isDemo() && env('COD_ENABLED') === 'true' && q.physical && !q.digital,
+        p24Available: !isDemo() && env('SALES_ENABLED') === 'true',
         lines: q.lines.map(({ _id, name, slug, image, price, quantity, productType, stock }) => ({
           _id,
           name,
@@ -162,10 +164,10 @@ export const ALL: APIRoute = async (ctx) => {
       });
     }
     if (path === 'checkout') {
-      if (env('SALES_ENABLED') !== 'true' || isDemo())
-        throw new HttpError(503, 'Sklep nie przyjmuje jeszcze zamówień.');
+      const input = checkoutSchema.parse(body);
+      salesReady(input.paymentMethod);
       await limited(`checkout:${ip}`, 8, 300);
-      return json(await createOrder(checkoutSchema.parse(body)));
+      return json(await createOrder(input));
     }
     if (path === 'newsletter') {
       if (env('NEWSLETTER_ENABLED') !== 'true')

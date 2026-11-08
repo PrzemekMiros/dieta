@@ -10,14 +10,17 @@ import { env, isDemo, required } from './env';
 import { registerPayment, paymentUrl, p24Config, verifyPayment, type Notification } from './p24';
 import { enqueue, escapeHtml } from './email';
 import { issueLink } from './digital';
-export function salesReady() {
-  if (env('SALES_ENABLED') !== 'true' || isDemo())
+export function salesReady(paymentMethod: CheckoutInput['paymentMethod'] = 'p24') {
+  if (isDemo()) throw new HttpError(503, 'Sklep nie przyjmuje jeszcze zamówień.');
+  if (paymentMethod === 'cod' && env('COD_ENABLED') !== 'true')
+    throw new HttpError(503, 'Płatność za pobraniem nie jest obecnie dostępna.');
+  if (paymentMethod === 'p24' && env('SALES_ENABLED') !== 'true')
     throw new HttpError(503, 'Sklep nie przyjmuje jeszcze zamówień.');
   required('DATABASE_URL');
   required('SMTP_HOST');
 }
 export async function createOrder(input: CheckoutInput) {
-  salesReady();
+  salesReady(input.paymentMethod);
   const requestHash = hash(JSON.stringify({ ...input, accessToken: undefined }));
   const [existing] = await db()
     .select()

@@ -14,7 +14,7 @@ Netlify SSR nie uruchamia ciągłych procesów `worker:start` ani `payments:reco
 
 W konfiguracji witryny wybierz Node 24; `netlify.toml` i `.nvmrc` ustawiają tę wersję również dla buildów. Nie ustawiaj osobnego katalogu funkcji. Widoczność logów deployów ustaw jako prywatną.
 
-1. Ustaw zmienne z `.env.example` w managerze sekretów hostingu. `SITE_URL` to docelowy adres HTTPS bez końcowego ukośnika. `APP_ENV=production`, `DEMO_CATALOG=false`; na początku `SALES_ENABLED=false`. `COD_ENABLED=true` udostępnia gotówkę przy odbiorze wyłącznie dla zamówień z produktami fizycznymi. Płatności za ebooki i koszyki mieszane nadal wymagają P24.
+1. Ustaw zmienne z `.env.example` w managerze sekretów hostingu. `SITE_URL` to docelowy adres HTTPS bez końcowego ukośnika. Ustaw `APP_ENV=production`, `DEMO_CATALOG=false`. `COD_ENABLED=true` udostępnia wyłącznie pobranie dla zamówień z produktami fizycznymi i działa niezależnie od `SALES_ENABLED`; płatności P24 pozostają zablokowane, dopóki `SALES_ENABLED` nie będzie `true`. Płatności za ebooki i koszyki mieszane wymagają P24.
 2. `npm ci`, `npm run check`, `npm run lint`, `npm test`, `npm run build`.
 3. Na kopii bazy wykonaj backup/restore oraz `npm run db:migrate`. Przed produkcyjną migracją wykonaj backup.
 4. Uzupełnij Sanity: produkty, dokumenty prawne, dane firmy, kontakt, zdjęcia, pliki w prywatnym storage, stawki podatku zatwierdzone przez właściciela. Nie aktywuj rekordów `demo-*`.

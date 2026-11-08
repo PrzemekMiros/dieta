@@ -25,16 +25,14 @@ export class HttpError extends Error {
 }
 export function sameOrigin(request: Request) {
   const origin = request.headers.get('origin');
-  const allowed =
-    env('APP_ENV') === 'production'
-      ? [new URL(siteUrl()).origin]
-      : [
-          new URL(siteUrl()).origin,
-          'http://localhost:3000',
-          'http://127.0.0.1:3000',
-          'http://localhost:4321',
-          'http://127.0.0.1:4321',
-        ];
+  const allowed = [new URL(request.url).origin, new URL(siteUrl()).origin];
+  if (env('APP_ENV') !== 'production')
+    allowed.push(
+      'http://localhost:3000',
+      'http://127.0.0.1:3000',
+      'http://localhost:4321',
+      'http://127.0.0.1:4321',
+    );
   if (!origin || !allowed.includes(origin))
     throw new HttpError(403, 'Niedozwolone źródło żądania.');
 }

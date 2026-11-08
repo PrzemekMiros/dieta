@@ -19,6 +19,7 @@ type Quote = {
   methods: { id: string; name: string; price: number }[];
   shippingMethod?: string;
   codAvailable: boolean;
+  p24Available: boolean;
 };
 const key = 'tc-cart-v1';
 export function readCart(): Item[] {

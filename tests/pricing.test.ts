@@ -73,6 +73,20 @@ describe('bezpieczeństwo', () => {
         new Request('http://localhost/api', { headers: { origin: 'http://localhost:3000' } }),
       ),
     ).not.toThrow();
+    expect(() =>
+      sameOrigin(
+        new Request('https://www.example.test/api/booking', {
+          headers: { origin: 'https://www.example.test' },
+        }),
+      ),
+    ).not.toThrow();
+    expect(() =>
+      sameOrigin(
+        new Request('https://www.example.test/api/booking', {
+          headers: { origin: 'https://example.test' },
+        }),
+      ),
+    ).toThrow();
   });
   it('podpis P24 zachowuje typy, kolejność i UTF-8', () => {
     const n = {

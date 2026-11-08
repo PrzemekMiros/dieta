@@ -432,15 +432,19 @@ import Layout from '../../layouts/Layout.astro';
       q = await quote(readCart(), methods.value || undefined);
       shipping.hidden = !q.physical;
       shipping.disabled = !q.physical;
-      paymentFields.hidden = !q.codAvailable;
-      paymentFields.disabled = !q.codAvailable;
+      paymentFields.hidden = !q.codAvailable && !q.p24Available;
+      paymentFields.disabled = !q.codAvailable && !q.p24Available;
       const codPayment = paymentFields.querySelector<HTMLInputElement>(
         'input[name="paymentMethod"][value="cod"]',
       )!;
       const p24Payment = paymentFields.querySelector<HTMLInputElement>(
         'input[name="paymentMethod"][value="p24"]',
       )!;
-      if (!q.codAvailable) p24Payment.checked = true;
+      codPayment.disabled = !q.codAvailable;
+      p24Payment.disabled = !q.p24Available;
+      p24Payment.closest('label')!.hidden = !q.p24Available;
+      if (!q.codAvailable && q.p24Available) p24Payment.checked = true;
+      else if (q.codAvailable && !q.p24Available) codPayment.checked = true;
       else if (!paymentSelectionMade) codPayment.checked = true;
       updatePaymentNote();
       const digital = document.querySelector<HTMLElement>('#digital-consent')!;
@@ -506,7 +510,7 @@ import Layout from '../../layouts/Layout.astro';
       const get = (key: string) => String(data.get(key) || '');
       const payload = {
         items: readCart(),
-        paymentMethod: q.codAvailable ? get('paymentMethod') || 'cod' : 'p24',
+        paymentMethod: get('paymentMethod') || (q.codAvailable ? 'cod' : 'p24'),
         firstName: get('firstName'),
         lastName: get('lastName'),
         email: get('email'),

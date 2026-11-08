@@ -18,6 +18,7 @@ vi.mock('../src/lib/server/p24', async (importOriginal) => {
   return { ...original, registerPayment: vi.fn(async () => 'test-provider-token') };
 });
 import {
+  salesReady,
   createOrder,
   acceptPayment,
   cancelOrder,
@@ -148,10 +149,18 @@ describe('zamówienia i callback — prawdziwe transakcje PostgreSQL w PGlite', 
     const data = { ...input([{ id: 'demo-4', quantity: 2 }]), paymentMethod: 'cod' as const };
     const register = vi.mocked(registerPayment);
     register.mockClear();
-
-    const result = await createOrder(data);
+    const salesEnabled = process.env.SALES_ENABLED;
+    process.env.SALES_ENABLED = 'false';
+    let result: Awaited<ReturnType<typeof createOrder>>;
+    try {
+      expect(() => salesReady('p24')).toThrow('Sklep nie przyjmuje jeszcze zamówień.');
+      result = await createOrder(data);
+      expect(await createOrder(data)).toEqual(result);
+    } finally {
+      if (salesEnabled === undefined) delete process.env.SALES_ENABLED;
+      else process.env.SALES_ENABLED = salesEnabled;
+    }
     expect(result.redirect).toContain('/zamowienie/sukces?token=');
-    expect(await createOrder(data)).toEqual(result);
     expect(register).not.toHaveBeenCalled();
     expect((await database.select().from(schema.orders))[0]?.status).toBe('pending');
     expect((await database.select().from(schema.payments))[0]?.status).toBe('cod_pending');

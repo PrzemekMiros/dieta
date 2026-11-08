@@ -2,6 +2,7 @@ import { getSanityClient } from './sanity';
 import { isDemo } from './server/env';
 import { demoProducts, demoPosts } from '../data/demo';
 import { privacyPolicy } from '../data/privacy-policy';
+import { termsOfService } from '../data/terms-of-service';
 import type { Product, HomeContent, SiteSettings, Post, Block } from './types';
 const projection = `_id,name,"slug":slug.current,sku,description,shortDescription,"image":images[0].asset->url + "?auto=format&w=900&fit=max", "images":images[].asset->url,price,compareAtPrice,productType,"category":category->name,featured,active,stock,weight,digitalAssetReference,taxRate,seoTitle,seoDescription,demo`;
 export async function products(fresh = false): Promise<Product[]> {
@@ -36,10 +37,17 @@ export async function posts(): Promise<Post[]> {
 export async function contentPage(
   slug: string,
 ): Promise<{ title: string; content: Block[] } | null> {
-  if (isDemo()) return slug === 'polityka-prywatnosci' ? privacyPolicy : null;
+  if (isDemo()) {
+    if (slug === 'polityka-prywatnosci') return privacyPolicy;
+    if (slug === 'regulamin') return termsOfService;
+    return null;
+  }
   const page = await getSanityClient().fetch<{ title: string; content: Block[] } | null>(
     '*[_type=="page" && slug.current==$slug][0]',
     { slug },
   );
-  return page || (slug === 'polityka-prywatnosci' ? privacyPolicy : null);
+  if (page) return page;
+  if (slug === 'polityka-prywatnosci') return privacyPolicy;
+  if (slug === 'regulamin') return termsOfService;
+  return null;
 }
