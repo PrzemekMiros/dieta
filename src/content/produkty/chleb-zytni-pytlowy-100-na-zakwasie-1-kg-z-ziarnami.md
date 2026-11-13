@@ -15,7 +15,7 @@ active: true
 seoTitle: "Chleb żytni pytlowy na zakwasie z ziarnami"
 seoDescription: "Ręcznie wypiekany chleb żytni na zakwasie z siemieniem, słonecznikiem i pestkami dyni. Bochenek o wadze około 1 kg."
 ---
-
+ 
 ## Naturalny chleb żytni na zakwasie
 
 Chleb przygotowywany jest z mąki żytniej pytlowej i naturalnego zakwasu żytniego. Nie zawiera dodatku drożdży, spulchniaczy ani konserwantów. Każdy bochenek jest formowany i wypiekany ręcznie, dlatego jego kształt oraz dokładna waga mogą się nieznacznie różnić.
@@ -30,9 +30,9 @@ Produkt zawiera gluten.
 
 ### Waga i realizacja zamówienia
 
-Bochenek waży około 1 kg. Czas realizacji zamówienia wynosi 2 dni robocze.
+Bochenek waży około 1 kg. Czas realizacji zamówienia wynosi ok 2 dni robocze.
 
 ### Przechowywanie
 
 Chleb najlepiej przechowywać w papierowej torbie albo zawinięty w czystą bawełnianą ściereczkę. W takich warunkach może zachować świeżość do 6 dni. Pieczywo można również pokroić na kromki i zamrozić.
-  
+   
