@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import PortableText from '../../components/PortableText.astro';
 import { product } from '../../lib/catalog';
 import { money } from '../../lib/types';
 import { siteUrl } from '../../lib/server/env';
@@ -66,10 +67,14 @@ const crumbs = {
         <button class="btn mt-8" data-add={p._id} disabled={p.stock === 0}>
           Dodaj do koszyka <span>+</span>
         </button>
-        <div class="prose mt-10">
-          <h2>Warto wiedzieć</h2>
-          <p>{p.description}</p>
-        </div>
+        {p.content?.length ? (
+          <div class="mt-10"><PortableText blocks={p.content} /></div>
+        ) : (
+          <div class="prose mt-10">
+            <h2>Warto wiedzieć</h2>
+            <p>{p.description}</p>
+          </div>
+        )}
         <p class="text-xs muted mt-8">SKU: {p.sku}</p>
       </div>
     </div>

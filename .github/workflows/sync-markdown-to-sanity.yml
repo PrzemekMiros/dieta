@@ -6,6 +6,8 @@ on:
     paths:
       - 'src/content/artykuly/**'
       - 'public/content/artykuly/img/**'
+      - 'src/content/produkty/**'
+      - 'public/content/produkty/img/**'
       - 'scripts/sync-markdown-to-sanity.mjs'
   workflow_dispatch:
 

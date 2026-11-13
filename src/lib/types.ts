@@ -4,6 +4,7 @@ export interface Product {
   slug: string;
   sku: string;
   description: string;
+  content?: Block[];
   shortDescription: string;
   image: string;
   images?: string[];

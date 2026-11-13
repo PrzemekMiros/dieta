@@ -4,7 +4,7 @@ import { demoProducts, demoPosts } from '../data/demo';
 import { privacyPolicy } from '../data/privacy-policy';
 import { termsOfService } from '../data/terms-of-service';
 import type { Product, HomeContent, SiteSettings, Post, Block } from './types';
-const projection = `_id,name,"slug":slug.current,sku,description,shortDescription,"image":images[0].asset->url + "?auto=format&w=900&fit=max", "images":images[].asset->url,price,compareAtPrice,productType,"category":category->name,featured,active,stock,weight,digitalAssetReference,taxRate,seoTitle,seoDescription,demo`;
+const projection = `_id,name,"slug":slug.current,sku,description,content,shortDescription,"image":images[0].asset->url + "?auto=format&w=900&fit=max", "images":images[].asset->url,price,compareAtPrice,productType,"category":category->name,featured,active,stock,weight,digitalAssetReference,taxRate,seoTitle,seoDescription,demo`;
 export async function products(fresh = false): Promise<Product[]> {
   if (isDemo()) return demoProducts;
   return getSanityClient(fresh).fetch(

@@ -89,6 +89,22 @@ const product = defineType({
     }),
     defineField({ ...slug, group: 'content' }),
     defineField({
+      name: 'sourcePath',
+      title: 'Plik źródłowy',
+      type: 'string',
+      group: 'content',
+      readOnly: true,
+      hidden: true,
+    }),
+    defineField({
+      name: 'sourceHash',
+      title: 'Suma kontrolna źródła',
+      type: 'string',
+      group: 'content',
+      readOnly: true,
+      hidden: true,
+    }),
+    defineField({
       name: 'shortDescription',
       title: 'Krótki opis',
       description: 'Widoczny na kartach produktu i używany jako domyślny opis SEO.',
@@ -104,6 +120,12 @@ const product = defineType({
       rows: 8,
       group: 'content',
       validation: (rule) => rule.required().min(40),
+    }),
+    defineField({
+      ...content,
+      title: 'Opis z pliku Markdown',
+      group: 'content',
+      description: 'Synchronizowany z GitHuba. Starsze produkty mogą korzystać z pola Pełny opis.',
     }),
     defineField({
       name: 'images',
