@@ -8,14 +8,18 @@ interface Props {
 const { section: s, home } = Astro.props;
 const features = [
   [
-    'Dieta bez presji',
-    'Skupiamy się na zdrowiu, a nie na zakazach. Zdrowe wybory stają się prostsze i trwalsze.',
+    'Poznaję Twoją sytuację',
+    'Przed konsultacją proszę Cię o wyniki badań, wypełnioną ankietę żywieniowo-zdrowotną, dzienniczek żywieniowy i krótkie informacje o Twoich nawykach oraz trudnościach. Wszystko po to, żeby lepiej poznać Twoje potrzeby.',
   ],
-  ['Plan dopasowany do Ciebie', 'Uwzględniam Twoje potrzeby, codzienność, preferencje i cele.'],
-  ['Przejrzyste zasady', 'Wiele małych zmian daje lepsze efekty niż drastyczny reżim.'],
+  ['Analizuję i wyciągam wnioski',
+   'Zapoznaję się z przesłanymi materiałami, przyglądam się Twojemu sposobowi odżywiania i potrzebom. Dzięki temu nie tracimy czasu na poznawanie podstaw dopiero podczas spotkania.'],
   [
-    'Wsparcie na co dzień',
-    'Jestem przy Tobie na każdym etapie, żebyś nie czuła się sama z wyzwaniem.',
+    'Rozmawiamy i szukamy rozwiązań',
+    'Omawiamy najważniejsze kwestie, wyjaśniam Ci, co warto zmienić i dlaczego. Otrzymujesz konkretne wskazówki dopasowane do swojej sytuacji.',
+  ],
+  [
+    'Wiesz, co robić dalej',
+    'Wychodzisz z jasnym planem działania i zaleceniami, które pomogą Ci zadbać o zdrowie i dobre nawyki bez niepotrzebnej presji.',
   ],
 ];
 ---
@@ -24,15 +28,10 @@ const features = [
   <section class="section container split" id="filozofia">
     <div data-reveal>
       <p class="eyebrow">{s.subtitle || 'Moja filozofia'}</p>
-      <h2>{s.title || 'Zdrowie to nie restrykcja, tylko codzienny komfort.'}</h2>
+      <h2>{s.title || 'Najpierw poznaję Twoją historię. Potem szukamy najlepszych rozwiązań.'}</h2>
       <div class="intro muted">
         <p>
-          {s.body ||
-            'Nie wierzę w sztywne schematy, restrykcje czy idealne jadłospisy z podręcznika. Tworzę spersonalizowane zalecenia i daję Ci proste narzędzia do pracy nad zdrowiem na co dzień.'}
-        </p>
-        <p>
-          Elastyczność to klucz do sukcesu: to zmiana ma pasować do Ciebie i Twojego życia, a nie na
-          odwrót.
+          Nie zaczynam od gotowego jadłospisu ani listy zakazów. Chcę wiedzieć, z czym się mierzysz, jak wygląda Twoje odżywianie i czego potrzebujesz. Dzięki temu nasze spotkanie ma konkretny cel, a Ty wychodzisz z wiedzą i wskazówkami, które możesz wykorzystać w praktyce.
         </p>
       </div>
     </div>
@@ -85,10 +84,10 @@ const features = [
             pasować do Ciebie i Twojego życia, a nie na odwrót.
           </p>
           <p>
-            Co mnie wyróżnia? Indywidualne spojrzenie na zdrowie oraz nieustanne poszukiwanie
-            rozwiązań skrojonych na miarę Twoich potrzeb. Priorytetem jest dla mnie osiągnięcie
-            Twoich celów, rozwiązanie problemów żywieniowych oraz zapewnienie Ci pełnego wsparcia w
-            drodze do lepszego samopoczucia.
+            Nie wierzę w sztywne schematy, restrykcje czy idealne jadłospisy z podręcznika. Tworzę spersonalizowane zalecenia i daję Ci proste narzędzia do pracy nad zdrowiem na co dzień.
+          </p>
+          <p>
+            Elastyczność to klucz do sukcesu: to zmiana ma pasować do Ciebie i Twojego życia, a nie na odwrót.
           </p>
         </div>
         <a class="text-link mt-8" href="/o-nas">
@@ -115,50 +114,100 @@ const features = [
       </div>
     </div>
     <div class="category-grid">
-      {[
-        [
-          'Dorośli',
-          'Zdrowie i nawyki na co dzień',
-          'Dietoterapia w zaburzeniach zdrowotnych, zmiana nawyków żywieniowych, redukcja masy ciała, nauka bilansowania posiłków i elastyczne podejście do diety.',
-          '/kontakt',
-          'Umów konsultację',
-        ],
-        [
-          'Dzieci i rodzice',
-          'Dobre nawyki od pierwszych posiłków',
-          'Rozszerzanie diety u niemowląt, bilansowanie posiłków maluchów i wsparcie przy braku apetytu.',
-          '/kontakt',
-          'Zobacz ofertę',
-        ],
-        [
-          'Kobiety w ciąży',
-          'Wsparcie na każdym etapie ciąży',
-          'Wsparcie żywieniowe na każdym etapie ciąży, dobór celowanej suplementacji i modyfikacja diety przy ewentualnych dolegliwościach lub wyzwaniach zdrowotnych.',
-          '/kontakt',
-          'Skontaktuj się',
-        ],
-      ].map(([label, title, body, href, cta], i) => (
-        <article class:list={['card category-card', { 'dark-card': i === 2 }]} data-reveal>
-          <p class="eyebrow">{label}</p>
-          <h3>{title}</h3>
-          <p>{body}</p>
-          <div class="category-rule" />
-          <p class="text-xs">
-            {i === 0
-              ? 'Zdrowie · nawyki · elastyczność'
-              : i === 1
-                ? 'Rozszerzanie diety · posiłki · apetyt'
-                : 'Żywienie · suplementacja · wsparcie'}
-          </p>
-          <a
-            href={href}
-            class="text-link"
-            data-booking-open={href === '/kontakt' ? true : undefined}
-          >
-            {cta} <span>→</span>
-          </a>
-        </article>
-      ))}
+      <article class="card category-card dark-card" data-reveal>
+        <p class="eyebrow">Kobiety w ciąży</p>
+        <h3>Wsparcie na każdym etapie ciąży</h3>
+        <p class="category-description">
+          Wsparcie żywieniowe na każdym etapie ciąży, dobór celowanej suplementacji i modyfikacja
+          diety przy ewentualnych dolegliwościach lub wyzwaniach zdrowotnych.
+        </p>
+        <div class="category-offers">
+          <div class="category-offer">
+            <div>
+              <strong>Jednorazowa konsultacja</strong>
+              <small>Bez jadłospisu · 60 min</small>
+            </div>
+            <b>300 zł</b>
+          </div>
+          <div class="category-offer">
+            <div>
+              <strong>Konsultacja z jadłospisem</strong>
+              <small>Jadłospis na 7 dni</small>
+            </div>
+            <b>469 zł</b>
+          </div>
+          <div class="category-package">
+            <div class="category-package-heading">
+              <strong>Pakiet 2-miesięczny</strong>
+              <b>890 zł</b>
+            </div>
+            <ul>
+              <li>2 × videokonsultacja</li>
+              <li>Kontakt i wsparcie pomiędzy spotkaniami</li>
+              <li>Jadłospis na 14 dni</li>
+            </ul>
+          </div>
+        </div>
+        <button type="button" class="text-link category-cta" data-booking-open>
+          Umów konsultację <span>→</span>
+        </button>
+      </article>
+
+      <article class="card category-card" data-reveal>
+        <p class="eyebrow">Dzieci i rodzice</p>
+        <h3>Dobre nawyki od pierwszych posiłków</h3>
+        <p class="category-description">
+          Rozszerzanie diety u niemowląt, bilansowanie posiłków maluchów i wsparcie przy braku
+          apetytu.
+        </p>
+        <div class="category-offers">
+          <div class="category-offer">
+            <div>
+              <strong>Jednorazowa konsultacja</strong>
+              <small>45 min</small>
+            </div>
+            <b>200 zł</b>
+          </div>
+        </div>
+        <button type="button" class="text-link category-cta" data-booking-open>
+          Umów konsultację <span>→</span>
+        </button>
+      </article>
+
+      <article class="card category-card" data-reveal>
+        <p class="eyebrow">Oferta dla dorosłych</p>
+        <h3>Dorośli</h3>
+        <div class="category-offers">
+          <div class="category-offer">
+            <div>
+              <strong>Jednorazowa konsultacja</strong>
+              <small>Bez jadłospisu · 60 min</small>
+            </div>
+            <b>270 zł</b>
+          </div>
+          <div class="category-offer">
+            <div>
+              <strong>Konsultacja z jadłospisem</strong>
+              <small>Jadłospis na 7 dni</small>
+            </div>
+            <b>449 zł</b>
+          </div>
+          <div class="category-package">
+            <div class="category-package-heading">
+              <strong>Pakiet 2-miesięczny</strong>
+              <b>860 zł</b>
+            </div>
+            <ul>
+              <li>2 × videokonsultacja</li>
+              <li>Kontakt i wsparcie pomiędzy spotkaniami</li>
+              <li>Jadłospis na 14 dni</li>
+            </ul>
+          </div>
+        </div>
+        <button type="button" class="text-link category-cta" data-booking-open>
+          Umów konsultację <span>→</span>
+        </button>
+      </article>
     </div>
   </section>
 )}
@@ -280,8 +329,8 @@ const features = [
         </>
       ) : (
         <p class="intro mx-auto muted">
-          Wiele osób zaczyna od małej zmiany i dopiero potem widzi, jak dużo może zmienić się w ich
-          codziennym samopoczuciu, energii i relacji z jedzeniem.
+          Każdego dnia na moim Instagramie znajdziesz nowe przepisy, porady dietetyczne oraz
+          wsparcie dla rodziców.
         </p>
       )}
       <button class="btn testimonials-booking" type="button" data-booking-open>
@@ -913,20 +962,78 @@ const features = [
   .category-card {
     display: flex;
     flex-direction: column;
-    min-height: 390px;
+    min-height: 610px;
   }
-  .category-card > p:not(.eyebrow) {
+  .category-card > .category-description {
     margin-top: 24px;
     font-size: 13px;
   }
-  .category-card .text-link {
+  .category-offers {
+    display: grid;
+    gap: 0;
     margin-top: 30px;
-    align-self: start;
+    border-top: 1px solid var(--color-border-tab);
   }
-  .category-rule {
-    margin-top: auto;
-    padding-top: 30px;
+  .category-offer {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 18px 0;
     border-bottom: 1px solid var(--color-border-tab);
+  }
+  .category-offer strong,
+  .category-package strong {
+    display: block;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .category-offer small {
+    display: block;
+    margin-top: 4px;
+    color: var(--color-muted);
+    font-size: 11px;
+  }
+  .category-offer b,
+  .category-package b {
+    flex: 0 0 auto;
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.1;
+  }
+  .category-package {
+    padding: 18px 0 0;
+  }
+  .category-package-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .category-package ul {
+    display: grid;
+    gap: 7px;
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+    color: var(--color-muted);
+    font-size: 11px;
+  }
+  .category-package li {
+    display: grid;
+    grid-template-columns: 12px 1fr;
+    gap: 6px;
+  }
+  .category-package li::before {
+    content: '✓';
+  }
+  .category-cta {
+    margin-top: auto;
+    padding: 30px 0 0;
+    align-self: start;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
   }
   .dark-card {
     background: var(--color-ink);
@@ -935,6 +1042,10 @@ const features = [
   }
   .dark-card .eyebrow {
     color: var(--color-accent-inverse);
+  }
+  .dark-card .category-offer small,
+  .dark-card .category-package ul {
+    color: var(--color-muted-inverse);
   }
   .steps {
     background: var(--color-ink);
@@ -1041,7 +1152,7 @@ const features = [
       grid-template-columns: 1fr;
     }
     .category-card {
-      min-height: 320px;
+      min-height: 0;
     }
     .about-main {
       height: 430px;

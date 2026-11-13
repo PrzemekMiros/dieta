@@ -24,16 +24,15 @@ const featured = home.featuredProducts?.length
   <section class="hero container">
     <div class="hero-copy">
       <p class="eyebrow" data-reveal>
-        Konsultacje dietetyczne · zdrowe nawyki · realne efekty
+         Jedz dobrze · Nieidealnie · Z przyjemnością
       </p>
       <h1 data-reveal>
-        {home.heroTitle || 'Zdrowe jedzenie,'}
+        Pomagam zaprzyjaźnić się 
         <br />
-        <em>{home.heroAccent || 'bez presji i reżimu.'}</em>
+        <em>z jedzeniem</em>
       </h1>
       <p class="hero-description" data-reveal>
-        {home.heroDescription ||
-          'Wspieram dorosłych, dzieci i rodziców oraz kobiety w ciąży. Łączę wiedzę akademicką z życiowym podejściem, tworząc zalecenia dopasowane do Twoich potrzeb. Wierzę, że to dieta ma pasować do Ciebie i Twojego życia, a nie na odwrót.'}
+        Wspieram dorosłych, dzieci i rodziców oraz kobiety w ciąży. Łączę wiedzę akademicką z życiowym podejściem, tworząc zalecenia dopasowane do Twoich potrzeb. Bo zdrowa dieta to nie perfekcja, a równowaga, która pasuje do Ciebie.
       </p>
       <div class="flex flex-wrap gap-3 mt-8" data-reveal>
         {(home.primaryHref || '/kontakt').startsWith('/kontakt') ? (
@@ -48,32 +47,6 @@ const featured = home.featuredProducts?.length
         <a class="btn btn-outline" href={home.secondaryHref || '/o-nas'}>
           {home.secondaryLabel || 'Poznaj mnie'}
         </a>
-      </div>
-      <div class="hero-details" data-reveal>
-        <div>
-          <span>01</span>
-          <p>
-            Rozmowa i
-            <br />
-            diagnoza
-          </p>
-        </div>
-        <div>
-          <span>02</span>
-          <p>
-            Plan dopasowany
-            <br />
-            do Ciebie
-          </p>
-        </div>
-        <div>
-          <span>03</span>
-          <p>
-            Wsparcie
-            <br />
-            krok po kroku
-          </p>
-        </div>
       </div>
     </div>
     <div class="hero-visual">
@@ -91,13 +64,13 @@ const featured = home.featuredProducts?.length
   </section>
   <div class="brand-strip">
     <div class="container">
-      <span>Zdrowe nawyki</span>
+      <span>Dietoterapia dorosłych</span>
       <b>✦</b>
-      <span>Współpraca bez presji</span>
+      <span>Rozszerzanie diety</span>
       <b>✦</b>
-      <span>Realne efekty</span>
+      <span>Żywienie dzieci</span>
       <b>✦</b>
-      <span>Lepsze samopoczucie</span>
+      <span>Wsparcie żywieniowe w ciąży</span>
       <b>✦</b>
     </div>
   </div>
