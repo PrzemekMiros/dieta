@@ -22,16 +22,17 @@ Chleb przygotowywany jest z mąki żytniej pytlowej i naturalnego zakwasu żytni
 
 Miąższ jest wilgotny i sprężysty, a skórka wyrazista i obficie pokryta ziarnami. Naturalna fermentacja nadaje pieczywu charakterystyczny, lekko kwaskowaty smak i głęboki aromat.
 
-## Składniki
+### Składniki
 
 Mąka żytnia pytlowa, woda, zakwas żytni z mąki żytniej i wody, sól kłodawska, siemię lniane, nasiona słonecznika oraz pestki dyni.
 
 Produkt zawiera gluten.
 
-## Waga i realizacja zamówienia
+### Waga i realizacja zamówienia
 
 Bochenek waży około 1 kg. Czas realizacji zamówienia wynosi 2 dni robocze.
 
-## Przechowywanie
+### Przechowywanie
 
 Chleb najlepiej przechowywać w papierowej torbie albo zawinięty w czystą bawełnianą ściereczkę. W takich warunkach może zachować świeżość do 6 dni. Pieczywo można również pokroić na kromki i zamrozić.
+  
