@@ -11,7 +11,7 @@ imageAlt: "Bochenek żytniego chleba na zakwasie z siemieniem, słonecznikiem i 
 weight: 1000
 initialStock: 0
 featured: false
-active: false
+active: true
 seoTitle: "Chleb żytni pytlowy na zakwasie z ziarnami"
 seoDescription: "Ręcznie wypiekany chleb żytni na zakwasie z siemieniem, słonecznikiem i pestkami dyni. Bochenek o wadze około 1 kg."
 ---
