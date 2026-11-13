@@ -17,12 +17,13 @@ const articles = await posts();
               alt={p.imageAlt || p.title}
               width="600"
               height="460"
-              class="w-full aspect-[4/3] rounded-xl"
+              class="w-full aspect-[4/3] rounded-xl mb-4"
               loading="lazy"
             />
-            <p class="eyebrow mt-6">{new Date(p.publishedAt).toLocaleDateString('pl-PL')}</p>
+
             <h2 class="!text-3xl">{p.title}</h2>
-            <p class="mt-4 muted text-sm">{p.excerpt}</p>
+            <p class="eyebrow !my-2">{new Date(p.publishedAt).toLocaleDateString('pl-PL')}</p>
+            <p class="!mt-0 muted text-sm">{p.excerpt}</p>
             <span class="text-link mt-6">Czytaj dalej ↗</span>
           </a>
         </article>
