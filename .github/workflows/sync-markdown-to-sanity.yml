@@ -1,0 +1,31 @@
+name: Synchronizuj Markdown do Sanity
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/content/artykuly/**'
+      - 'public/content/artykuly/img/**'
+      - 'scripts/sync-markdown-to-sanity.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SANITY_PROJECT_ID: fip0o8g2
+      SANITY_DATASET: production
+      PUBLIC_SANITY_API_VERSION: 2026-11-05
+      SANITY_WRITE_TOKEN: ${{ secrets.SANITY_WRITE_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run sanity:sync:markdown

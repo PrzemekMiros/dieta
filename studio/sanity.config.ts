@@ -275,6 +275,22 @@ const blogPost = defineType({
     }),
     defineField({ ...slug, group: 'content' }),
     defineField({
+      name: 'sourcePath',
+      title: 'Plik źródłowy',
+      type: 'string',
+      group: 'content',
+      readOnly: true,
+      hidden: true,
+    }),
+    defineField({
+      name: 'sourceHash',
+      title: 'Suma kontrolna źródła',
+      type: 'string',
+      group: 'content',
+      readOnly: true,
+      hidden: true,
+    }),
+    defineField({
       name: 'excerpt',
       title: 'Zajawka',
       description: 'Krótki opis widoczny na liście artykułów i używany domyślnie przez SEO.',
