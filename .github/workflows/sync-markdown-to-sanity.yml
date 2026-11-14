@@ -8,6 +8,7 @@ on:
       - 'public/content/artykuly/img/**'
       - 'src/content/produkty/**'
       - 'public/content/produkty/img/**'
+      - 'public/images/products/**'
       - 'scripts/sync-markdown-to-sanity.mjs'
   workflow_dispatch:
 

@@ -6,7 +6,7 @@ productType: "physical"
 sku: "CHLEB-ZYT-PYT-1000-ZIARNA"
 price: 2790
 taxRate: 5
-image: "/content/produkty/img/chleb-zytni-pytlowy-100-na-zakwasie-1-kg-z-ziarnami.png"
+image: "/images/products/chleb-zytni100-2.webp"
 imageAlt: "Bochenek żytniego chleba na zakwasie z siemieniem, słonecznikiem i pestkami dyni"
 weight: 1000
 initialStock: 0
@@ -35,4 +35,3 @@ Bochenek waży około 1 kg. Czas realizacji zamówienia wynosi ok 2 dni robocze.
 ### Przechowywanie
 
 Chleb najlepiej przechowywać w papierowej torbie albo zawinięty w czystą bawełnianą ściereczkę. W takich warunkach może zachować świeżość do 6 dni. Pieczywo można również pokroić na kromki i zamrozić.
-   

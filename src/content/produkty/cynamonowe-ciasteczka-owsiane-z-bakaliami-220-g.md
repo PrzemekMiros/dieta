@@ -6,8 +6,8 @@ productType: "physical"
 sku: "CIASTKA-OWS-CYNAMON-220"
 price: 1990
 taxRate: 5
-image: "/content/produkty/img/cynamonowe-ciasteczka-owsiane-z-bakaliami-220-g.svg"
-imageAlt: "Grafika zastępcza: cynamonowe ciasteczka owsiane z bakaliami, 220 g, 6 sztuk"
+image: "/images/products/ciastka-2.webp"
+imageAlt: "Sześć cynamonowych ciasteczek owsianych z bakaliami na zielonym talerzu"
 weight: 220
 initialStock: 0
 featured: false

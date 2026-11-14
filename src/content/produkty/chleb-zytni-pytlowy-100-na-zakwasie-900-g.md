@@ -6,8 +6,8 @@ productType: "physical"
 sku: "CHLEB-ZYT-PYT-900"
 price: 2660
 taxRate: 5
-image: "/content/produkty/img/chleb-zytni-pytlowy-100-na-zakwasie-900-g.svg"
-imageAlt: "Grafika zastępcza: chleb żytni pytlowy 100% na zakwasie, 900 g"
+image: "/images/products/chleb-zytni900-1.webp"
+imageAlt: "Chleb żytni pytlowy na zakwasie z widocznym przekrojem miąższu na drewnianej desce"
 weight: 900
 initialStock: 0
 featured: false
