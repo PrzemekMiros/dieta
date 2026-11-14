@@ -4,6 +4,8 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import BookingModal from '../components/BookingModal.astro';
 import CookieConsent from '../components/CookieConsent.astro';
+import ThemePicker from '../components/ThemePicker.astro';
+import '../styles/themes.css';
 import { settings } from '../lib/catalog';
 import { isDemo, siteUrl } from '../lib/server/env';
 interface Props {
@@ -45,6 +47,12 @@ const org = {
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={new URL(image, siteUrl()).href} />
     <meta name="theme-color" content="#f7f3ee" />
+    <script is:inline>
+      try {
+        const theme = localStorage.getItem('site-theme');
+        if (['warm', 'sage', 'lavender'].includes(theme)) document.documentElement.dataset.theme = theme;
+      } catch {}
+    </script>
     <script is:inline define:vars={{ gtmId }}>
       window.cookieconsentConfig = { gtmId, consentStorageMaxAgeDays: 365 };
       window.dataLayer = window.dataLayer || [];
@@ -80,6 +88,7 @@ const org = {
       <slot />
     </main>
     <Footer settings={config} />
+    <ThemePicker />
     <BookingModal />
     <CookieConsent />
     <div id="cart-toast" class="toast" role="status" aria-live="polite" hidden></div>

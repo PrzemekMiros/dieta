@@ -1,0 +1,86 @@
+---
+const themes = [
+  { id: 'warm', name: 'Ciepły', colors: ['#f7f3ee', '#e8ded3', '#73414c'] },
+  { id: 'sage', name: 'Szałwia', colors: ['#f3f6f0', '#dce5d6', '#3d614b'] },
+  { id: 'lavender', name: 'Lawenda', colors: ['#f6f3fa', '#e5ddef', '#695080'] },
+];
+---
+
+<aside class="theme-picker" aria-label="Motyw kolorystyczny">
+  <button class="theme-toggle" type="button" aria-expanded="false" aria-controls="theme-options" aria-label="Zmień motyw kolorystyczny">
+    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+      <path d="M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 1.4-3.4 1.5 1.5 0 0 1 1.1-2.6H18a3 3 0 0 0 3-3 9 9 0 0 0-9-9Z" />
+      <circle cx="7.5" cy="10" r=".8" /><circle cx="11" cy="7" r=".8" /><circle cx="15.5" cy="8" r=".8" />
+    </svg>
+    <span>Motyw</span>
+  </button>
+  <div id="theme-options" class="theme-options" hidden>
+    <p class="theme-heading">Kolory strony</p>
+    <p class="theme-description">Wybierz swój klimat.</p>
+    <div class="theme-choices" role="group" aria-label="Dostępne motywy">
+      {themes.map((theme) => (
+        <button type="button" class="theme-choice" data-theme-choice={theme.id} aria-pressed="false">
+          <span class="theme-swatches" aria-hidden="true">
+            {theme.colors.map((color) => <span style={{ backgroundColor: color }} />)}
+          </span>
+          <span>{theme.name}</span>
+          <span class="theme-check" aria-hidden="true">✓</span>
+        </button>
+      ))}
+    </div>
+  </div>
+</aside>
+
+<script>
+  const picker = document.querySelector<HTMLElement>('.theme-picker');
+  const toggle = picker?.querySelector<HTMLButtonElement>('.theme-toggle');
+  const panel = picker?.querySelector<HTMLElement>('.theme-options');
+  const choices = picker?.querySelectorAll<HTMLButtonElement>('[data-theme-choice]');
+  const colors: Record<string, string> = { warm: '#f7f3ee', sage: '#f3f6f0', lavender: '#f6f3fa' };
+  function updateSelection() {
+    const theme = document.documentElement.dataset.theme || 'warm';
+    choices?.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.themeChoice === theme)));
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', colors[theme] || colors.warm);
+  }
+  function closePanel() {
+    if (panel) panel.hidden = true;
+    toggle?.setAttribute('aria-expanded', 'false');
+  }
+  toggle?.addEventListener('click', () => {
+    if (!panel) return;
+    panel.hidden = !panel.hidden;
+    toggle.setAttribute('aria-expanded', String(!panel.hidden));
+  });
+  choices?.forEach((button) => button.addEventListener('click', () => {
+    const theme = button.dataset.themeChoice || 'warm';
+    document.documentElement.dataset.theme = theme;
+    try { localStorage.setItem('site-theme', theme); } catch {}
+    updateSelection();
+  }));
+  document.addEventListener('click', (event) => {
+    if (event.target instanceof Node && !picker?.contains(event.target)) closePanel();
+  });
+  picker?.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') { closePanel(); toggle?.focus(); }
+  });
+  updateSelection();
+</script>
+
+<style>
+  .theme-picker { position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 30; }
+  .theme-toggle { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 10px; border: 1px solid var(--color-border); border-right: 0; border-radius: 14px 0 0 14px; background: var(--color-surface-raised); color: var(--color-action); box-shadow: 0 4px 24px #0000000d; font-size: 10px; }
+  .theme-options { position: absolute; right: calc(100% + 12px); top: 50%; transform: translateY(-50%); width: min(240px, calc(100vw - 84px)); padding: 20px; background: var(--color-surface-raised); color: var(--color-ink); border: 1px solid var(--color-border); border-radius: 16px; box-shadow: 0 12px 48px #00000015; }
+  .theme-heading { font-family: var(--font-serif); font-size: 26px; line-height: 1.2; }
+  .theme-description { margin: 6px 0 16px; font-size: 12px; color: var(--color-muted); }
+  .theme-choices { display: grid; gap: 8px; }
+  .theme-choice { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 10px; border: 1px solid var(--color-border); border-radius: 8px; background: transparent; color: inherit; font-size: 12px; text-align: left; }
+  .theme-choice:hover { background: var(--color-surface-hover); }
+  .theme-choice[aria-pressed='true'] { border-color: var(--color-action); background: var(--color-surface-hover); }
+  .theme-swatches { display: flex; flex-shrink: 0; }
+  .theme-swatches span { width: 15px; height: 22px; }
+  .theme-swatches span:first-child { border-radius: 5px 0 0 5px; }
+  .theme-swatches span:last-child { border-radius: 0 5px 5px 0; }
+  .theme-check { margin-left: auto; visibility: hidden; color: var(--color-action); }
+  [aria-pressed='true'] .theme-check { visibility: visible; }
+  @media (max-width: 640px) { .theme-picker { top: auto; bottom: 24px; transform: none; } .theme-options { top: auto; bottom: 0; transform: none; } }
+</style>
