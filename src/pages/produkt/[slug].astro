@@ -1,11 +1,20 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import PortableText from '../../components/PortableText.astro';
-import { product } from '../../lib/catalog';
+import ProductCard from '../../components/ProductCard.astro';
+import { products } from '../../lib/catalog';
 import { money } from '../../lib/types';
 import { siteUrl } from '../../lib/server/env';
-const p = await product(Astro.params.slug!);
+const catalog = await products();
+const p = catalog.find((item) => item.slug === Astro.params.slug);
 if (!p) return Astro.redirect('/404');
+const relatedProducts = catalog
+  .filter((item) => item.active && item._id !== p._id && item.productType === p.productType)
+  .sort((a, b) =>
+    Number(Boolean(p.category) && b.category === p.category) -
+    Number(Boolean(p.category) && a.category === p.category),
+  )
+  .slice(0, 4);
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'Product',
@@ -67,24 +76,58 @@ const crumbs = {
         <button class="btn mt-8" data-add={p._id} disabled={p.stock === 0}>
           Dodaj do koszyka <span>+</span>
         </button>
-        {p.content?.length ? (
-          <div class="mt-10"><PortableText blocks={p.content} /></div>
-        ) : (
-          <div class="prose mt-10">
-            <h2>Warto wiedzieć</h2>
-            <p>{p.description}</p>
-          </div>
-        )}
         <p class="text-xs muted mt-8">SKU: {p.sku}</p>
       </div>
     </div>
   </section>
+  {(p.content?.length || p.description) && (
+    <section class="container section product-details" aria-label="Opis produktu">
+      <div class="product-description">
+        {p.content?.length ? (
+          <PortableText blocks={p.content} />
+        ) : (
+          <div class="prose"><p>{p.description}</p></div>
+        )}
+      </div>
+    </section>
+  )}
+  {relatedProducts.length > 0 && (
+    <section class="container section related-products" aria-labelledby="related-products-title">
+      <h2 id="related-products-title">Powiązane produkty</h2>
+      <div class="related-products-grid">
+        {relatedProducts.map((item) => <ProductCard product={item} />)}
+      </div>
+    </section>
+  )}
   {!p.demo && (
     <script type="application/ld+json" set:html={JSON.stringify(schema).replace(/</g, '\\u003c')} />
   )}
   <script type="application/ld+json" set:html={JSON.stringify(crumbs).replace(/</g, '\\u003c')} />
 </Layout>
 <style>
+  .product-details,
+  .related-products {
+    border-top: 1px solid var(--color-border);
+  }
+  .product-description {
+    max-width: 800px;
+  }
+  .related-products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 40px;
+    margin-top: 40px;
+  }
+  @media (max-width: 900px) {
+    .related-products-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 600px) {
+    .related-products-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
   .product-breadcrumbs {
     display: flex;
     flex-wrap: wrap;
