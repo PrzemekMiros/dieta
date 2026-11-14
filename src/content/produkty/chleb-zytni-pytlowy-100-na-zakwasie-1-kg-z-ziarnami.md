@@ -21,7 +21,7 @@ seoDescription: "Ręcznie wypiekany chleb żytni na zakwasie z siemieniem, słon
 Chleb przygotowywany jest z mąki żytniej pytlowej i naturalnego zakwasu żytniego. Nie zawiera dodatku drożdży, spulchniaczy ani konserwantów. Każdy bochenek jest formowany i wypiekany ręcznie, dlatego jego kształt oraz dokładna waga mogą się nieznacznie różnić.
 
 Miąższ jest wilgotny i sprężysty, a skórka wyrazista i obficie pokryta ziarnami. Naturalna fermentacja nadaje pieczywu charakterystyczny, lekko kwaskowaty smak i głęboki aromat.
-
+ź
 ### Składniki
 
 Mąka żytnia pytlowa, woda, zakwas żytni z mąki żytniej i wody, sól kłodawska, siemię lniane, nasiona słonecznika oraz pestki dyni.
