@@ -11,7 +11,7 @@ const { settings } = Astro.props;
     <div class="footer-grid">
       <div>
         <a href="/" class="footer-brand">
-          Dietetyka dla smyka
+          <img src="/images/logo.png" alt="Dietetyka dla smyka" width="235" height="42" loading="lazy" />
         </a>
         <p class="mt-4 text-sm muted">
           Zdrowe nawyki zaczynają się
@@ -75,8 +75,12 @@ const { settings } = Astro.props;
     gap: 28px;
   }
   .footer-brand {
-    font-family: var(--font-serif);
-    font-size: 24px;
+    display: inline-block;
+    max-width: 100%;
+  }
+  .footer-brand img {
+    width: 235px;
+    height: auto;
   }
   .footer-grid a:not(.footer-brand) {
     display: block;
