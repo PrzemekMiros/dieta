@@ -1,0 +1,114 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PortableText from '../components/PortableText.astro';
+import { contentPage, settings } from '../lib/catalog';
+import { shippingMethods } from '../lib/server/pricing';
+import { money } from '../lib/types';
+const [page, company] = await Promise.all([contentPage('dostawa-i-zwroty'), settings()]);
+const methods = shippingMethods();
+---
+
+<Layout title="Dostawa i zwroty">
+  <section class="container section">
+    <p class="eyebrow">Informacje o zamówieniach</p>
+    <h1>Dostawa i zwroty.</h1>
+    {page ? (
+      <PortableText blocks={page.content} />
+    ) : (
+      <div class="delivery-content">
+        <section>
+          <h2>Produkty fizyczne</h2>
+          <p>
+            Dostawa jest dostępna na terenie Polski. Koszt wybranej metody jest doliczany do ceny
+            produktów i widoczny przed złożeniem zamówienia.
+          </p>
+          <ul>
+            {methods.map((method) => (
+              <li>
+                {method.name}: {money(method.price)} brutto
+              </li>
+            ))}
+          </ul>
+          {company.deliveryInfo ? (
+            <p>{company.deliveryInfo}</p>
+          ) : (
+            <p>
+              Termin realizacji dostaw jest w trakcie ustalania. Przed zakupem skontaktuj się z
+              nami, aby go potwierdzić.
+            </p>
+          )}
+        </section>
+        <section>
+          <h2>E-booki</h2>
+          <p>
+            Dostarczenie pliku nie wiąże się z kosztem przesyłki. Po potwierdzeniu płatności
+            wysyłamy e-mail z linkiem do pobrania. Link jest ważny przez 72 godziny; w razie
+            wygaśnięcia skontaktuj się z nami po nowy.
+          </p>
+          <p>
+            Przed zakupem sprawdź opis produktu, format pliku i wymagania techniczne. Natychmiastowe
+            dostarczenie treści cyfrowej wymaga wyraźnej zgody oraz przyjęcia do wiadomości utraty
+            prawa odstąpienia po spełnieniu świadczenia; potwierdzenie tych oświadczeń powinno być
+            przekazane e-mailem.
+          </p>
+        </section>
+        <section>
+          <h2>Odstąpienie od umowy</h2>
+          <p>
+            Przy zakupie na odległość konsument co do zasady może odstąpić od umowy w ciągu 14 dni,
+            bez podawania przyczyny. Dla towarów termin biegnie od ich otrzymania, a dla usług i
+            treści cyfrowych od zawarcia umowy. Wyjątki wynikają z przepisów, w tym warunków
+            dostarczenia treści cyfrowych.
+          </p>
+          <p>
+            Oświadczenie możesz wysłać e-mailem. Wskaż dane umożliwiające identyfikację zamówienia i
+            poinformuj o odstąpieniu. Nie wymagamy specjalnego formularza.
+          </p>
+          <p>
+            Zwrot płatności następuje co do zasady w ciągu 14 dni od otrzymania oświadczenia, tą
+            samą metodą, chyba że uzgodnimy inną, bez dodatkowych kosztów. W przypadku towarów zwrot
+            może zostać wstrzymany do ich otrzymania lub przedstawienia dowodu odesłania.
+          </p>
+        </section>
+        <section>
+          <h2>Reklamacje</h2>
+          <p>
+            Jeżeli produkt jest niezgodny z umową, plik nie działa lub wystąpił problem z
+            zamówieniem, skontaktuj się z nami. Opisz problem i podaj numer zamówienia, jeśli go
+            posiadasz. Reklamacje dotyczące zamówienia kieruj do sprzedawcy, również gdy płatność
+            obsługuje zewnętrzny operator.
+          </p>
+          <p>
+            <a class="text-link" href="/kontakt">
+              Dane kontaktowe sprzedawcy →
+            </a>
+          </p>
+          <p>
+            <a class="text-link" href="/regulamin">
+              Przeczytaj regulamin →
+            </a>
+          </p>
+        </section>
+      </div>
+    )}
+  </section>
+</Layout>
+<style>
+  .delivery-content {
+    max-width: 780px;
+    display: grid;
+    gap: 32px;
+    margin-top: 36px;
+  }
+  h2 {
+    font-size: clamp(26px, 4vw, 36px);
+  }
+  p,
+  ul {
+    margin-top: 16px;
+  }
+  ul {
+    padding-left: 24px;
+    list-style: disc;
+  }
+</style>

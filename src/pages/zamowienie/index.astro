@@ -166,7 +166,7 @@ import Layout from '../../layouts/Layout.astro';
           Zamawiam z obowiązkiem zapłaty <span aria-hidden="true">→</span>
         </button>
         <p class="checkout-security" id="payment-note">
-          <span aria-hidden="true">✓</span> Płatność online przez Przelewy24.
+          Dostępne sposoby płatności sprawdzimy razem z Twoim koszykiem.
         </p>
         <p
           id="checkout-message"
@@ -403,6 +403,11 @@ import Layout from '../../layouts/Layout.astro';
   let paymentSelectionMade = false;
   let q: Awaited<ReturnType<typeof quote>>;
   function updatePaymentNote() {
+    if (!q.codAvailable && !q.p24Available) {
+      paymentNote.textContent =
+        'Płatności online Tpay są w przygotowaniu. Dla tego koszyka płatność jest obecnie niedostępna.';
+      return;
+    }
     const cod = paymentFields.querySelector<HTMLInputElement>(
       'input[name="paymentMethod"][value="cod"]',
     )!;
@@ -441,6 +446,7 @@ import Layout from '../../layouts/Layout.astro';
         'input[name="paymentMethod"][value="p24"]',
       )!;
       codPayment.disabled = !q.codAvailable;
+      codPayment.closest('label')!.hidden = !q.codAvailable;
       p24Payment.disabled = !q.p24Available;
       p24Payment.closest('label')!.hidden = !q.p24Available;
       if (!q.codAvailable && q.p24Available) p24Payment.checked = true;
@@ -472,8 +478,10 @@ import Layout from '../../layouts/Layout.astro';
       document.querySelector('[data-checkout-total]')!.textContent = money(q.total);
       if (q.lines.some((p) => p.productType === 'physical' && p.quantity > p.stock))
         throw new Error('Stan magazynowy uległ zmianie. Wróć do koszyka.');
-      button.disabled = false;
-      message.textContent = '';
+      button.disabled = !q.codAvailable && !q.p24Available;
+      message.textContent = button.disabled
+        ? 'Nie można jeszcze złożyć tego zamówienia. Skontaktuj się z nami, jeśli potrzebujesz pomocy.'
+        : '';
       summary.setAttribute('aria-busy', 'false');
     } catch (e) {
       message.textContent = readCart().length

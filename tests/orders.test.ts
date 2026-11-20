@@ -38,6 +38,7 @@ beforeAll(async () => {
   await engine.exec(await readFile('drizzle/0000_initial.sql', 'utf8'));
   Object.assign(process.env, {
     SALES_ENABLED: 'true',
+    PAYMENT_PROVIDER: 'p24',
     COD_ENABLED: 'true',
     DEMO_CATALOG: 'false',
     APP_ENV: 'test',

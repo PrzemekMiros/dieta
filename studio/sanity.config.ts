@@ -1,5 +1,6 @@
 import { defineConfig, defineField, defineType } from 'sanity';
 import { structureTool } from 'sanity/structure';
+import { OrdersTool } from './tools/OrdersTool';
 
 const requiredString = (name: string, title: string, description?: string) =>
   defineField({
@@ -476,6 +477,8 @@ export default defineConfig({
   title: 'Dietetyka dla Smyka',
   projectId: 'fip0o8g2',
   dataset: 'production',
+  auth: { loginMethod: 'token' },
+  tools: [{ name: 'zamowienia', title: 'Zamówienia', component: OrdersTool }],
   plugins: [
     structureTool({
       structure: (structure) =>

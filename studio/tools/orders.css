@@ -1,0 +1,217 @@
+.shop-orders {
+  box-sizing: border-box;
+  height: 100%;
+  overflow: auto;
+  padding: clamp(16px, 3vw, 40px);
+  color: var(--card-fg-color, #222);
+  background: var(--card-bg-color, #f5f6f8);
+  font:
+    15px/1.55 system-ui,
+    sans-serif;
+}
+.shop-orders * {
+  box-sizing: border-box;
+}
+.shop-orders h1 {
+  font-size: 32px;
+  margin: 0;
+  letter-spacing: -0.03em;
+}
+.shop-orders h2 {
+  font-size: 24px;
+  margin: 16px 0 8px;
+}
+.shop-orders h3 {
+  font-size: 18px;
+  margin: 0 0 16px;
+}
+.shop-orders p {
+  overflow-wrap: anywhere;
+}
+.so-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.so-header p {
+  margin: 6px 0;
+}
+.so-header button {
+  margin-left: 12px;
+}
+.so-eyebrow,
+.so-muted,
+.shop-orders small {
+  opacity: 0.7;
+  font-size: 13px;
+}
+.so-card {
+  border: 1px solid #8884;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.so-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.so-stats strong {
+  display: block;
+  font-size: 28px;
+  margin-top: 8px;
+}
+.so-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.so-login {
+  max-width: 520px;
+  margin: 50px auto;
+}
+.shop-orders label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.shop-orders input,
+.shop-orders select {
+  width: 100%;
+  min-width: 0;
+  padding: 11px 12px;
+  border-radius: 6px;
+  border: 1px solid #8888;
+  background: var(--card-bg-color, white);
+  color: inherit;
+  font: inherit;
+}
+.shop-orders button {
+  border: 1px solid #8886;
+  padding: 10px 16px;
+  border-radius: 6px;
+  background: var(--card-bg-color, white);
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.shop-orders button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.shop-orders button:hover:not(:disabled) {
+  border-color: #6685ff;
+}
+.shop-orders :focus-visible {
+  outline: 3px solid #6685ff;
+  outline-offset: 2px;
+}
+.shop-orders .so-primary {
+  background: #304fc5;
+  border-color: #304fc5;
+  color: white;
+}
+.shop-orders .so-danger {
+  color: #e05d55;
+}
+.so-login form {
+  display: grid;
+  gap: 20px;
+}
+.so-filters,
+.so-shipment {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: end;
+  margin-bottom: 24px;
+}
+.so-filters label,
+.so-shipment label {
+  flex: 1 1 200px;
+}
+.so-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.so-table {
+  width: 100%;
+  overflow-x: auto;
+}
+.shop-orders table {
+  border-collapse: collapse;
+  width: 100%;
+  text-align: left;
+}
+.shop-orders th {
+  font-size: 12px;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.shop-orders td,
+.shop-orders th {
+  padding: 14px 12px;
+  border-bottom: 1px solid #8884;
+}
+.shop-orders small {
+  display: block;
+  margin-top: 5px;
+}
+.so-badge {
+  display: inline-block;
+  border: 1px solid #8885;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.so-total {
+  font-size: 28px;
+}
+.so-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 24px;
+}
+.so-error,
+.so-notice {
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #de5a50;
+  background: #de5a5018;
+}
+.so-notice {
+  border-color: #399878;
+  background: #39987818;
+}
+.so-empty {
+  text-align: center;
+  padding: 40px 12px;
+}
+@media (max-width: 800px) {
+  .so-stats,
+  .so-columns {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .so-card {
+    padding: 18px;
+  }
+  .so-header {
+    gap: 12px;
+  }
+  .shop-orders td,
+  .shop-orders th {
+    padding: 12px 8px;
+  }
+}

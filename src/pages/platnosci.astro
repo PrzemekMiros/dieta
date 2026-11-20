@@ -1,0 +1,102 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { env, isDemo } from '../lib/server/env';
+import { legacyOnlinePaymentsAvailable } from '../lib/server/payment-readiness';
+const cod = !isDemo() && env('COD_ENABLED') === 'true';
+const legacy = legacyOnlinePaymentsAvailable();
+---
+
+<Layout title="Sposoby płatności">
+  <section class="container section">
+    <p class="eyebrow">Zakupy bez niespodzianek</p>
+    <h1>Sposoby płatności.</h1>
+    <div class="payment-content">
+      <section class="card">
+        <h2>Płatności online Tpay</h2>
+        <p>Przygotowujemy możliwość płatności przez Tpay. Ta metoda nie jest jeszcze dostępna.</p>
+        <p>
+          Po uruchomieniu integracji wybór dostępnej metody nastąpi na stronie operatora. Przed
+          przekierowaniem zobaczysz pełną kwotę zamówienia w złotych polskich, wraz z podatkami i
+          kosztem dostawy.
+        </p>
+        <p>
+          Operatorem systemu Tpay jest Krajowy Integrator Płatności S.A., plac Andersa 3, 17.
+          piętro, 61-894 Poznań, KRS 0000412357, NIP 7773061579.
+        </p>
+        <p>
+          <a
+            class="text-link"
+            href="https://tpay.com/user/assets/files_for_download/regulamin.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Regulamin dokonywania płatności Tpay ↗
+          </a>
+        </p>
+        <p>
+          <a
+            class="text-link"
+            href="https://tpay.com/polityka-prywatnosci"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Polityka prywatności Tpay ↗
+          </a>
+        </p>
+      </section>
+      {cod && (
+        <section class="card">
+          <h2>Gotówka przy odbiorze</h2>
+          <p>
+            Dostępna dla zamówień zawierających wyłącznie produkty fizyczne. Całą kwotę wskazaną w
+            podsumowaniu zapłacisz przy odbiorze przesyłki. Ta metoda nie obejmuje e-booków.
+          </p>
+        </section>
+      )}
+      {legacy && (
+        <section class="card">
+          <h2>Płatność online przez Przelewy24</h2>
+          <p>
+            Obecnie dostępna płatność online odbywa się przez Przelewy24. Dostępność metody
+            potwierdzisz w formularzu zamówienia.
+          </p>
+        </section>
+      )}
+      <section>
+        <h2>Potwierdzenie i pomoc</h2>
+        <p>
+          Samo złożenie zamówienia lub powrót ze strony operatora nie oznacza potwierdzenia zapłaty.
+          Informację o przyjęciu płatności otrzymasz e-mailem po jej potwierdzeniu przez operatora.
+        </p>
+        <p>
+          Jeśli pieniądze zostały pobrane, a status się nie zmienił, nie opłacaj zamówienia
+          ponownie. Skontaktuj się z nami i podaj numer zamówienia.
+        </p>
+        <p>
+          <a class="text-link" href="/kontakt">
+            Kontakt w sprawie zamówienia →
+          </a>
+        </p>
+        <p>
+          <a class="text-link" href="/dostawa-i-zwroty">
+            Dostawa, reklamacje i zwroty →
+          </a>
+        </p>
+      </section>
+    </div>
+  </section>
+</Layout>
+<style>
+  .payment-content {
+    max-width: 780px;
+    display: grid;
+    gap: 32px;
+    margin-top: 36px;
+  }
+  h2 {
+    font-size: clamp(26px, 4vw, 36px);
+  }
+  p {
+    margin-top: 16px;
+  }
+</style>

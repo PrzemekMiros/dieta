@@ -10,11 +10,12 @@ import { env, isDemo, required } from './env';
 import { registerPayment, paymentUrl, p24Config, verifyPayment, type Notification } from './p24';
 import { enqueue, escapeHtml } from './email';
 import { issueLink } from './digital';
+import { legacyOnlinePaymentsAvailable } from './payment-readiness';
 export function salesReady(paymentMethod: CheckoutInput['paymentMethod'] = 'p24') {
   if (isDemo()) throw new HttpError(503, 'Sklep nie przyjmuje jeszcze zamówień.');
   if (paymentMethod === 'cod' && env('COD_ENABLED') !== 'true')
     throw new HttpError(503, 'Płatność za pobraniem nie jest obecnie dostępna.');
-  if (paymentMethod === 'p24' && env('SALES_ENABLED') !== 'true')
+  if (paymentMethod === 'p24' && !legacyOnlinePaymentsAvailable())
     throw new HttpError(503, 'Sklep nie przyjmuje jeszcze zamówień.');
   required('DATABASE_URL');
   required('SMTP_HOST');

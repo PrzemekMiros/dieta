@@ -2,7 +2,7 @@
 
 ## Środowisko
 
-Node 24, PostgreSQL 17 (lub kompatybilny wspierany serwer), proces HTTP Astro SSR, osobny proces workera SMTP, cykliczny job uzgadniania płatności. Studio Sanity może działać niezależnie od sklepu. Nie jest panelem zamówień.
+Node 24, PostgreSQL 17 (lub kompatybilny wspierany serwer), proces HTTP Astro SSR, osobny proces workera SMTP, cykliczny job uzgadniania płatności. Studio Sanity ma zakładkę „Zamówienia”, która łączy się z API sklepu i wymaga działającego serwera sklepu oraz PostgreSQL.
 
 ### Netlify
 
@@ -33,6 +33,15 @@ Domyślnie konsultacje odbywają się od poniedziałku do piątku, w godzinach 0
 Wydarzenie Google zawiera imię i adres e-mail podane w formularzu. Uwzględnij przekazanie tych danych do Google Calendar w opublikowanej polityce prywatności. Nie udostępniaj klucza usługi ani zmiennych bezpośrednio przeglądarce.
 
 ## Sanity
+
+### Zamówienia w Studio
+
+1. Wdróż serwer sklepu z endpointami `/api/studio/*`. W jego środowisku ustaw `SANITY_STUDIO_ORIGINS=https://dietetyka-dla-smyka.sanity.studio`. Dodatkowe zaufane adresy podawaj po przecinku, bez końcowego ukośnika. Lokalny `http://localhost:3333` jest dozwolony wyłącznie poza `APP_ENV=production`.
+2. W `studio/.env` ustaw `SANITY_STUDIO_SHOP_URL=https://dietetykadlasmyka.pl` (lokalnie `http://localhost:4321`). Jest to publiczna konfiguracja, nie token. Zmienna musi być dostępna podczas builda Studio. Wzór: `studio/.env.example`. Na serwerze sklepu ustaw również `SITE_URL=https://dietetykadlasmyka.pl`.
+3. Wykonaj `npm run studio:deploy`. Zaloguj się do Sanity jako administrator projektu `fip0o8g2` i otwórz zakładkę „Zamówienia”. Panel korzysta automatycznie z sesji Sanity, bez osobnego konta lub hasła do sklepu. API sprawdza token i rolę administratora po stronie Sanity przy każdym żądaniu. Redaktorzy i tokeny robotów nie mają dostępu do zamówień.
+4. Sprawdź listę, filtr i szczegóły zamówienia. Na zamówieniu testowym sprawdź aktualizację przesyłki oraz dostarczenie powiadomienia przez worker SMTP.
+
+Panel pokazuje zamówienia bezpośrednio z PostgreSQL; nie kopiuje danych klientów do datasetu Sanity. Korzysta z tych samych operacji realizacji co `/admin`. Studio używa `auth.loginMethod: 'token'`; panel przekazuje aktualny token sesji Sanity wyłącznie do skonfigurowanego API sklepu, które weryfikuje go w Sanity. Nie tworzy dodatkowej sesji ani konta administratora w bazie sklepu. Historia działań zapisuje identyfikator Sanity w `audit_logs.data.sanityUserId`, z pustym `adminId`. Wylogowanie odbywa się przez menu konta Sanity. Brak adresu sklepu wyświetla ekran konfiguracji. API zwraca wyłącznie potrzebne dane zamówienia, bez tokenów płatniczych, hashy dostępu i kluczy prywatnych plików. Osobny panel `/admin` zachowuje dotychczasowe logowanie i jest opcjonalny przy pracy przez Studio.
 
 `SANITY_PROJECT_ID`, `SANITY_DATASET`, opcjonalny serwerowy token odczytu. Studio: `npm run studio` lub `npm run studio:build`; projekt musi istnieć w Sanity, a redaktor musi być do niego zaproszony. Dodaj do CORS wyłącznie adresy własnego Studio. Token zapisu potrzebny jedynie do jawnego seeda datasetu development; nie wystawiaj go frontendowi. Dane prawne są dokumentami `page` o slugach `regulamin`, `polityka-prywatnosci`, `dostawa-i-zwroty`.
 

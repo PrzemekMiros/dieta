@@ -14,6 +14,7 @@ export const GET: APIRoute = async () => {
         '/kontakt',
         '/blog',
         '/regulamin',
+        '/platnosci',
         '/polityka-prywatnosci',
         '/dostawa-i-zwroty',
         ...catalog.map((p) => `/produkt/${encodeURIComponent(p.slug)}`),

@@ -19,6 +19,7 @@ import * as t from '../../lib/server/schema';
 import { products } from '../../lib/catalog';
 import { cartSchema, checkoutSchema } from '../../lib/server/checkout-input';
 import { calculate } from '../../lib/server/pricing';
+import { legacyOnlinePaymentsAvailable } from '../../lib/server/payment-readiness';
 import {
   createOrder,
   salesReady,
@@ -30,6 +31,8 @@ import {
 import { notificationSchema, validNotification } from '../../lib/server/p24';
 import { enqueue, escapeHtml } from '../../lib/server/email';
 import { signedDownload } from '../../lib/server/digital';
+import { studioAdmin, studioCors, studioOrigin } from '../../lib/server/studio-access';
+import { listAdminOrders, adminOrderDetail } from '../../lib/server/admin-order-queries';
 import {
   availableBookingTimes,
   bookingDateSchema,
@@ -37,9 +40,11 @@ import {
   createBooking,
   limitBookingRequests,
 } from '../../lib/server/bookings';
-export const ALL: APIRoute = async (ctx) => {
+const handle: APIRoute = async (ctx) => {
   const { request, params, cookies, url } = ctx;
-  const path = params.path;
+  const fromStudio = params.path?.startsWith('studio/') === true;
+  const path = fromStudio ? params.path!.replace(/^studio\//, 'admin/') : params.path;
+  const adminToken = fromStudio ? undefined : cookies.get('tc_admin')?.value;
   let ip = 'unknown';
   try {
     ip = ctx.clientAddress;
@@ -48,6 +53,14 @@ export const ALL: APIRoute = async (ctx) => {
   }
   try {
     if (request.method === 'GET') {
+      if (fromStudio) {
+        const admin = await studioAdmin(request);
+        await limited(`sanity-admin:${admin.sanityUserId}`, 60, 60);
+        if (path === 'admin/orders') return json(await listAdminOrders(url));
+        if (path?.startsWith('admin/orders/'))
+          return json(await adminOrderDetail(path.slice('admin/orders/'.length)));
+        throw new HttpError(404, 'Nie znaleziono zasobu.');
+      }
       if (path === 'status') {
         const access = z
           .string()
@@ -131,7 +144,7 @@ export const ALL: APIRoute = async (ctx) => {
       await acceptPayment(n);
       return json({ ok: true });
     }
-    sameOrigin(request);
+    if (!fromStudio) sameOrigin(request);
     const body = await readJson(request);
     if (path === 'quote') {
       const input = z
@@ -150,7 +163,7 @@ export const ALL: APIRoute = async (ctx) => {
       return json({
         ...q,
         codAvailable: !isDemo() && env('COD_ENABLED') === 'true' && q.physical && !q.digital,
-        p24Available: !isDemo() && env('SALES_ENABLED') === 'true',
+        p24Available: legacyOnlinePaymentsAvailable(),
         lines: q.lines.map(({ _id, name, slug, image, price, quantity, productType, stock }) => ({
           _id,
           name,
@@ -255,27 +268,28 @@ export const ALL: APIRoute = async (ctx) => {
           hash: hash(raw),
           expiresAt: new Date(Date.now() + 8 * 3600_000),
         });
-      cookies.set('tc_admin', raw, {
-        httpOnly: true,
-        secure: env('APP_ENV') === 'production' || siteUrl().startsWith('https://'),
-        sameSite: 'strict',
-        path: '/',
-        maxAge: 8 * 3600,
-      });
+      if (!fromStudio)
+        cookies.set('tc_admin', raw, {
+          httpOnly: true,
+          secure: env('APP_ENV') === 'production' || siteUrl().startsWith('https://'),
+          sameSite: 'strict',
+          path: '/',
+          maxAge: 8 * 3600,
+        });
       await db().insert(t.auditLogs).values({ adminId: user.id, action: 'login' });
       return json({ ok: true });
     }
     if (path?.startsWith('admin/')) {
-      const admin = await session(cookies.get('tc_admin')?.value);
+      const admin = fromStudio ? await studioAdmin(request) : await session(adminToken);
       if (!admin) throw new HttpError(401, 'Zaloguj się.');
       if (path === 'admin/logout') {
         await db()
           .delete(t.adminSessions)
-          .where(eq(t.adminSessions.hash, hash(cookies.get('tc_admin')!.value)));
-        cookies.delete('tc_admin', { path: '/' });
+          .where(eq(t.adminSessions.hash, hash(adminToken!)));
+        if (!fromStudio) cookies.delete('tc_admin', { path: '/' });
         return json({ ok: true });
       }
-      await limited(`admin:${admin.id}`, 60, 60);
+      await limited(`admin:${'sanityUserId' in admin ? admin.sanityUserId : admin.id}`, 60, 60);
       if (path === 'admin/inventory') {
         const input = z
           .object({
@@ -392,7 +406,11 @@ export const ALL: APIRoute = async (ctx) => {
             adminId: admin.id,
             orderId: order.id,
             action: input.action,
-            data: { status: input.status, tracking: input.tracking },
+            data: {
+              status: input.status,
+              tracking: input.tracking,
+              ...('sanityUserId' in admin ? { sanityUserId: admin.sanityUserId } : {}),
+            },
           });
         });
         return json({ ok: true });
@@ -424,4 +442,24 @@ export const ALL: APIRoute = async (ctx) => {
     );
     return json({ error: 'Usługa jest chwilowo niedostępna. Spróbuj ponownie później.' }, 503);
   }
+};
+
+export const ALL: APIRoute = async (ctx) => {
+  if (!ctx.params.path?.startsWith('studio/')) return handle(ctx);
+  let origin: string;
+  try {
+    origin = studioOrigin(ctx.request);
+  } catch {
+    return json({ error: 'Niedozwolone źródło żądania.' }, 403);
+  }
+  if (ctx.request.method === 'OPTIONS')
+    return studioCors(new Response(null, { status: 204 }), origin);
+  // Restrict the bridge to explicitly supported administrator operations.
+  const path = ctx.params.path;
+  const supported =
+    ctx.request.method === 'GET'
+      ? path === 'studio/orders' || /^studio\/orders\/[^/]+$/.test(path)
+      : ctx.request.method === 'POST' && path === 'studio/order';
+  if (!supported) return studioCors(json({ error: 'Nie znaleziono zasobu.' }, 404), origin);
+  return studioCors(await handle(ctx), origin);
 };
