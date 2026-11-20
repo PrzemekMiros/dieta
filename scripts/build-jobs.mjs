@@ -8,4 +8,5 @@ await build({
   format: 'esm',
   packages: 'external',
   target: 'node24',
+  alias: { 'sanity:client': './scripts/job-sanity-client.ts' },
 });

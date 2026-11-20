@@ -3,13 +3,29 @@ import { db } from '../src/lib/server/db';
 import { orders, paymentEvents } from '../src/lib/server/schema';
 import { lookupPayment, p24Config, verifyPayment, type Notification } from '../src/lib/server/p24';
 import { acceptPayment } from '../src/lib/server/orders';
+import { usesSanityOrders, privateOrdersClient } from '../src/lib/server/shop-storage';
+import { sanityAcceptPayment } from '../src/lib/server/sanity-orders';
+import { env } from '../src/lib/server/env';
+if (env('PAYMENT_PROVIDER', 'tpay') !== 'p24') {
+  console.log('Reconciliation is only available for the configured P24 adapter.');
+  process.exit(0);
+}
 // A read/verify operation only. Never registers a second charge and never expires
 // a reservation based solely on the absence of a notification.
-const rows = await db()
-  .select()
-  .from(orders)
-  .where(and(eq(orders.status, 'pending'), lt(orders.createdAt, new Date(Date.now() - 300_000))))
-  .limit(100);
+const rows = usesSanityOrders()
+  ? await (
+      await privateOrdersClient()
+    ).fetch<{ id: string; total: number; currency: string }[]>(
+      '*[_type == "shopOrder" && status == "pending" && !(payment.status match "cod_*") && createdAt < $before][0...100]{"id": _id,total,currency}',
+      { before: new Date(Date.now() - 300000).toISOString() },
+    )
+  : await db()
+      .select()
+      .from(orders)
+      .where(
+        and(eq(orders.status, 'pending'), lt(orders.createdAt, new Date(Date.now() - 300_000))),
+      )
+      .limit(100);
 for (const order of rows) {
   try {
     const remote = await lookupPayment(order.id);
@@ -33,19 +49,20 @@ for (const order of rows) {
       statement: remote.statement,
       sign: '',
     };
-    await acceptPayment(notification, async (n) => {
+    await (usesSanityOrders() ? sanityAcceptPayment : acceptPayment)(notification, async (n) => {
       if (remote.status === 1) await verifyPayment(n);
     });
     console.log(`Reconciled ${order.id}`);
   } catch {
-    await db()
-      .insert(paymentEvents)
-      .values({
-        orderId: order.id,
-        eventKey: `reconcile:${order.id}:${new Date().toISOString().slice(0, 13)}`,
-        kind: 'reconcile_failed',
-      })
-      .onConflictDoNothing();
+    if (!usesSanityOrders())
+      await db()
+        .insert(paymentEvents)
+        .values({
+          orderId: order.id,
+          eventKey: `reconcile:${order.id}:${new Date().toISOString().slice(0, 13)}`,
+          kind: 'reconcile_failed',
+        })
+        .onConflictDoNothing();
     console.error(`Reconciliation requires review: ${order.id}`);
   }
 }

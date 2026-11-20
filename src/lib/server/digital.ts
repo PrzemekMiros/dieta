@@ -14,6 +14,10 @@ export async function issueLink(tx: Tx, entitlementId: string) {
 }
 export async function entitlementFor(raw: string) {
   if (!/^[a-f0-9]{64}$/.test(raw)) throw new HttpError(404, 'Link jest nieprawidłowy.');
+  if (env('SHOP_STORAGE', 'sanity') === 'sanity') {
+    const { sanityEntitlement } = await import('./sanity-orders');
+    return sanityEntitlement(raw);
+  }
   const [row] = await db()
     .select({ entitlement: entitlements })
     .from(downloadTokens)

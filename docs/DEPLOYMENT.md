@@ -1,5 +1,19 @@
 # Wdrożenie i odbiór
 
+## Aktualne wdrożenie: Sanity + Netlify
+
+Sklep korzysta domyślnie z `SHOP_STORAGE=sanity`. **PostgreSQL nie jest wymagany
+do zamówień.** Wykonaj [instrukcję konfiguracji zamówień w Sanity](SANITY-ORDERS.md).
+Obejmuje prywatny zbiór, szyfrowanie danych klienta, magazyn w Studio oraz
+funkcję `shop-outbox` uruchamianą co minutę na Netlify. `/admin` przekierowuje
+do Sanity; nie twórz drugiego konta administratora.
+
+Tpay pozostaje osobnym, nieukończonym etapem — patrz [gotowość Tpay](tpay-readiness.md).
+
+Poniższe instrukcje PostgreSQL, migracji, seeda, kont `/admin` i workera SQL
+dotyczą wyłącznie starszego adaptera `SHOP_STORAGE=postgres`. Nie stosuj ich
+do obecnego wdrożenia Sanity.
+
 ## Środowisko
 
 Node 24, PostgreSQL 17 (lub kompatybilny wspierany serwer), proces HTTP Astro SSR, osobny proces workera SMTP, cykliczny job uzgadniania płatności. Studio Sanity ma zakładkę „Zamówienia”, która łączy się z API sklepu i wymaga działającego serwera sklepu oraz PostgreSQL.

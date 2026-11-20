@@ -89,6 +89,7 @@ export function OrdersTool() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
+  const [inventory, setInventory] = useState<{id: string; name: string; sku: string; stock: number}[] | null>(null)
   const revision = useRef(0)
 
   const api = useCallback(
@@ -156,6 +157,15 @@ export function OrdersTool() {
     }
   }
 
+  async function loadInventory() {
+    setBusy(true)
+    setError('')
+    try {
+      setInventory((await api<{products: NonNullable<typeof inventory>}>('inventory')).products)
+    } catch (error) { setError((error as Error).message) }
+    finally { setBusy(false) }
+  }
+
   async function action(action: string, extra = {}) {
     if (!detail) return
     const confirmations: Record<string, string> = {
@@ -206,6 +216,31 @@ export function OrdersTool() {
         </div>
         <span className="so-muted">{currentUser?.name || currentUser?.email}</span>
       </header>
+      <details className="so-card" onToggle={(event) => {
+        if (event.currentTarget.open && !inventory) void loadInventory()
+      }}>
+        <summary>Magazyn produktów fizycznych</summary>
+        {inventory?.map((product) => <form className="so-filters" key={product.id} onSubmit={async (event) => {
+          event.preventDefault()
+          const form = event.currentTarget
+          const delta = Number(new FormData(form).get('delta'))
+          setBusy(true)
+          setError('')
+          try {
+            await api('inventory', {productId: product.id, delta})
+            form.reset()
+            await loadInventory()
+          } catch (error) { setError((error as Error).message) }
+          finally { setBusy(false) }
+        }}>
+          <label>{product.name} ({product.sku}) — dostępne: {product.stock}
+            <input name="delta" type="number" min={-10000} max={10000} step={1} required placeholder="Dodaj lub odejmij sztuki" />
+          </label>
+          <button disabled={busy}>Zmień stan</button>
+        </form>)}
+        {inventory?.length === 0 && <p>Brak produktów fizycznych.</p>}
+        <button disabled={busy} onClick={() => void loadInventory()}>Odśwież magazyn</button>
+      </details>
       {error && (
         <p role="alert" className="so-error">
           {error}
@@ -480,7 +515,7 @@ export function OrdersTool() {
                             <tr key={order.id}>
                               <td>
                                 <button disabled={busy} onClick={() => void openOrder(order.id)}>
-                                  {order.id.slice(0, 8)}
+                                  {order.id.replace(/^order\./, '').slice(0, 12)}
                                 </button>
                                 <small>{date(order.createdAt)}</small>
                               </td>

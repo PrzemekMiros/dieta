@@ -18,6 +18,10 @@ export async function enqueue(tx: Tx, key: string, to: string, subject: string, 
     .onConflictDoNothing();
 }
 export async function processOutbox() {
+  if (env('SHOP_STORAGE', 'sanity') === 'sanity') {
+    const { processSanityOutbox } = await import('./sanity-shop-jobs');
+    return processSanityOutbox();
+  }
   const transport = nodemailer.createTransport({
     host: required('SMTP_HOST'),
     port: Number(env('SMTP_PORT', '587')),

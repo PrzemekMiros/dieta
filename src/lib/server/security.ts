@@ -37,6 +37,10 @@ export function sameOrigin(request: Request) {
     throw new HttpError(403, 'Niedozwolone źródło żądania.');
 }
 export async function limited(key: string, max = 10, seconds = 60) {
+  if (env('SHOP_STORAGE', 'sanity') === 'sanity') {
+    const { sanityLimited } = await import('./sanity-shop-jobs');
+    return sanityLimited(key, max, seconds);
+  }
   const reset = new Date(Date.now() + seconds * 1000);
   const [row] = await db()
     .insert(rateLimits)

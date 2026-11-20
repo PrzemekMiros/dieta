@@ -34,6 +34,18 @@ import { signedDownload } from '../../lib/server/digital';
 import { databaseError } from '../../lib/server/database-error';
 import { studioAdmin, studioCors, studioOrigin } from '../../lib/server/studio-access';
 import { listAdminOrders, adminOrderDetail } from '../../lib/server/admin-order-queries';
+import { usesSanityOrders } from '../../lib/server/shop-storage';
+import {
+  sanityListOrders,
+  sanityOrderDetail,
+  sanityOrderAction,
+  sanityCreateOrder,
+  sanitySalesReady,
+  sanityOrderStatus,
+  sanityStock,
+  sanityAcceptPayment,
+  sanityAdjustStock,
+} from '../../lib/server/sanity-orders';
 import {
   availableBookingTimes,
   bookingDateSchema,
@@ -57,9 +69,20 @@ const handle: APIRoute = async (ctx) => {
       if (fromStudio) {
         const admin = await studioAdmin(request);
         await limited(`sanity-admin:${admin.sanityUserId}`, 60, 60);
-        if (path === 'admin/orders') return json(await listAdminOrders(url));
+        if (path === 'admin/inventory' && usesSanityOrders())
+          return json({
+            products: (await sanityStock(await products(true)))
+              .filter((p) => p.productType === 'physical')
+              .map(({ _id, name, sku, stock }) => ({ id: _id, name, sku, stock })),
+          });
+        if (path === 'admin/orders')
+          return json(await (usesSanityOrders() ? sanityListOrders(url) : listAdminOrders(url)));
         if (path?.startsWith('admin/orders/'))
-          return json(await adminOrderDetail(path.slice('admin/orders/'.length)));
+          return json(
+            await (usesSanityOrders()
+              ? sanityOrderDetail(path.slice('admin/orders/'.length))
+              : adminOrderDetail(path.slice('admin/orders/'.length))),
+          );
         throw new HttpError(404, 'Nie znaleziono zasobu.');
       }
       if (path === 'status') {
@@ -67,6 +90,7 @@ const handle: APIRoute = async (ctx) => {
           .string()
           .regex(/^[a-f0-9]{64}$/)
           .parse(url.searchParams.get('token'));
+        if (usesSanityOrders()) return json(await sanityOrderStatus(access));
         const [order] = await db()
           .select({
             id: t.orders.id,
@@ -142,7 +166,8 @@ const handle: APIRoute = async (ctx) => {
     if (path === 'p24/notify') {
       const n = notificationSchema.parse(await readJson(request));
       if (!validNotification(n)) throw new HttpError(400, 'Niepoprawny podpis.');
-      await acceptPayment(n);
+      if (usesSanityOrders()) await sanityAcceptPayment(n);
+      else await acceptPayment(n);
       return json({ ok: true });
     }
     if (!fromStudio) sameOrigin(request);
@@ -151,13 +176,16 @@ const handle: APIRoute = async (ctx) => {
       const input = z
         .object({ items: cartSchema, shippingMethod: z.string().optional() })
         .parse(body);
-      const catalog = await products(true);
+      let catalog = await products(true);
       if (!isDemo()) {
-        const stock = await db().select().from(t.inventory);
-        catalog.forEach((p) => {
-          if (p.productType === 'physical')
-            p.stock = stock.find((s) => s.productId === p._id)?.available || 0;
-        });
+        if (usesSanityOrders()) catalog = await sanityStock(catalog);
+        else {
+          const stock = await db().select().from(t.inventory);
+          catalog.forEach((p) => {
+            if (p.productType === 'physical')
+              p.stock = stock.find((s) => s.productId === p._id)?.available || 0;
+          });
+        }
       }
       const q = calculate(input.items, catalog, input.shippingMethod);
       // Private asset keys never leave the server.
@@ -179,9 +207,10 @@ const handle: APIRoute = async (ctx) => {
     }
     if (path === 'checkout') {
       const input = checkoutSchema.parse(body);
-      salesReady(input.paymentMethod);
+      if (usesSanityOrders()) sanitySalesReady(input.paymentMethod);
+      else salesReady(input.paymentMethod);
       await limited(`checkout:${ip}`, 8, 300);
-      return json(await createOrder(input));
+      return json(await (usesSanityOrders() ? sanityCreateOrder(input) : createOrder(input)));
     }
     if (path === 'newsletter') {
       if (env('NEWSLETTER_ENABLED') !== 'true')
@@ -241,6 +270,8 @@ const handle: APIRoute = async (ctx) => {
       return json(await createBooking(input), 201);
     }
     if (path === 'admin/login') {
+      if (usesSanityOrders())
+        throw new HttpError(403, 'Obsługa sklepu jest dostępna przez logowanie Sanity.');
       const input = z
         .object({
           email: z
@@ -291,6 +322,24 @@ const handle: APIRoute = async (ctx) => {
         return json({ ok: true });
       }
       await limited(`admin:${'sanityUserId' in admin ? admin.sanityUserId : admin.id}`, 60, 60);
+      if (usesSanityOrders() && fromStudio && 'sanityUserId' in admin) {
+        if (path === 'admin/order') return json(await sanityOrderAction(body, admin.sanityUserId!));
+        if (path === 'admin/inventory') {
+          const input = z
+            .object({
+              productId: z.string().min(1).max(100),
+              delta: z
+                .number()
+                .int()
+                .min(-10000)
+                .max(10000)
+                .refine((n) => n !== 0),
+            })
+            .parse(body);
+          await sanityAdjustStock(input.productId, input.delta, admin.sanityUserId!);
+          return json({ ok: true });
+        }
+      }
       if (path === 'admin/inventory') {
         const input = z
           .object({
@@ -469,8 +518,11 @@ export const ALL: APIRoute = async (ctx) => {
   const path = ctx.params.path;
   const supported =
     ctx.request.method === 'GET'
-      ? path === 'studio/orders' || /^studio\/orders\/[^/]+$/.test(path)
-      : ctx.request.method === 'POST' && path === 'studio/order';
+      ? path === 'studio/orders' ||
+        /^studio\/orders\/[^/]+$/.test(path) ||
+        (usesSanityOrders() && path === 'studio/inventory')
+      : ctx.request.method === 'POST' &&
+        (path === 'studio/order' || (usesSanityOrders() && path === 'studio/inventory'));
   if (!supported) return studioCors(json({ error: 'Nie znaleziono zasobu.' }, 404), origin);
   return studioCors(await handle(ctx), origin);
 };

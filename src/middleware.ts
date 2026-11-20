@@ -1,6 +1,9 @@
 import { defineMiddleware } from 'astro:middleware';
 import { session } from './lib/server/security';
+import { usesSanityOrders } from './lib/server/shop-storage';
 export const onRequest = defineMiddleware(async (context, next) => {
+  if (context.url.pathname.startsWith('/admin') && usesSanityOrders())
+    return context.redirect('https://dietetyka-dla-smyka.sanity.studio/zamowienia');
   if (context.url.pathname.startsWith('/admin') && context.url.pathname !== '/admin/login') {
     const user = await session(context.cookies.get('tc_admin')?.value);
     if (!user) return context.redirect('/admin/login');

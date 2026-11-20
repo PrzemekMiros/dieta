@@ -58,6 +58,7 @@ async function request(
 }
 
 beforeAll(async () => {
+  vi.stubEnv('SHOP_STORAGE', 'postgres');
   vi.stubEnv('APP_ENV', 'production');
   vi.stubEnv('DATABASE_URL', 'test');
   vi.stubEnv('SANITY_STUDIO_ORIGINS', origin);

@@ -32,6 +32,7 @@ import { registerPayment } from '../src/lib/server/p24';
 let engine: PGlite;
 let database: ReturnType<typeof drizzle<typeof schema>>;
 beforeAll(async () => {
+  vi.stubEnv('SHOP_STORAGE', 'postgres');
   engine = new PGlite();
   database = drizzle(engine, { schema });
   state.db = database;
