@@ -1,8 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { env, isDemo } from '../lib/server/env';
-import { legacyOnlinePaymentsAvailable } from '../lib/server/payment-readiness';
-const cod = !isDemo() && env('COD_ENABLED') === 'true';
+import { cashOnDeliveryAvailable, legacyOnlinePaymentsAvailable } from '../lib/server/payment-readiness';
+const cod = cashOnDeliveryAvailable();
 const legacy = legacyOnlinePaymentsAvailable();
 ---
 

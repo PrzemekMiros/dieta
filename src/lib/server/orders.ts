@@ -10,10 +10,10 @@ import { env, isDemo, required } from './env';
 import { registerPayment, paymentUrl, p24Config, verifyPayment, type Notification } from './p24';
 import { enqueue, escapeHtml } from './email';
 import { issueLink } from './digital';
-import { legacyOnlinePaymentsAvailable } from './payment-readiness';
+import { cashOnDeliveryAvailable, legacyOnlinePaymentsAvailable } from './payment-readiness';
 export function salesReady(paymentMethod: CheckoutInput['paymentMethod'] = 'p24') {
   if (isDemo()) throw new HttpError(503, 'Sklep nie przyjmuje jeszcze zamówień.');
-  if (paymentMethod === 'cod' && env('COD_ENABLED') !== 'true')
+  if (paymentMethod === 'cod' && !cashOnDeliveryAvailable())
     throw new HttpError(503, 'Płatność za pobraniem nie jest obecnie dostępna.');
   if (paymentMethod === 'p24' && !legacyOnlinePaymentsAvailable())
     throw new HttpError(503, 'Sklep nie przyjmuje jeszcze zamówień.');
@@ -55,7 +55,7 @@ export async function createOrder(input: CheckoutInput) {
     throw new HttpError(503, 'Sklep jest w trakcie przygotowania.');
   const quote = calculate(input.items, catalog, input.shippingMethod);
   if (input.paymentMethod === 'cod') {
-    if (env('COD_ENABLED') !== 'true')
+    if (!cashOnDeliveryAvailable())
       throw new HttpError(503, 'Płatność za pobraniem nie jest obecnie dostępna.');
     if (!quote.physical || quote.digital)
       throw new HttpError(

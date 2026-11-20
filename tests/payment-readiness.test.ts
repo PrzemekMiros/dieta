@@ -1,5 +1,5 @@
 import { afterEach, expect, it, vi } from 'vitest';
-import { legacyOnlinePaymentsAvailable } from '../src/lib/server/payment-readiness';
+import { cashOnDeliveryAvailable, legacyOnlinePaymentsAvailable } from '../src/lib/server/payment-readiness';
 
 afterEach(() => vi.unstubAllEnvs());
 
@@ -23,4 +23,24 @@ it('allows the existing provider only when explicitly configured, outside demo',
   vi.stubEnv('APP_ENV', 'development');
   vi.stubEnv('DEMO_CATALOG', 'true');
   expect(legacyOnlinePaymentsAvailable()).toBe(false);
+});
+
+it('enables cash on delivery by default without online payments', () => {
+  vi.stubEnv('DEMO_CATALOG', 'false');
+  vi.stubEnv('COD_ENABLED', undefined);
+  vi.stubEnv('SALES_ENABLED', 'false');
+  vi.stubEnv('PAYMENT_PROVIDER', 'tpay');
+  expect(cashOnDeliveryAvailable()).toBe(true);
+  expect(legacyOnlinePaymentsAvailable()).toBe(false);
+});
+
+it('respects an explicit cash on delivery shutdown and demo mode', () => {
+  vi.stubEnv('DEMO_CATALOG', 'false');
+  vi.stubEnv('COD_ENABLED', 'false');
+  expect(cashOnDeliveryAvailable()).toBe(false);
+  vi.stubEnv('COD_ENABLED', 'true');
+  expect(cashOnDeliveryAvailable()).toBe(true);
+  vi.stubEnv('APP_ENV', 'development');
+  vi.stubEnv('DEMO_CATALOG', 'true');
+  expect(cashOnDeliveryAvailable()).toBe(false);
 });

@@ -14,6 +14,12 @@ nie odczyta zaszyfrowanych danych klienta.
 
 ## Konfiguracja Netlify
 
+Pobranie jest domyślnie włączone dla koszyków zawierających wyłącznie produkty
+fizyczne, niezależnie od integracji Tpay i `SALES_ENABLED`. W produkcyjnym
+zakresie **Functions** ustaw `COD_ENABLED=true`; jawne `COD_ENABLED=false`
+wyłącza pobranie. Po zmianie zmiennych uruchom ponowny deploy. Ebooki i koszyki
+mieszane nadal wymagają działającej płatności online.
+
 1. W [ustawieniach projektu Sanity](https://www.sanity.io/manage/project/fip0o8g2)
    otwórz **API → Tokens** i utwórz dedykowany token serwera z prawami odczytu
    i zapisu zbioru `orders` oraz odczytu jego widoczności. Standardowa rola

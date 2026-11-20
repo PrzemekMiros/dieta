@@ -19,7 +19,7 @@ import * as t from '../../lib/server/schema';
 import { products } from '../../lib/catalog';
 import { cartSchema, checkoutSchema } from '../../lib/server/checkout-input';
 import { calculate } from '../../lib/server/pricing';
-import { legacyOnlinePaymentsAvailable } from '../../lib/server/payment-readiness';
+import { cashOnDeliveryAvailable, legacyOnlinePaymentsAvailable } from '../../lib/server/payment-readiness';
 import {
   createOrder,
   salesReady,
@@ -191,7 +191,7 @@ const handle: APIRoute = async (ctx) => {
       // Private asset keys never leave the server.
       return json({
         ...q,
-        codAvailable: !isDemo() && env('COD_ENABLED') === 'true' && q.physical && !q.digital,
+        codAvailable: cashOnDeliveryAvailable() && q.physical && !q.digital,
         p24Available: legacyOnlinePaymentsAvailable(),
         lines: q.lines.map(({ _id, name, slug, image, price, quantity, productType, stock }) => ({
           _id,

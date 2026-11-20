@@ -189,6 +189,17 @@ afterEach(() => {
 });
 
 describe('private Sanity commerce without PostgreSQL', () => {
+  it('accepts physical cash on delivery orders without a COD flag or online payments', async () => {
+    vi.stubEnv('COD_ENABLED', undefined);
+    vi.stubEnv('SALES_ENABLED', 'false');
+    vi.stubEnv('PAYMENT_PROVIDER', 'tpay');
+    const data = input();
+    const result = await sanityCreateOrder(data);
+    expect(result.redirect).toContain('/zamowienie/sukces?token=');
+    const order = await sanityOrderDetail(idFor(data.idempotencyKey));
+    expect(order.order.status).toBe('pending');
+    expect(order.payment.status).toBe('cod_pending');
+  });
   it('leases queued mail so simultaneous workers deliver once and retries SMTP failure', async () => {
     await sanityCreateOrder(input());
     state.sendMail.mockRejectedValueOnce(new Error('SMTP failed'));

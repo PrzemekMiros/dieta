@@ -8,7 +8,7 @@ import { products, contentPage, settings } from '../catalog';
 import { calculate } from './pricing';
 import type { CheckoutInput } from './checkout-input';
 import type { Product } from '../types';
-import { legacyOnlinePaymentsAvailable } from './payment-readiness';
+import { cashOnDeliveryAvailable, legacyOnlinePaymentsAvailable } from './payment-readiness';
 import { registerPayment, paymentUrl, p24Config, verifyPayment, type Notification } from './p24';
 import { escapeHtml } from './email';
 
@@ -202,7 +202,7 @@ function queueMail(tx: Transaction, order: ShopOrder, key: string, subject: stri
 export function sanitySalesReady(method: CheckoutInput['paymentMethod']) {
   if (isDemo() || (method === 'p24' && !legacyOnlinePaymentsAvailable()))
     throw new HttpError(503, 'Sklep nie przyjmuje jeszcze zamówień online.');
-  if (method === 'cod' && env('COD_ENABLED') !== 'true')
+  if (method === 'cod' && !cashOnDeliveryAvailable())
     throw new HttpError(503, 'Płatność za pobraniem nie jest obecnie dostępna.');
   required('SMTP_HOST');
   required('SMTP_FROM');
