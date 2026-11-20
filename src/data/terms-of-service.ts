@@ -15,7 +15,7 @@ Zespół Dietella
 
 1. O NAS
 
-1. Catering Dietetyczny Dietella to jednoosobowa działalność gospodarcza zarejestrowana pod nazwą Catering dietetyczny Elżbieta Dworzyńska z siedzibą w Warce. Adres siedziby i adres do doręczeń: ul. Niemojewska 13/U6, 05-660 Warka. NIP: 7971527742, REGON: 368484910, adres poczty elektronicznej: kontakt@dieteykadlasmyka.pl, numer telefonu kontaktowego: 792 999 239 (koszt połączenia standardowy – jak za zwykłe połączenie telefoniczne wg. taryfy operatora).
+1. Catering Dietetyczny Dietella to jednoosobowa działalność gospodarcza prowadzona przez Natalię Dworzyńską z siedzibą w Warce. Adres siedziby i adres do doręczeń: ul. Batalionów Chłopskich 7, 05-660 Warka. NIP: 7971527742, REGON: 368484910, adres poczty elektronicznej: kontakt@dietetykadlasmyka.pl, numer telefonu kontaktowego: 792 999 239 (koszt połączenia standardowy – jak za zwykłe połączenie telefoniczne wg. taryfy operatora).
 2. Usługodawca prowadzi Serwis Internetowy oraz jest odpowiedzialny za prawidłowe świadczenie Usług oraz Usług Elektronicznych dostępnych w ramach Dietella. Obok Usługodawcy w Dietella występują również Usługobiorcy – są to samodzielne podmioty trzecie w stosunku do Usługodawcy, które za pomocą Dietella mogą korzystać z dostarczanych przez Dietella Usług Elektronicznych oraz pozostałych jego funkcjonalności, w tym dokonać zakupu Usługi.
 3. Sprzedawca posiada indywidualny numer rejestrowy w rejestrze podmiotów wprowadzających produkty, produkty w opakowaniach i gospodarujących odpadami (tzw. rejestr – BDO) prowadzonym przez marszałka województwa: 000443763.
 4. DEFINICJE
@@ -33,7 +33,7 @@ Zespół Dietella
 10. STREFA DOWOZU – obszar dostaw Usługi wskazany w zakładce informacyjnej dostępnej na stronie Serwisu Internetowego obejmujący wskazane miasta główne oraz okoliczne miejscowości. Możliwość dostawy pod adres wskazany przez Klienta w trakcie składania Zamówienia potwierdzana jest przez Usługodawcę podczas przyjęcia Zamówienia do realizacji. Dodatkowo w sytuacji niemożności realizacji dostawy pod podany adres, Klient jest o tym informowany.
 11. USŁUGA ELEKTRONICZNA – usługa świadczona drogą elektroniczną przez Usługodawcę na rzecz Usługobiorcy za pośrednictwem Dietella zgodnie z Regulaminem.
 12. USŁUGOBIORCA – (1) osoba fizyczna posiadająca pełną zdolność do czynności prawnych, a w wypadkach przewidzianych przez przepisy powszechnie obowiązujące, także osoba fizyczna posiadająca ograniczoną zdolność do czynności prawnych; (2) osoba prawna; albo (3) jednostka organizacyjna nieposiadająca osobowości prawnej, której ustawa przyznaje zdolność prawną; – korzystająca albo zamierzająca korzystać z Usług Elektronicznych dostępnych w Dietella.
-13. USŁUGODAWCA, SPRZEDAWCA – Catering dietetyczny Elżbieta Dworzyńska – jednoosobowa działalność gospodarcza z siedzibą w Warce, posiadająca adres siedziby i adres do doręczeń: ul. Niemojewska 2, 05-660 Warka, NIP: 7971527742, REGON: 368484910, adres poczty elektronicznej: kontakt@dieteykadlasmyka.pl, numer telefonu kontaktowego: 792999239 (koszt połączenia standardowy – jak za zwykłe połączenie telefoniczne wg. taryfy operatora), formularz kontaktowy dostępny jest pod adresem: https://dieteykadlasmyka.pl/kontakt.
+13. USŁUGODAWCA, SPRZEDAWCA – Natalia Dworzyńska – jednoosobowa działalność gospodarcza z siedzibą w Warce, posiadająca adres siedziby i adres do doręczeń: ul. Batalionów Chłopskich 7, 05-660 Warka, NIP: 7971527742, REGON: 368484910, adres poczty elektronicznej: kontakt@dietetykadlasmyka.pl, numer telefonu kontaktowego: 792999239 (koszt połączenia standardowy – jak za zwykłe połączenie telefoniczne wg. taryfy operatora), formularz kontaktowy dostępny jest pod adresem: https://dieteykadlasmyka.pl/kontakt.
 14. USTAWA O PRAWACH KONSUMENTA – ustawa z dnia 30 maja 2014 r. o prawach konsumenta (Dz.U. 2014 poz. 827 ze zm.).
 15. ZAMÓWIENIE – oświadczenie woli Klienta składane za pomocą Formularza Zamówienia i zmierzające bezpośrednio do zawarcia umowy o świadczenie Usługi ze Sprzedawcą.
 
@@ -54,7 +54,7 @@ Zespół Dietella
 
 1. Rozpoczęcie korzystania z Konta możliwe jest po wykonaniu łącznie trzech kolejnych kroków przez Usługobiorcę – (1) wypełnieniu formularza rejestracji, (2) kliknięciu pola akcji oraz (3) potwierdzeniu chęci utworzenia Konta poprzez kliknięcie w link potwierdzający przesłany na podany adres poczty elektronicznej.
 2. W formularzu rejestracji niezbędne jest podanie przez Usługobiorcę następujących danych: imię i nazwisko, adres poczty elektronicznej, numer telefonu kontaktowego, hasło.
-3. Usługa Elektroniczna Konto świadczona jest nieodpłatnie i przez czas nieoznaczony. Usługobiorca ma możliwość, w każdej chwili i bez podania przyczyny, rezygnacji z Konta poprzez wysłanie stosownego żądania do Usługodawcy, w szczególności za pośrednictwem poczty elektronicznej na adres: kontakt@dieteykadlasmyka.pl lub też pisemnie na adres: ul. Niemojewska 2, 05-660 Warka. Usługobiorca może także samodzielnie zrezygnować z dalszego korzystania z Konta poprzez usunięcie Konta Usługobiorcy korzystając z opcji dostępnych w jego ramach. Usunięcie Konta nie ma wpływu na realizację uprzednio zakupionych Usług.
+3. Usługa Elektroniczna Konto świadczona jest nieodpłatnie i przez czas nieoznaczony. Usługobiorca ma możliwość, w każdej chwili i bez podania przyczyny, rezygnacji z Konta poprzez wysłanie stosownego żądania do Usługodawcy, w szczególności za pośrednictwem poczty elektronicznej na adres: kontakt@dietetykadlasmyka.pl lub też pisemnie na adres: ul. Batalionów Chłopskich 7, 05-660 Warka. Usługobiorca może także samodzielnie zrezygnować z dalszego korzystania z Konta poprzez usunięcie Konta Usługobiorcy korzystając z opcji dostępnych w jego ramach. Usunięcie Konta nie ma wpływu na realizację uprzednio zakupionych Usług.
 4. ZAMÓWIENIE I ZAWARCIE UMOWY O ŚWIADCZENIE USŁUGI
 
 1. Niniejszy punkt Regulaminu określa zasady i warunki składania Zamówienia oraz zawarcia umowy o świadczenie Usługi.
@@ -79,7 +79,7 @@ Zespół Dietella
 
 1. Płatności za pośrednictwem systemu Przelewy24,
 2. Płatności za pośrednictwem systemu PayU,
-3. Płatność w siedzibie Dietella, 05-660 Warka, ul. Niemojewska.
+3. Płatność w siedzibie Dietella: ul. Batalionów Chłopskich 7, 05-660 Warka.
 
 3. W przypadku korzystania przez Klienta z płatności za pośrednictwem systemu Przelewy24 (transakcje płatnościami elektronicznymi i kartą płatniczą, w tym tzw. Płatności Oneclick) obsługę tych płatności prowadzi spółka PayPro SA z siedzibą w Poznaniu, przy ulicy Kanclerskiej 15, 60-327 Poznań, wpisana do rejestru przedsiębiorców Krajowego Rejestru Sądowego prowadzonego przez Sąd Rejonowy Poznań Nowe Miasto i Wilda, VIII Wydział Gospodarczy Krajowego Rejestru Sądowego pod numerem KRS 0000347935, numerem NIP 7792369887, o kapitale zakładowym wynoszącym 4.500.000,00 zł, w całości opłaconym oraz do rejestru krajowych instytucji płatniczych prowadzonego przez Komisję Nadzoru Finansowego pod numerem UKNF IP24/2014.
 4. Nieopłacone Zamówienia, po upływie 10 (dziesięciu) dni od dnia ich złożenia, są automatycznie anulowane.
@@ -93,15 +93,15 @@ Zespół Dietella
 6. Voucher zastępuje w Dietella środki pieniężne o wartości na nim zapisanej celem dokonania płatności tytułem Usługi, ale sam nie podlega wymianie na środki pieniężne.
 7. KONTAKT Z USŁUGODAWCĄ
 
-Zasadniczą formą bieżącej komunikacji na odległość z Usługodawcą jest poczta elektroniczna (e-mail: kontakt@dieteykadlasmyka.pl) oraz poczta tradycyjna (ul. Niemojewska 2, 05-660 Warka), za pośrednictwem których można wymieniać informacje dotyczące korzystania z Dietella oraz Usług świadczonych przez Sprzedawcę. Usługobiorcy i Klienci mogą kontaktować się z nami także na inne dopuszczalne prawem sposoby.
+Zasadniczą formą bieżącej komunikacji na odległość z Usługodawcą jest poczta elektroniczna (e-mail: kontakt@dietetykadlasmyka.pl) oraz poczta tradycyjna (ul. Batalionów Chłopskich 7, 05-660 Warka), za pośrednictwem których można wymieniać informacje dotyczące korzystania z Dietella oraz Usług świadczonych przez Sprzedawcę. Usługobiorcy i Klienci mogą kontaktować się z nami także na inne dopuszczalne prawem sposoby.
 
 1. PROCEDURA ROZPATRYWANIA REKLAMACJI
 
 1. Niniejszy punkt 14. Regulaminu określa procedurę rozpatrywania reklamacji wspólną dla wszystkich reklamacji składanych do Usługodawcy, w szczególności reklamacji dotyczących Usług, Usług Elektronicznych oraz pozostałych reklamacji związanych z działaniem Usługodawcy lub Dietella.
 2. Reklamacja może zostać złożona na przykład:
 
-1. w formie elektronicznej za pośrednictwem poczty elektronicznej (mailowo) na adres: kontakt@dieteykadlasmyka.pl;
-2. lub pisemnie na adres: ul. Niemojewska 2, 05-660 Warka.
+1. w formie elektronicznej za pośrednictwem poczty elektronicznej (mailowo) na adres: kontakt@dietetykadlasmyka.pl;
+2. lub pisemnie na adres: ul. Batalionów Chłopskich 7, 05-660 Warka.
 
 3. Usługodawca zaleca podanie w opisie reklamacji: (1) informacji i okoliczności dotyczących przedmiotu reklamacji, w szczególności rodzaju i daty wystąpienia nieprawidłowości lub braku zgodności z umową; (2) żądania sposobu doprowadzenia do zgodności z umową lub oświadczenia o obniżeniu ceny albo odstąpieniu od umowy lub innego roszczenia; oraz (3) danych kontaktowych składającego reklamację – ułatwi to i przyspieszy rozpatrzenie reklamacji. Wymogi podane w zdaniu poprzednim mają formę jedynie zalecenia i nie wpływają na skuteczność reklamacji złożonych z pominięciem zalecanego opisu reklamacji.
 4. W razie zmiany podanych danych kontaktowych przez składającego reklamację w trakcie rozpatrywania reklamacji zobowiązany jest on do powiadomienia o tym Usługodawcy.
@@ -122,7 +122,7 @@ Zasadniczą formą bieżącej komunikacji na odległość z Usługodawcą jest p
 3. Klientowi przysługuje prawo odstąpienia od umowy o świadczenie Usługi bez podania przyczyny na następujących zasadach:
 
 1. Zmiany mogą zostać dokonane w terminie do godziny 12:00 na 3 Dni Robocze przed danym dniem realizacji Usługi.
-2. Do zachowania terminu na odstąpienie od umowy wystarczy wysłanie oświadczenia przed jego upływem. Oświadczenie o odstąpieniu od umowy może zostać złożone na przykład: pisemnie na adres: ul. Niemojewska 2, 05-660 Warka lub w formie elektronicznej za pośrednictwem poczty elektronicznej na adres: kontakt@dieteykadlasmyka.pl.
+2. Do zachowania terminu na odstąpienie od umowy wystarczy wysłanie oświadczenia przed jego upływem. Oświadczenie o odstąpieniu od umowy może zostać złożone na przykład: pisemnie na adres: ul. Batalionów Chłopskich 7, 05-660 Warka lub w formie elektronicznej za pośrednictwem poczty elektronicznej na adres: kontakt@dietetykadlasmyka.pl.
 3. Sprzedawca ma obowiązek niezwłocznie, nie później niż w terminie 14 dni kalendarzowych od dnia otrzymania oświadczenia Klienta o odstąpieniu od umowy, zwrócić Klientowi wszystkie dokonane przez niego płatności. Sprzedawca dokonuje zwrotu płatności przy użyciu takiego samego sposobu płatności, jakiego użył Klient, chyba że Klient wyraźnie zgodził się na inny sposób zwrotu, który nie wiąże się dla niego z żadnymi kosztami.
 4. Sprzedawcy przysługuje prawo odstąpienia od umowy o świadczenie Usługi z ważnych przyczyn, to jest: (1) realizacja Usługi wykracza poza Strefę Dowozu; (2) brak możliwości realizacji Usługi w godzinach podanych przez Klienta i brak akceptacji Klienta innych godzin w dostępnym przedziale czasowym w Formularzu Zamówienia; albo (3) brak możliwości realizacji Usługi o parametrach podanych przez Klienta (dotyczy to modyfikacji przez Klienta Usługi dostępnej w standardowej ofercie w sposób, który nie jest możliwy do realizacji przez Sprzedawcę). Sprzedawca może wykonać przysługujące mu prawo odstąpienia od umowy o świadczenie Usługi w terminie do 3 Dni Roboczych przed dniem rozpoczęcia Usługi wskazanym w przyjętym Zamówieniu. W przypadku odstąpienia od umowy Sprzedawca, na życzenie Klienta, jest zobowiązany podjąć z Klientem negocjacje celem zaproponowania Klientowi umowy o świadczenie Usługi możliwej do realizacji przez Sprzedawcę uwzględniając przy tym życzenia Klienta oraz aktualne możliwości i ofertę Sprzedawcy.
 5. Umowne prawo wprowadzenia przez Klienta zmian w trwającej umowie o świadczenie Usługi oraz umowne prawa odstąpienia, o których mowa w niniejszym punkcie Regulaminu mają charakter dodatkowy, dobrowolny i nie wyłączają, nie zawieszają ani nie ograniczają innych praw Klienta przewidzianych przepisami prawa.
@@ -130,7 +130,7 @@ Zasadniczą formą bieżącej komunikacji na odległość z Usługodawcą jest p
 
 1. Prawo odstąpienia od umowy zawartej na odległość nie przysługuje konsumentowi w odniesieniu do umów: (1) o świadczenie usług, za które konsument jest zobowiązany do zapłaty ceny, jeżeli przedsiębiorca wykonał w pełni usługę za wyraźną i uprzednią zgodą konsumenta, który został poinformowany przed rozpoczęciem świadczenia, że po spełnieniu świadczenia przez przedsiębiorcę utraci prawo odstąpienia od umowy, i przyjął to do wiadomości.
 2. W przypadku usługi, której wykonywanie – na wyraźne żądanie konsumenta – rozpoczęło się przed upływem terminu do odstąpienia od umowy, konsument, który wykonuje prawo odstąpienia od umowy po zgłoszeniu takiego żądania, ma obowiązek zapłaty za świadczenia spełnione do chwili odstąpienia od umowy. Kwotę zapłaty oblicza się proporcjonalnie do zakresu spełnionego świadczenia, z uwzględnieniem uzgodnionej w umowie ceny lub wynagrodzenia. Jeżeli cena lub wynagrodzenie są nadmierne, podstawą obliczenia tej kwoty jest wartość rynkowa spełnionego świadczenia.
-3. Do zachowania terminu na odstąpienie od umowy wystarczy wysłanie oświadczenia przed jego upływem. Oświadczenie o odstąpieniu od umowy może zostać złożone na przykład: pisemnie na adres: ul. Niemojewska 2, 05-660 Warka lub w formie elektronicznej za pośrednictwem poczty elektronicznej na adres: kontakt@dieteykadlasmyka.pl.
+3. Do zachowania terminu na odstąpienie od umowy wystarczy wysłanie oświadczenia przed jego upływem. Oświadczenie o odstąpieniu od umowy może zostać złożone na przykład: pisemnie na adres: ul. Batalionów Chłopskich 7, 05-660 Warka lub w formie elektronicznej za pośrednictwem poczty elektronicznej na adres: kontakt@dietetykadlasmyka.pl.
 4. POZASĄDOWE SPOSOBY ROZPATRYWANIA REKLAMACJI I DOCHODZENIA ROSZCZEŃ ORAZ ZASADY DOSTĘPU DO TYCH PROCEDUR
 
 1. Niniejszy punkt Regulaminu ma zastosowanie jedynie do Usługobiorców i Klientów będących konsumentami.
