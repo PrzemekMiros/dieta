@@ -17,6 +17,8 @@ const sections = home.sections?.length
     ].map((key) => ({ key }));
 const featured = home.featuredProducts?.length
   ? home.featuredProducts
+      .map((p) => catalog.find((item) => item._id === p._id))
+      .filter((p): p is NonNullable<typeof p> => Boolean(p))
   : catalog.filter((p) => p.featured);
 ---
 
@@ -24,15 +26,17 @@ const featured = home.featuredProducts?.length
   <section class="hero container">
     <div class="hero-copy">
       <p class="eyebrow" data-reveal>
-         Jedz dobrze · Nieidealnie · Z przyjemnością
+        Jedz dobrze · Nieidealnie · Z przyjemnością
       </p>
       <h1 data-reveal>
-        Pomagam zaprzyjaźnić się 
+        Pomagam zaprzyjaźnić się
         <br />
         <em>z jedzeniem</em>
       </h1>
       <p class="hero-description" data-reveal>
-        Wspieram dorosłych, dzieci i rodziców oraz kobiety w ciąży. Łączę wiedzę akademicką z życiowym podejściem, tworząc zalecenia dopasowane do Twoich potrzeb. Bo zdrowa dieta to nie perfekcja, a równowaga, która pasuje do Ciebie.
+        Wspieram dorosłych, dzieci i rodziców oraz kobiety w ciąży. Łączę wiedzę akademicką z
+        życiowym podejściem, tworząc zalecenia dopasowane do Twoich potrzeb. Bo zdrowa dieta to nie
+        perfekcja, a równowaga, która pasuje do Ciebie.
       </p>
       <div class="flex flex-wrap gap-3 mt-8" data-reveal>
         {(home.primaryHref || '/kontakt').startsWith('/kontakt') ? (
