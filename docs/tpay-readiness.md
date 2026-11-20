@@ -20,7 +20,7 @@ To przygotowanie strony, nie gotowa integracja API Tpay ani potwierdzenie pozyty
 
 ## Blokery przed zgłoszeniem strony do weryfikacji
 
-1. Potwierdzić sprzedawcę. Lokalny regulamin wskazuje Catering dietetyczny Elżbieta Dworzyńska, NIP 7971527742, REGON 368484910, ale podaje zarówno Niemojewską 13/U6, jak i Niemojewską 2 w Warce. Nie wybrano arbitralnie adresu. Ujednolicić nazwę, adres siedziby i reklamacji, NIP, telefon oraz e-mail w ustawieniach CMS, regulaminie i polityce. Kontakt miał inny e-mail i przykładowy telefon.
+1. Potwierdzić sprzedawcę. Lokalny regulamin wskazuje Catering dietetyczny Elżbieta Dworzyńska, ale podaje zarówno Niemojewską 13/U6, jak i Niemojewską 2 w Warce. Nie wybrano arbitralnie adresu. Ujednolicić nazwę, adres siedziby i reklamacji, NIP, telefon oraz e-mail w ustawieniach CMS, regulaminie i polityce. Kontakt miał inny e-mail i przykładowy telefon.
 2. Dopasować regulamin do faktycznej oferty. Obecny opisuje catering Dietella, konta, vouchery, PayU i P24. Sklep implementuje produkty fizyczne i e-booki; rezerwacje konsultacji są osobnym formularzem. Potwierdzić, które z tych świadczeń będą sprzedawane przez Tpay. Nie zastępować nazwy P24 słowem Tpay w opisach nieistniejących funkcji.
 3. Ustalić i opublikować czas realizacji produktów fizycznych (`siteSettings.deliveryInfo`), adres zwrotów, koszty odesłania i pełną procedurę reklamacji oraz odstąpienia. Strona dostawy bez ustalonego terminu nie jest gotowa do weryfikacji.
 4. Uzupełnić opisy, ceny brutto, formaty i wymagania techniczne e-booków, warunki konsultacji i rzeczywiste pliki. Nie sprzedawać demonstracyjnych produktów.

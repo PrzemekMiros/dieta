@@ -7,7 +7,7 @@ Podstawowe dane:
 
 Administrator Państwa danych osobowych:
 
-Natalia Dworzyńska z siedzibą w Warce, adres siedziby i adres do doręczeń: ul. Batalionów Chłopskich 7, 05-660 Warka, NIP: 7971527742, REGON: 368484910, adres poczty elektronicznej: [kontakt@dietetykadlasmyka.pl](mailto:kontakt@dietetykadlasmyka.pl), dodatkowe adresy poczty elektronicznej i numery kontaktowe wskazane są na stronie Serwisu w zakładce „Kontakt” będąca jednocześnie Usługodawcą Serwisu Internetowego i Sprzedawcą.
+Natalia Dworzyńska z siedzibą w Warce, adres siedziby i adres do doręczeń: ul. Batalionów Chłopskich 7, 05-660 Warka, adres poczty elektronicznej: [kontakt@dietetykadlasmyka.pl](mailto:kontakt@dietetykadlasmyka.pl), dodatkowe adresy poczty elektronicznej i numery kontaktowe wskazane są na stronie Serwisu w zakładce „Kontakt” będąca jednocześnie Usługodawcą Serwisu Internetowego i Sprzedawcą.
 
 Kontaktując się z nami, przekazują nam Państwo swoje dane osobowe, a my gwarantujemy, że Państwa dane pozostaną poufne, bezpieczne i nie zostaną udostępnione jakimkolwiek podmiotom trzecim bez Państwa wyraźnej zgody.
 Powierzamy przetwarzanie danych osobowych tylko sprawdzonym i zaufanym podmiotom świadczącym usługi związane z przetwarzaniem danych osobowych.
