@@ -70,6 +70,7 @@
   --color-border-header: color-mix(in srgb, var(--color-border) 50%, transparent);
   --color-shadow-product: color-mix(in srgb, var(--color-ink) 15%, transparent);
   --color-shadow-card: color-mix(in srgb, var(--color-ink) 10%, transparent);
+  --color-booking-surface: var(--color-ink-hover);
   --color-booking-text: var(--color-paper);
   --color-booking-accent: var(--color-action);
   --color-booking-accent-soft: var(--color-accent-inverse);
@@ -81,7 +82,7 @@
   --color-booking-muted: var(--color-beige);
   --color-booking-disabled: var(--color-border-strong);
   --color-booking-secondary: var(--color-beige);
-  --color-booking-link: var(--color-accent-inverse);
-  --color-booking-placeholder: var(--color-border-strong);
-  --color-booking-border-hover: var(--color-accent-inverse);
+  --color-booking-link: var(--color-action);
+  --color-booking-placeholder: var(--color-muted);
+  --color-booking-border-hover: var(--color-border-strong);
 }

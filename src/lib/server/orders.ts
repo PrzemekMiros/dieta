@@ -72,10 +72,13 @@ export async function createOrder(input: CheckoutInput) {
   if (quote.digital && input.digitalConsent !== true)
     throw new HttpError(400, 'Potwierdź zgodę na dostarczenie treści cyfrowej.');
   if (quote.digital) {
-    required('S3_BUCKET');
-    required('S3_ACCESS_KEY_ID');
-    required('S3_SECRET_ACCESS_KEY');
-    if (quote.lines.some((p) => p.productType === 'digital' && !p.digitalAssetReference))
+    if (
+      quote.lines.some(
+        (p) =>
+          p.productType === 'digital' &&
+          !p.digitalFileUrl,
+      )
+    )
       throw new HttpError(503, 'Plik produktu nie został przygotowany.');
   }
   const order = await db().transaction(async (tx) => {
@@ -138,7 +141,7 @@ export async function createOrder(input: CheckoutInput) {
         quantity: p.quantity,
         unitPrice: p.price,
         taxRate: p.taxRate,
-        assetKey: p.digitalAssetReference,
+        assetKey: p.digitalFileUrl,
       });
     }
     await tx.insert(t.payments).values({

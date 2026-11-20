@@ -72,22 +72,22 @@
   --color-surface-danger: #fbefef;
   --color-text-danger: #874747;
   /* Okno rezerwacji */
-  --color-booking-text: #f4eee8;
-  --color-booking-background: #1d1715;
-  --color-booking-accent: #a96572;
-  --color-booking-surface: #352a27;
-  --color-booking-accent-soft: #d7aeb4;
-  --color-booking-border: #493a36;
-  --color-booking-field: #29201e;
-  --color-booking-border-input: #65534d;
-  --color-booking-selected: #403130;
-  --color-booking-divider: #4b3c38;
-  --color-booking-muted: #c8bdb6;
-  --color-booking-disabled: #80716b;
-  --color-booking-secondary: #c1b5ae;
-  --color-booking-link: #d2a0a8;
-  --color-booking-placeholder: #ad9e96;
-  --color-booking-border-hover: #85736b;
+  --color-booking-text: #f7f1ec;
+  --color-booking-background: #171211;
+  --color-booking-accent: #c17a87;
+  --color-booking-surface: #3d302d;
+  --color-booking-accent-soft: #dfadb5;
+  --color-booking-border: #68564f;
+  --color-booking-field: #2b211f;
+  --color-booking-border-input: #927f76;
+  --color-booking-selected: #4b3935;
+  --color-booking-divider: #69574f;
+  --color-booking-muted: #dacfc7;
+  --color-booking-disabled: #9b8d85;
+  --color-booking-secondary: #d1c4bc;
+  --color-booking-link: #dfadb5;
+  --color-booking-placeholder: #bcaeA5;
+  --color-booking-border-hover: #b09b91;
   /* Przezroczysto?ci i cienie */
   --color-surface-badge: #f7f3eee8;
   --color-shadow-product: #38241f25;

@@ -16,7 +16,7 @@ export interface Product {
   active: boolean;
   stock: number;
   weight?: number;
-  digitalAssetReference?: string;
+  digitalFileUrl?: string;
   taxRate: number;
   seoTitle?: string;
   seoDescription?: string;

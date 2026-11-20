@@ -214,7 +214,7 @@ describe('private Sanity commerce without PostgreSQL', () => {
         price: 2000,
         taxRate: 5,
         active: true,
-        digitalAssetReference: 'private/file.pdf',
+        digitalFileUrl: 'https://cdn.sanity.io/files/project/dataset/file.pdf',
       },
     ];
     vi.stubEnv('S3_BUCKET', 'test');
@@ -242,10 +242,55 @@ describe('private Sanity commerce without PostgreSQL', () => {
     const mail = docs.get(`mail.${hash(`${orderId}:paid`)}`)!;
     const html = unseal<{ html: string }>(String(mail.payload), mail._id).html;
     const raw = /pobierz\/([a-f0-9]{64})/.exec(html)![1]!;
-    expect((await sanityEntitlement(raw)).assetKey).toBe('private/file.pdf');
-    expect(JSON.stringify(await sanityOrderDetail(orderId))).not.toContain('private/file.pdf');
+    expect((await sanityEntitlement(raw)).assetKey).toBe(
+      'https://cdn.sanity.io/files/project/dataset/file.pdf',
+    );
+    expect(JSON.stringify(await sanityOrderDetail(orderId))).not.toContain(
+      'https://cdn.sanity.io/files/project/dataset/file.pdf',
+    );
     await sanityOrderAction({ orderId, action: 'resend-links' }, 'admin');
     await expect(sanityEntitlement(raw)).rejects.toThrow('Link wygasł');
+  });
+  it('supports a PDF asset uploaded directly in Sanity', async () => {
+    state.catalog = [
+      {
+        _id: 'ebook-sanity',
+        name: 'Ebook Sanity',
+        sku: 'ES1',
+        productType: 'digital',
+        price: 1900,
+        taxRate: 5,
+        active: true,
+        digitalFileUrl: 'https://cdn.sanity.io/files/project/dataset/ebook.pdf',
+      },
+    ];
+    vi.stubEnv('S3_BUCKET', '');
+    vi.stubEnv('S3_ACCESS_KEY_ID', '');
+    vi.stubEnv('S3_SECRET_ACCESS_KEY', '');
+    const data = {
+      ...input(),
+      items: [{ id: 'ebook-sanity', quantity: 1 }],
+      paymentMethod: 'p24' as const,
+      digitalConsent: true,
+    };
+    await sanityCreateOrder(data);
+    const orderId = idFor(data.idempotencyKey);
+    await sanityAcceptPayment(
+      {
+        sessionId: orderId,
+        amount: 1900,
+        originAmount: 1900,
+        currency: 'PLN',
+        orderId: 101,
+      } as Notification,
+      async () => {},
+    );
+    const mail = docs.get(`mail.${hash(`${orderId}:paid`)}`)!;
+    const html = unseal<{ html: string }>(String(mail.payload), mail._id).html;
+    const raw = /pobierz\/([a-f0-9]{64})/.exec(html)![1]!;
+    expect((await sanityEntitlement(raw)).assetKey).toBe(
+      'https://cdn.sanity.io/files/project/dataset/ebook.pdf',
+    );
   });
   it('fails closed when the dataset becomes public or credentials are absent', async () => {
     privateDataset = false;

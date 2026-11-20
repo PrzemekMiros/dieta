@@ -140,11 +140,11 @@ const dayNames = settings.days
     padding: 0;
     overflow: auto;
     border: 0;
-    background: var(--color-booking-text);
+    background: var(--color-booking-field);
     color: var(--color-booking-text);
   }
   .booking-dialog::backdrop {
-    background: var(--color-booking-background);
+    background: rgb(12 8 7 / 78%);
   }
   .booking-shell {
     width: 100%;
@@ -171,7 +171,7 @@ const dayNames = settings.days
     padding: 14px 16px;
     border-left: 3px solid var(--color-booking-accent);
     background: var(--color-booking-surface);
-    color: var(--color-surface-nav);
+    color: var(--color-booking-text);
     font-size: 12px;
   }
   .booking-feedback {
@@ -265,6 +265,14 @@ const dayNames = settings.days
   .month-controls button:hover {
     border-color: var(--color-booking-accent);
     background: var(--color-booking-selected);
+  }
+  .month-controls button:focus-visible,
+  .booking-close:focus-visible,
+  .calendar-day:focus-visible,
+  .time-option:focus-visible,
+  .booking-calendar :is(input, button, a):focus-visible {
+    outline: 3px solid var(--color-booking-accent);
+    outline-offset: 3px;
   }
   .calendar-grid {
     display: grid;

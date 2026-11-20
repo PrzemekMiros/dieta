@@ -61,7 +61,10 @@ beforeEach(async () => {
   state.catalog = demoProducts.map((p) => ({
     ...p,
     demo: false,
-    digitalAssetReference: p.productType === 'digital' ? 'private/test.pdf' : undefined,
+    digitalFileUrl:
+      p.productType === 'digital'
+        ? 'https://cdn.sanity.io/files/test/dataset/private/test.pdf'
+        : undefined,
   }));
   await database.insert(schema.inventory).values({ productId: 'demo-4', available: 3 });
   vi.mocked(registerPayment).mockResolvedValue('test-provider-token');

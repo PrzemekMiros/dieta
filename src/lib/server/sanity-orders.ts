@@ -251,10 +251,13 @@ export async function sanityCreateOrder(input: CheckoutInput) {
   if (quote.digital) {
     if (input.digitalConsent !== true)
       throw new HttpError(400, 'Potwierdź zgodę na dostarczenie treści cyfrowej.');
-    required('S3_BUCKET');
-    required('S3_ACCESS_KEY_ID');
-    required('S3_SECRET_ACCESS_KEY');
-    if (quote.lines.some((p) => p.productType === 'digital' && !p.digitalAssetReference))
+    if (
+      quote.lines.some(
+        (p) =>
+          p.productType === 'digital' &&
+          !p.digitalFileUrl,
+      )
+    )
       throw new HttpError(503, 'Plik produktu nie został przygotowany.');
   }
   const customer: Customer = {
@@ -292,7 +295,9 @@ export async function sanityCreateOrder(input: CheckoutInput) {
       quantity: p.quantity,
       unitPrice: p.price,
       taxRate: p.taxRate,
-      ...(p.digitalAssetReference ? { assetKey: p.digitalAssetReference } : {}),
+      ...(p.digitalFileUrl
+        ? { assetKey: p.digitalFileUrl }
+        : {}),
     })),
     payment: { status: input.paymentMethod === 'cod' ? 'cod_pending' : 'registering' },
     shipment: input.paymentMethod === 'cod' ? { status: 'preparing', tracking: null } : null,

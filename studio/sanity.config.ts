@@ -222,17 +222,26 @@ const product = defineType({
       validation: (rule) => rule.integer().min(0),
     }),
     defineField({
-      name: 'digitalAssetReference',
-      title: 'Klucz pliku w prywatnym bucket S3',
-      description: 'Wpisz klucz obiektu, nigdy publiczny URL.',
-      type: 'string',
+      name: 'digitalFile',
+      title: 'Plik PDF ebooka',
+      description: 'Najprościej: wgraj tutaj PDF bezpośrednio do Sanity.',
+      type: 'file',
       group: 'commerce',
       hidden: ({ document }) => document?.productType !== 'digital',
+      options: {
+        accept: 'application/pdf',
+      },
       validation: (rule) =>
-        rule.custom((value, context) => {
-          const document = context.document as { active?: boolean; productType?: string } | undefined;
-          return document?.active && document.productType === 'digital' && !value
-            ? 'Aktywny produkt cyfrowy musi wskazywać plik w prywatnym bucket S3.'
+        rule.custom((_value, context) => {
+          const document = context.document as {
+            active?: boolean;
+            productType?: string;
+            digitalFile?: unknown;
+          } | undefined;
+          return document?.active &&
+            document.productType === 'digital' &&
+            !document.digitalFile
+            ? 'Aktywny ebook musi mieć wgrany plik PDF.'
             : true;
         }),
     }),
