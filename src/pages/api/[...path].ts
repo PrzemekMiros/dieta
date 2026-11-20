@@ -31,6 +31,7 @@ import {
 import { notificationSchema, validNotification } from '../../lib/server/p24';
 import { enqueue, escapeHtml } from '../../lib/server/email';
 import { signedDownload } from '../../lib/server/digital';
+import { databaseError } from '../../lib/server/database-error';
 import { studioAdmin, studioCors, studioOrigin } from '../../lib/server/studio-access';
 import { listAdminOrders, adminOrderDetail } from '../../lib/server/admin-order-queries';
 import {
@@ -427,12 +428,14 @@ const handle: APIRoute = async (ctx) => {
         400,
       );
     if (error instanceof HttpError) return json({ error: error.message }, error.status);
+    const databaseDiagnostic = databaseError(error);
     // Never log payloads, credentials, access tokens or customer details.
     console.error(
       JSON.stringify({
         event: 'api_error',
         path,
         error: error instanceof Error ? error.name : 'Unknown',
+        ...(databaseDiagnostic ? { reason: databaseDiagnostic.reason } : {}),
         ...(path?.startsWith('booking/') || path === 'booking'
           ? {
               detail: error instanceof Error ? error.message.slice(0, 200) : 'Unknown',
@@ -440,7 +443,15 @@ const handle: APIRoute = async (ctx) => {
           : {}),
       }),
     );
-    return json({ error: 'Usługa jest chwilowo niedostępna. Spróbuj ponownie później.' }, 503);
+    return json(
+      {
+        error:
+          fromStudio && databaseDiagnostic
+            ? databaseDiagnostic.message
+            : 'Usługa jest chwilowo niedostępna. Spróbuj ponownie później.',
+      },
+      503,
+    );
   }
 };
 

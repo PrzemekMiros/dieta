@@ -91,6 +91,8 @@ beforeEach(async () => {
       idempotencyKey: randomUUID(),
       consents: {},
       address: { street: 'Testowa 1' },
+      phone: '500600700',
+      invoice: { nip: '1234567890', name: 'Private invoice company' },
     })
     .returning();
   orderId = order!.id;
@@ -164,7 +166,9 @@ describe('panel zamówień Sanity', () => {
     expect((await request('studio/logout', { body: {}, token: raw })).status).toBe(404);
   });
   it('filters orders and returns details without internal credentials', async () => {
-    const response = await request('studio/orders?q=Jan&status=pending', { token: raw });
+    const response = await request(`studio/orders?q=${orderId.slice(0, 8)}&status=pending`, {
+      token: raw,
+    });
     const list = await response.json();
     expect(list.orders).toHaveLength(1);
     expect(list.stats.pending).toBe(1);
@@ -172,7 +176,10 @@ describe('panel zamówień Sanity', () => {
       (await (await request('studio/orders?q=absent', { token: raw })).json()).orders,
     ).toHaveLength(0);
     const detail = await (await request(`studio/orders/${orderId}`, { token: raw })).json();
-    expect(detail.order.address.street).toBe('Testowa 1');
+    for (const order of [...list.orders, detail.order]) {
+      for (const field of ['name', 'email', 'phone', 'address', 'invoice', 'customerId'])
+        expect(order).not.toHaveProperty(field);
+    }
     expect(detail.items).toHaveLength(1);
     const output = JSON.stringify({ list, detail });
     for (const secret of [
@@ -180,8 +187,22 @@ describe('panel zamówień Sanity', () => {
       'private-request-hash',
       'private-provider-token',
       'private-asset-key',
+      'Jan Test',
+      'client@example.test',
+      'Testowa 1',
+      '500600700',
+      '1234567890',
+      'Private invoice company',
     ])
       expect(output).not.toContain(secret);
+  });
+  it('does not allow customer data to be used as a search oracle', async () => {
+    for (const query of ['Jan', 'client@example.test', 'Testowa', '500600700']) {
+      const response = await request(`studio/orders?q=${encodeURIComponent(query)}`, {
+        token: raw,
+      });
+      expect((await response.json()).orders).toEqual([]);
+    }
   });
   it('validates filters, ids and limits exposed operations', async () => {
     expect((await request('studio/orders?page=-1', { token: raw })).status).toBe(400);

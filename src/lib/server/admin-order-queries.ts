@@ -1,4 +1,4 @@
-import { and, desc, eq, ilike, or, sql } from 'drizzle-orm';
+import { and, desc, eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from './db';
 import * as t from './schema';
@@ -8,8 +8,6 @@ import { HttpError } from './security';
 // keys out of the browser API.
 const orderFields = {
   id: t.orders.id,
-  name: t.orders.name,
-  email: t.orders.email,
   status: t.orders.status,
   total: t.orders.total,
   currency: t.orders.currency,
@@ -25,13 +23,7 @@ export async function listAdminOrders(url: URL) {
     })
     .parse(Object.fromEntries(url.searchParams));
   const filter = and(
-    q
-      ? or(
-          ilike(t.orders.email, `%${q}%`),
-          ilike(t.orders.name, `%${q}%`),
-          sql`${t.orders.id}::text ilike ${'%' + q + '%'}`,
-        )
-      : undefined,
+    q ? sql`${t.orders.id}::text ilike ${'%' + q + '%'}` : undefined,
     status ? eq(t.orders.status, status) : undefined,
   );
   const [rows, stats] = await Promise.all([
@@ -58,9 +50,6 @@ export async function adminOrderDetail(rawId: string) {
   const [order] = await db()
     .select({
       ...orderFields,
-      phone: t.orders.phone,
-      address: t.orders.address,
-      invoice: t.orders.invoice,
       shipping: t.orders.shipping,
       shippingMethod: t.orders.shippingMethod,
     })

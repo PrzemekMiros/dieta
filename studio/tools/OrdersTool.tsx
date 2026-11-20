@@ -4,15 +4,10 @@ import './orders.css'
 
 type Order = {
   id: string
-  name: string
-  email: string
   status: string
   total: number
   currency: string
   createdAt: string
-  phone?: string
-  address?: Record<string, string>
-  invoice?: Record<string, string>
   shipping: number
   shippingMethod?: string
 }
@@ -268,18 +263,7 @@ export function OrdersTool() {
               </div>
               <div className="so-columns">
                 <section className="so-card">
-                  <h3>Klient i dostawa</h3>
-                  <p>
-                    {detail.order.name}
-                    <br />
-                    {detail.order.email}
-                    <br />
-                    {detail.order.phone}
-                  </p>
-                  {detail.order.address && <p>{Object.values(detail.order.address).join(', ')}</p>}
-                  {detail.order.invoice && (
-                    <p>Faktura: {Object.values(detail.order.invoice).join(', ')}</p>
-                  )}
+                  <h3>Dostawa</h3>
                   <p>Dostawa: {detail.order.shippingMethod || 'Nie dotyczy'}</p>
                 </section>
                 <section className="so-card">
@@ -455,7 +439,7 @@ export function OrdersTool() {
                   <input
                     name="q"
                     maxLength={200}
-                    placeholder="Numer, klient lub e-mail"
+                    placeholder="Numer zamówienia"
                     defaultValue={filters.q}
                   />
                 </label>
@@ -487,7 +471,6 @@ export function OrdersTool() {
                         <thead>
                           <tr>
                             <th>Numer / data</th>
-                            <th>Klient</th>
                             <th>Status</th>
                             <th>Kwota</th>
                           </tr>
@@ -500,10 +483,6 @@ export function OrdersTool() {
                                   {order.id.slice(0, 8)}
                                 </button>
                                 <small>{date(order.createdAt)}</small>
-                              </td>
-                              <td>
-                                {order.name}
-                                <small>{order.email}</small>
                               </td>
                               <td>
                                 <span className="so-badge">{label(order.status)}</span>
