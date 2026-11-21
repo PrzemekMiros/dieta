@@ -75,14 +75,9 @@ Zespół Dietetyka dla Smyka
 12. SPOSOBY I TERMINY PŁATNOŚCI ZA USŁUGĘ
 
 1. Niniejszy punkt Regulaminu określa sposoby i terminy płatności za Usługę.
-2. Sprzedawca udostępnia Klientowi następujące sposoby płatności z tytułu umowy o świadczenie Usługi:
-
-1. Płatności za pośrednictwem systemu Przelewy24,
-2. Płatności za pośrednictwem systemu PayU,
-3. Płatność w siedzibie Dietetyka dla Smyka: ul. Batalionów Chłopskich 7, 05-660 Warka.
-
-3. W przypadku korzystania przez Klienta z płatności za pośrednictwem systemu Przelewy24 (transakcje płatnościami elektronicznymi i kartą płatniczą, w tym tzw. Płatności Oneclick) obsługę tych płatności prowadzi spółka PayPro SA z siedzibą w Poznaniu, przy ulicy Kanclerskiej 15, 60-327 Poznań, wpisana do rejestru przedsiębiorców Krajowego Rejestru Sądowego prowadzonego przez Sąd Rejonowy Poznań Nowe Miasto i Wilda, VIII Wydział Gospodarczy Krajowego Rejestru Sądowego pod numerem KRS 0000347935, numerem NIP 7792369887, o kapitale zakładowym wynoszącym 4.500.000,00 zł, w całości opłaconym oraz do rejestru krajowych instytucji płatniczych prowadzonego przez Komisję Nadzoru Finansowego pod numerem UKNF IP24/2014.
-4. Nieopłacone Zamówienia, po upływie 10 (dziesięciu) dni od dnia ich złożenia, są automatycznie anulowane.
+2. Dostępne sposoby płatności i pełna kwota do zapłaty są prezentowane przed złożeniem Zamówienia.
+3. Dla zamówień obejmujących wyłącznie produkty fizyczne może być dostępna płatność gotówką przy odbiorze przesyłki. Ta metoda nie obejmuje e-booków.
+4. Płatności online przez Tpay są w przygotowaniu i nie są jeszcze dostępne. Aktualne informacje znajdują się na stronie „Płatności”.
 5. PROMOCJE, VOUCHERY I HASŁA RABATOWE
 
 1. Sprzedawca zastrzega sobie prawo do dokonywania na bieżąco zmian w cenach Usług oraz do przeprowadzania i odwoływania akcji promocyjnych. Ewentualne zmiany cen Usług obowiązują od momentu wprowadzenia ich w Dietetyka dla Smyka i nie dotyczą Zamówień złożonych przed ich wprowadzeniem oraz nie naruszają już zawartych umów o świadczenie Usług.

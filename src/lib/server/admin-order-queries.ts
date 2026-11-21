@@ -69,10 +69,7 @@ export async function adminOrderDetail(rawId: string) {
       })
       .from(t.orderItems)
       .where(eq(t.orderItems.orderId, id)),
-    db()
-      .select({ status: t.payments.status, p24OrderId: t.payments.p24OrderId })
-      .from(t.payments)
-      .where(eq(t.payments.orderId, id)),
+    db().select({ status: t.payments.status }).from(t.payments).where(eq(t.payments.orderId, id)),
     db()
       .select({ status: t.shipments.status, tracking: t.shipments.tracking })
       .from(t.shipments)

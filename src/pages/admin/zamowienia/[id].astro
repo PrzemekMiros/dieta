@@ -54,16 +54,15 @@ const [items, payment, shipment, entitlements, audit, events] = await Promise.al
         </p>
       ) : (
         <>
-          <p>P24: {payment[0]?.status || '—'}</p>
-          <p>ID P24: {payment[0]?.p24OrderId || '—'}</p>
+          <p>Płatność online: {payment[0]?.status || '—'}</p>
         </>
       )}
       <p class="mt-4 text-xl">{money(order.total)}</p>
       <p class="text-xs">w tym dostawa: {money(order.shipping)}</p>
       {payment[0]?.lastError && (
         <p class="notice">
-          Rejestracja wymaga sprawdzenia w P24. Nie rejestruj nowej płatności bez uzgodnienia
-          poprzedniej.
+          Rejestracja wymaga sprawdzenia u operatora płatności. Nie rejestruj nowej płatności bez
+          uzgodnienia poprzedniej.
         </p>
       )}
     </div>

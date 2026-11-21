@@ -1,6 +1,6 @@
 import { build } from 'esbuild';
 await build({
-  entryPoints: ['scripts/worker.ts', 'scripts/reconcile.ts'],
+  entryPoints: ['scripts/worker.ts'],
   outdir: 'dist/jobs',
   outExtension: { '.js': '.mjs' },
   bundle: true,

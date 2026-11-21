@@ -4,7 +4,7 @@
 
 Przygotowano stronę informacyjną `/platnosci`, stronę `/dostawa-i-zwroty` (z zachowaniem pierwszeństwa istniejącego dokumentu CMS), linki w stopce, kontakt z danych ustawień i blokadę składania zamówień bez dostępnej metody płatności. Usunięto przykładowy numer telefonu z kontaktu. Koszty dostawy pochodzą z tej samej konfiguracji co wycena koszyka.
 
-To przygotowanie strony, nie gotowa integracja API Tpay ani potwierdzenie pozytywnej weryfikacji sklepu. Backend nadal zawiera P24. Domyślne `PAYMENT_PROVIDER=tpay` blokuje inicjowanie P24 nawet przy `SALES_ENABLED=true`. Stare powiadomienia P24 pozostają obsługiwane dla istniejących transakcji. Jawne `PAYMENT_PROVIDER=p24` zachowuje możliwość obsługi starej bramki. Tpay wymaga osobnego adaptera, powiadomień i testów.
+Integracja Przelewy24 została usunięta: adapter, rejestracja transakcji, obsługa powiadomień oraz zadanie uzgadniania płatności. Nie można jej ponownie włączyć zmienną środowiskową. Tpay wymaga osobnego adaptera, weryfikacji powiadomień i testów. Płatności online pozostają wyłączone także przy `SALES_ENABLED=true`. Pobranie działa niezależnie dla produktów fizycznych.
 
 ## Wymagania i źródła
 
@@ -21,7 +21,7 @@ To przygotowanie strony, nie gotowa integracja API Tpay ani potwierdzenie pozyty
 ## Blokery przed zgłoszeniem strony do weryfikacji
 
 1. Potwierdzić sprzedawcę. Lokalny regulamin wskazuje Catering dietetyczny Elżbieta Dworzyńska, ale podaje zarówno Niemojewską 13/U6, jak i Niemojewską 2 w Warce. Nie wybrano arbitralnie adresu. Ujednolicić nazwę, adres siedziby i reklamacji, NIP, telefon oraz e-mail w ustawieniach CMS, regulaminie i polityce. Kontakt miał inny e-mail i przykładowy telefon.
-2. Dopasować regulamin do faktycznej oferty. Obecny opisuje catering Dietella, konta, vouchery, PayU i P24. Sklep implementuje produkty fizyczne i e-booki; rezerwacje konsultacji są osobnym formularzem. Potwierdzić, które z tych świadczeń będą sprzedawane przez Tpay. Nie zastępować nazwy P24 słowem Tpay w opisach nieistniejących funkcji.
+2. Dopasować regulamin do faktycznej oferty. Usunięto z lokalnej sekcji płatności poprzednich operatorów; opis wskazuje dostępne pobranie oraz przygotowanie Tpay. Pozostałe zapisy o cateringu, kontach i voucherach nadal wymagają przeglądu. Sklep implementuje produkty fizyczne i e-booki; rezerwacje konsultacji są osobnym formularzem. Potwierdzić, które świadczenia będą sprzedawane przez Tpay.
 3. Ustalić i opublikować czas realizacji produktów fizycznych (`siteSettings.deliveryInfo`), adres zwrotów, koszty odesłania i pełną procedurę reklamacji oraz odstąpienia. Strona dostawy bez ustalonego terminu nie jest gotowa do weryfikacji.
 4. Uzupełnić opisy, ceny brutto, formaty i wymagania techniczne e-booków, warunki konsultacji i rzeczywiste pliki. Nie sprzedawać demonstracyjnych produktów.
 5. Zaktualizować politykę prywatności o Tpay oraz faktycznych dostawców, cele, podstawy, retencję i prawa. Lokalny dokument zawiera rozbieżne adresy e-mail oraz opis narzędzi wymagający porównania z rzeczywistą konfiguracją.
@@ -41,8 +41,12 @@ Poniższe klauzule są do włączenia po uruchomieniu integracji i uzgodnieniu c
 - Zweryfikowane konto sprzedawcy, osobne konto sandbox oraz dane dostępowe API przechowywane wyłącznie po stronie serwera.
 - Rejestracja transakcji z kwotą obliczoną na serwerze, powiązaniem z zamówieniem i publicznymi adresami HTTPS powrotu oraz powiadomień.
 - Weryfikacja autentyczności powiadomień według aktualnej dokumentacji Tpay, zgodności identyfikatora, kwoty i statusu. Powrót przeglądarki nie potwierdza zapłaty.
-- Osobne identyfikatory/provider w bazie: nie wpisywać identyfikatorów Tpay do pola `p24OrderId`. Migracja schematu, walidatora checkout, wyceny, strony statusu i procesu uzgadniania płatności.
+- Dodać osobne pola operatora i identyfikatora transakcji Tpay. Historyczna kolumna SQL `p24_order_id` i stare dokumenty pozostają zachowane wyłącznie jako dane archiwalne; nowa integracja nie może ich używać. Checkout przyjmuje `tpay` lub `cod`, ale żądania `tpay` są blokowane przed zapisem zamówienia. Status starych płatności online używa ogólnego oznaczenia `online`.
 - Idempotencja, obsługa duplikatów, opóźnionych powiadomień, timeoutu rejestracji, płatności anulowanej i zwrotu. Dostęp do plików dopiero po wiarygodnym potwierdzeniu.
 - Testy sandbox: sukces, błąd, brak zapłaty, niezgodna kwota, fałszywy podpis, duplikat i powiadomienie po anulowaniu. Test wysyłki e-mail i dostępu do e-booka. Dopiero potem włączenie produkcji.
 
 Nie aktywować wszystkich metod z materiałów marketingowych Tpay automatycznie — dostępność metod zależy od konfiguracji i umowy operatora.
+
+## Po usunięciu poprzedniej integracji
+
+Usuń zmienne `P24_*` z hostingu i wyłącz zewnętrzne harmonogramy dawnego zadania `payments:reconcile`. Endpoint `/api/p24/notify` nie obsługuje już płatności. Ewentualne historyczne, nierozliczone transakcje wymagają ręcznego sprawdzenia u poprzedniego operatora. Nie zmieniono danych w bazach ani opublikowanych dokumentów Sanity.

@@ -21,16 +21,11 @@ vi.mock('../src/lib/catalog', () => ({
   contentPage: async () => ({ content: [{}] }),
   settings: async () => ({ email: 'shop@example.test', companyName: 'Shop' }),
 }));
-vi.mock('../src/lib/server/p24', async (original) => ({
-  ...(await original<typeof import('../src/lib/server/p24')>()),
-  registerPayment: vi.fn(async () => 'payment-token'),
-}));
 import { seal, unseal, privateOrdersClient } from '../src/lib/server/shop-storage';
 import {
   sanityCreateOrder,
   sanityOrderAction,
   sanityOrderDetail,
-  sanityAcceptPayment,
   sanityStock,
   sanityAdjustStock,
   sanityEntitlement,
@@ -38,7 +33,6 @@ import {
 import { hash, token } from '../src/lib/server/security';
 import { sanityLimited, processSanityOutbox } from '../src/lib/server/sanity-shop-jobs';
 import { ALL } from '../src/pages/api/[...path]';
-import type { Notification } from '../src/lib/server/p24';
 
 // A transactional store with revision preconditions. Every commit applies to a
 // clone, so a conflicting stock patch rolls back creation of the order and mail.
@@ -124,13 +118,8 @@ beforeEach(() => {
   vi.stubEnv('COD_ENABLED', 'true');
   vi.stubEnv('SMTP_HOST', 'mail.example.test');
   vi.stubEnv('SMTP_FROM', 'shop@example.test');
-  vi.stubEnv('PAYMENT_PROVIDER', 'p24');
+  vi.stubEnv('PAYMENT_PROVIDER', 'tpay');
   vi.stubEnv('SALES_ENABLED', 'true');
-  vi.stubEnv('P24_ENV', 'sandbox');
-  vi.stubEnv('P24_MERCHANT_ID', '1');
-  vi.stubEnv('P24_POS_ID', '1');
-  vi.stubEnv('P24_CRC', 'test');
-  vi.stubEnv('P24_API_KEY', 'test');
   state.client = {
     fetch: async (query: string, params: { hash?: string; now?: string }) => {
       if (query.includes('shopMail'))
@@ -189,6 +178,98 @@ afterEach(() => {
 });
 
 describe('private Sanity commerce without PostgreSQL', () => {
+  it.each([
+    ['p24', 400],
+    ['tpay', 503],
+  ])(
+    'checkout rejects unavailable method %s before saving an order',
+    async (paymentMethod, status) => {
+      const url = new URL('https://dietetykadlasmyka.pl/api/checkout');
+      const response = await ALL({
+        url,
+        params: { path: 'checkout' },
+        request: new Request(url, {
+          method: 'POST',
+          headers: { Origin: url.origin, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...input(), paymentMethod }),
+        }),
+        cookies: { get: () => undefined },
+        clientAddress: '127.0.0.1',
+      } as unknown as APIContext);
+      expect(response.status).toBe(status);
+      expect([...docs.values()].filter((d) => d._type === 'shopOrder')).toHaveLength(0);
+    },
+  );
+  it('quotes offer COD without exposing the removed provider', async () => {
+    const url = new URL('https://dietetykadlasmyka.pl/api/quote');
+    const response = await ALL({
+      url,
+      params: { path: 'quote' },
+      request: new Request(url, {
+        method: 'POST',
+        headers: { Origin: url.origin, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: input().items }),
+      }),
+      cookies: { get: () => undefined },
+      clientAddress: '127.0.0.1',
+    } as unknown as APIContext);
+    expect(response.status).toBe(200);
+    const quote = await response.json();
+    expect(quote.codAvailable).toBe(true);
+    expect(quote.onlinePaymentAvailable).toBe(false);
+    expect(quote).not.toHaveProperty('p24Available');
+  });
+  it('blocks Tpay before creating orders, mail or reservations', async () => {
+    await expect(sanityCreateOrder({ ...input(), paymentMethod: 'tpay' })).rejects.toThrow(
+      'Sklep nie przyjmuje',
+    );
+    expect(
+      [...docs.values()].filter((d) => d._type === 'shopOrder' || d._type === 'shopMail'),
+    ).toHaveLength(0);
+    expect((await sanityStock(state.catalog as never))[0]!.stock).toBe(1);
+  });
+  it('historical paid ebooks support renewed links; unpaid orders cannot issue them', async () => {
+    const data = input();
+    await sanityCreateOrder(data);
+    const orderId = idFor(data.idempotencyKey);
+    const order = docs.get(orderId) as unknown as ShopOrder;
+    order.items[0]!.type = 'digital';
+    order.items[0]!.assetKey = 'https://cdn.sanity.io/files/project/dataset/ebook.pdf';
+    await expect(sanityOrderAction({ orderId, action: 'resend-links' }, 'admin')).rejects.toThrow(
+      'Brak opłaconych',
+    );
+    order.status = 'paid';
+    order.payment = { status: 'verified' };
+    await sanityOrderAction({ orderId, action: 'resend-links' }, 'admin');
+    const mail = [...docs.values()].filter((d) => d._type === 'shopMail').at(-1)!;
+    const html = unseal<{ html: string }>(String(mail.payload), mail._id).html;
+    const raw = /pobierz\/([a-f0-9]{64})/.exec(html)![1]!;
+    expect((await sanityEntitlement(raw)).assetKey).toBe(order.items[0]!.assetKey);
+    expect(JSON.stringify(await sanityOrderDetail(orderId))).not.toContain(
+      order.items[0]!.assetKey,
+    );
+    await sanityOrderAction({ orderId, action: 'resend-links' }, 'admin');
+    await expect(sanityEntitlement(raw)).rejects.toThrow('Link wygasł');
+  });
+  it('the removed notification endpoint cannot confirm a payment', async () => {
+    const data = input();
+    await sanityCreateOrder(data);
+    const url = new URL('https://dietetykadlasmyka.pl/api/p24/notify');
+    const response = await ALL({
+      url,
+      params: { path: 'p24/notify' },
+      request: new Request(url, {
+        method: 'POST',
+        headers: { Origin: url.origin, 'Content-Type': 'application/json' },
+        body: '{}',
+      }),
+      cookies: { get: () => undefined },
+      clientAddress: '127.0.0.1',
+    } as unknown as APIContext);
+    expect(response.status).toBe(404);
+    expect(docs.get(idFor(data.idempotencyKey))!.status).toBe('pending');
+  });
+
   it('accepts physical cash on delivery orders without a COD flag or online payments', async () => {
     vi.stubEnv('COD_ENABLED', undefined);
     vi.stubEnv('SALES_ENABLED', 'false');
@@ -214,94 +295,6 @@ describe('private Sanity commerce without PostgreSQL', () => {
     expect(counts.reduce((a, b) => a + b, 0)).toBe(1);
     expect(state.sendMail).toHaveBeenCalledTimes(1);
     expect(state.sendMail.mock.calls[0]![0].to).toBe('synthetic@example.test');
-  });
-  it('only verified payment grants downloads; resending revokes old links', async () => {
-    state.catalog = [
-      {
-        _id: 'ebook',
-        name: 'Ebook',
-        sku: 'E1',
-        productType: 'digital',
-        price: 2000,
-        taxRate: 5,
-        active: true,
-        digitalFileUrl: 'https://cdn.sanity.io/files/project/dataset/file.pdf',
-      },
-    ];
-    vi.stubEnv('S3_BUCKET', 'test');
-    vi.stubEnv('S3_ACCESS_KEY_ID', 'test');
-    vi.stubEnv('S3_SECRET_ACCESS_KEY', 'test');
-    const data = {
-      ...input(),
-      items: [{ id: 'ebook', quantity: 1 }],
-      paymentMethod: 'p24' as const,
-      digitalConsent: true,
-    };
-    await sanityCreateOrder(data);
-    const orderId = idFor(data.idempotencyKey);
-    expect(docs.get(orderId)!.entitlements).toEqual([]);
-    await sanityAcceptPayment(
-      {
-        sessionId: orderId,
-        amount: 2000,
-        originAmount: 2000,
-        currency: 'PLN',
-        orderId: 100,
-      } as Notification,
-      async () => {},
-    );
-    const mail = docs.get(`mail.${hash(`${orderId}:paid`)}`)!;
-    const html = unseal<{ html: string }>(String(mail.payload), mail._id).html;
-    const raw = /pobierz\/([a-f0-9]{64})/.exec(html)![1]!;
-    expect((await sanityEntitlement(raw)).assetKey).toBe(
-      'https://cdn.sanity.io/files/project/dataset/file.pdf',
-    );
-    expect(JSON.stringify(await sanityOrderDetail(orderId))).not.toContain(
-      'https://cdn.sanity.io/files/project/dataset/file.pdf',
-    );
-    await sanityOrderAction({ orderId, action: 'resend-links' }, 'admin');
-    await expect(sanityEntitlement(raw)).rejects.toThrow('Link wygasł');
-  });
-  it('supports a PDF asset uploaded directly in Sanity', async () => {
-    state.catalog = [
-      {
-        _id: 'ebook-sanity',
-        name: 'Ebook Sanity',
-        sku: 'ES1',
-        productType: 'digital',
-        price: 1900,
-        taxRate: 5,
-        active: true,
-        digitalFileUrl: 'https://cdn.sanity.io/files/project/dataset/ebook.pdf',
-      },
-    ];
-    vi.stubEnv('S3_BUCKET', '');
-    vi.stubEnv('S3_ACCESS_KEY_ID', '');
-    vi.stubEnv('S3_SECRET_ACCESS_KEY', '');
-    const data = {
-      ...input(),
-      items: [{ id: 'ebook-sanity', quantity: 1 }],
-      paymentMethod: 'p24' as const,
-      digitalConsent: true,
-    };
-    await sanityCreateOrder(data);
-    const orderId = idFor(data.idempotencyKey);
-    await sanityAcceptPayment(
-      {
-        sessionId: orderId,
-        amount: 1900,
-        originAmount: 1900,
-        currency: 'PLN',
-        orderId: 101,
-      } as Notification,
-      async () => {},
-    );
-    const mail = docs.get(`mail.${hash(`${orderId}:paid`)}`)!;
-    const html = unseal<{ html: string }>(String(mail.payload), mail._id).html;
-    const raw = /pobierz\/([a-f0-9]{64})/.exec(html)![1]!;
-    expect((await sanityEntitlement(raw)).assetKey).toBe(
-      'https://cdn.sanity.io/files/project/dataset/ebook.pdf',
-    );
   });
   it('fails closed when the dataset becomes public or credentials are absent', async () => {
     privateDataset = false;
@@ -378,28 +371,6 @@ describe('private Sanity commerce without PostgreSQL', () => {
       'nie oczekuje',
     );
     expect((await sanityOrderDetail(orderId)).payment.status).toBe('cod_collected');
-  });
-  it('verified notifications are idempotent and late payment does not fulfill cancelled orders', async () => {
-    const data = input();
-    await sanityCreateOrder({ ...data, paymentMethod: 'p24' });
-    const orderId = idFor(data.idempotencyKey);
-    const order = docs.get(orderId) as unknown as ShopOrder;
-    const n = {
-      sessionId: orderId,
-      amount: order.total,
-      originAmount: order.total,
-      currency: 'PLN',
-      orderId: 123,
-    } as Notification;
-    await expect(sanityAcceptPayment({ ...n, amount: 1 }, vi.fn())).rejects.toThrow('Niezgodne');
-    await sanityOrderAction({ orderId, action: 'cancel' }, 'admin');
-    const verify = vi.fn(async () => {});
-    await sanityAcceptPayment(n, verify);
-    await sanityAcceptPayment(n, verify);
-    expect(verify).toHaveBeenCalledTimes(1);
-    expect(docs.get(orderId)!.status).toBe('payment_review');
-    expect(docs.get(orderId)!.entitlements).toEqual([]);
-    expect((await sanityStock(state.catalog as never))[0]!.stock).toBe(1);
   });
   it('inventory adjustments reject negative stock and rate limiting persists in Sanity', async () => {
     await expect(sanityAdjustStock('book', -2, 'admin')).rejects.toThrow('ujemny');

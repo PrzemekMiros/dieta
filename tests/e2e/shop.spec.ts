@@ -114,6 +114,30 @@ test('checkout jasno pokazuje krok i pełne podsumowanie przed płatnością', a
   );
 });
 test('checkout udostępnia gotówkę przy odbiorze dla zamówień fizycznych', async ({ page }) => {
+  await page.route('**/api/quote', (route) =>
+    route.fulfill({
+      json: {
+        subtotal: 2900,
+        shipping: 1690,
+        total: 4590,
+        physical: true,
+        digital: false,
+        codAvailable: true,
+        onlinePaymentAvailable: false,
+        methods: [{ id: 'standard', name: 'Dostawa standardowa', price: 1690 }],
+        lines: [
+          {
+            _id: 'demo-4',
+            name: 'Chlebek pełnoziarnisty',
+            quantity: 1,
+            price: 2900,
+            productType: 'physical',
+            stock: 10,
+          },
+        ],
+      },
+    }),
+  );
   await page.addInitScript(() => {
     localStorage.setItem('tc-cart-v1', JSON.stringify([{ id: 'demo-4', quantity: 1 }]));
   });
@@ -125,9 +149,43 @@ test('checkout udostępnia gotówkę przy odbiorze dla zamówień fizycznych', a
   await expect(page.locator('#payment-note')).toContainText(
     'Zapłacisz gotówką przy odbiorze przesyłki.',
   );
-  await page.getByRole('button', { name: 'Akceptuję wszystkie' }).click();
-  await paymentFields.getByLabel('Płatność online przez Przelewy24').check();
-  await expect(page.locator('#payment-note')).toContainText('Przelewy24');
+  await expect(paymentFields.getByLabel('Płatność online przez Tpay')).toBeDisabled();
+  await expect(paymentFields.getByLabel('Płatność online przez Tpay')).toBeHidden();
+  await expect(page.locator('#pay-button')).toBeEnabled();
+});
+
+test('Tpay pozostaje niedostępny dla e-booków', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('tc-cart-v1', JSON.stringify([{ id: 'demo-1', quantity: 1 }]));
+  });
+  await page.route('**/api/quote', (route) =>
+    route.fulfill({
+      json: {
+        subtotal: 8900,
+        shipping: 0,
+        total: 8900,
+        physical: false,
+        digital: true,
+        codAvailable: false,
+        onlinePaymentAvailable: false,
+        methods: [],
+        lines: [
+          {
+            _id: 'demo-1',
+            name: 'E-book',
+            quantity: 1,
+            price: 8900,
+            productType: 'digital',
+            stock: 999,
+          },
+        ],
+      },
+    }),
+  );
+  await page.goto('/zamowienie');
+  await expect(page.locator('#payment-note')).toContainText('Tpay są w przygotowaniu');
+  await expect(page.locator('#pay-button')).toBeDisabled();
+  await expect(page.locator('#payment-fields')).toBeHidden();
 });
 test('strona podziękowania pokazuje status i szczegóły zamówienia', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
@@ -144,7 +202,7 @@ test('strona podziękowania pokazuje status i szczegóły zamówienia', async ({
         email: 'klient@example.com',
         shipping: 1690,
         shippingMethod: 'Dostawa standardowa',
-        paymentMethod: 'p24',
+        paymentMethod: 'online',
         items: [{ name: 'E-book: 7 dni zdrowego jedzenia', quantity: 1, unitPrice: 8900 }],
       },
     }),

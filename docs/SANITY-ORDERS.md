@@ -34,18 +34,19 @@ mieszane nadal wymagają działającej płatności online.
 3. W **Netlify → Environment variables** ustaw dla środowiska produkcyjnego
    i zakresu **Functions**:
 
-   | Zmienna | Wartość |
-   | --- | --- |
-   | `SHOP_STORAGE` | `sanity` |
-   | `SANITY_PROJECT_ID` | `fip0o8g2` |
-   | `SANITY_ORDERS_DATASET` | `orders` |
-   | `SANITY_ORDERS_TOKEN` | dedykowany token serwera |
+   | Zmienna                        | Wartość                   |
+   | ------------------------------ | ------------------------- |
+   | `SHOP_STORAGE`                 | `sanity`                  |
+   | `SANITY_PROJECT_ID`            | `fip0o8g2`                |
+   | `SANITY_ORDERS_DATASET`        | `orders`                  |
+   | `SANITY_ORDERS_TOKEN`          | dedykowany token serwera  |
    | `SANITY_ORDERS_ENCRYPTION_KEY` | wygenerowane 64 znaki hex |
 
    Zapisz token i klucz jako sekrety. Nie dodawaj prefiksu `PUBLIC_` ani
    `SANITY_STUDIO_`. Nie wklejaj ich do czatu ani do repozytorium.
    Zachowaj klucz w menedżerze haseł: jego utrata uniemożliwi odczyt klientów
    i kolejki e-maili. Nie zmieniaj klucza bez migracji szyfrowanych dokumentów.
+
 4. Ustaw działające `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`,
    `SMTP_PASSWORD`, `SMTP_FROM` oraz `SITE_URL=https://dietetykadlasmyka.pl`.
 5. Uruchom ponowny deploy Netlify. W Functions sprawdź funkcję `shop-outbox`:
@@ -63,9 +64,9 @@ nie został przeniesiony i powinien pozostać wyłączony (`NEWSLETTER_ENABLED=f
 ## Płatności i pliki
 
 Ta zmiana przenosi trwały zapis sklepu, ale **nie implementuje Tpay**.
-Przy `PAYMENT_PROVIDER=tpay` płatność online pozostaje wyłączona do czasu
-ukończenia adaptera i testów podpisanych powiadomień. Nie przełączaj na P24,
-jeśli masz konto Tpay. Pobranie jest osobną opcją dla produktów fizycznych.
+Płatność online pozostaje wyłączona do czasu ukończenia adaptera Tpay i testów
+podpisanych powiadomień, niezależnie od zmiennych środowiskowych. Poprzednia
+integracja została usunięta. Pobranie jest osobną opcją dla produktów fizycznych.
 E-booki nadal wymagają prywatnego magazynu S3; nie przechowujemy plików do
 sprzedaży jako publicznych załączników Sanity.
 

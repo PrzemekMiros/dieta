@@ -19,16 +19,17 @@ import * as t from '../../lib/server/schema';
 import { products } from '../../lib/catalog';
 import { cartSchema, checkoutSchema } from '../../lib/server/checkout-input';
 import { calculate } from '../../lib/server/pricing';
-import { cashOnDeliveryAvailable, legacyOnlinePaymentsAvailable } from '../../lib/server/payment-readiness';
+import {
+  cashOnDeliveryAvailable,
+  onlinePaymentsAvailable,
+} from '../../lib/server/payment-readiness';
 import {
   createOrder,
   salesReady,
-  acceptPayment,
   cancelOrder,
   confirmCashOnDelivery,
   resendLinks,
 } from '../../lib/server/orders';
-import { notificationSchema, validNotification } from '../../lib/server/p24';
 import { enqueue, escapeHtml } from '../../lib/server/email';
 import { signedDownload } from '../../lib/server/digital';
 import { databaseError } from '../../lib/server/database-error';
@@ -44,7 +45,6 @@ import {
   sanitySalesReady,
   sanityOrderStatus,
   sanityStock,
-  sanityAcceptPayment,
   sanityAdjustStock,
 } from '../../lib/server/sanity-orders';
 import {
@@ -120,7 +120,7 @@ const handle: APIRoute = async (ctx) => {
         ]);
         return json({
           ...order,
-          paymentMethod: payment[0]?.status.startsWith('cod_') ? 'cod' : 'p24',
+          paymentMethod: payment[0]?.status.startsWith('cod_') ? 'cod' : 'online',
           items,
         });
       }
@@ -164,13 +164,6 @@ const handle: APIRoute = async (ctx) => {
       throw new HttpError(404, 'Nie znaleziono zasobu.');
     }
     if (request.method !== 'POST') throw new HttpError(405, 'Niedozwolona metoda.');
-    if (path === 'p24/notify') {
-      const n = notificationSchema.parse(await readJson(request));
-      if (!validNotification(n)) throw new HttpError(400, 'Niepoprawny podpis.');
-      if (usesSanityOrders()) await sanityAcceptPayment(n);
-      else await acceptPayment(n);
-      return json({ ok: true });
-    }
     if (!fromStudio) sameOrigin(request);
     const body = await readJson(request);
     if (path === 'quote') {
@@ -193,7 +186,7 @@ const handle: APIRoute = async (ctx) => {
       return json({
         ...q,
         codAvailable: cashOnDeliveryAvailable() && q.physical && !q.digital,
-        p24Available: legacyOnlinePaymentsAvailable(),
+        onlinePaymentAvailable: onlinePaymentsAvailable(),
         lines: q.lines.map(({ _id, name, slug, image, price, quantity, productType, stock }) => ({
           _id,
           name,

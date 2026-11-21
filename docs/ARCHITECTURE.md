@@ -14,15 +14,15 @@ Publiczne: `/`, `/sklep`, `/ebooki`, `/produkty`, `/produkt/[slug]`, `/koszyk`, 
 
 Operacyjne: `/admin/login`, `/admin`, `/admin/zamowienia/[id]`. Studio jako osobna aplikacja `sanity dev` na 3333.
 
-API: katalog/wycena, checkout, callback P24, odczyt statusu za tokenem, pobieranie, newsletter, logowanie/wylogowanie, operacje administracyjne. Żadne dane zamówień nie są publiczne ani pobierane wyłącznie po UUID.
+API: katalog/wycena, checkout, odczyt statusu za tokenem, pobieranie, newsletter, logowanie/wylogowanie, operacje administracyjne. Żadne dane zamówień nie są publiczne ani pobierane wyłącznie po UUID.
 
 ## Podział odpowiedzialności
 
 Astro SSR + adapter Node: HTML, API i panel. Natywne komponenty Astro i małe skrypty TypeScript, bez Reacta w sklepie. Sanity Studio używa Reacta. Sanity dostarcza katalog i treść; produkcyjny checkout odczytuje świeże dane bez CDN. PostgreSQL jest źródłem prawdy o zamówieniach i dostępnych stanach. Stany początkowe w CMS służą wyłącznie inicjalizacji magazynu; dalsze korekty przez panel i rejestr ruchów.
 
-Drizzle: transakcje, blokady rekordów magazynu, unikalne klucze idempotencji i identyfikatory P24. Rezerwacja pomniejsza dostępny stan jeden raz. Anulowanie zwalnia rezerwację; późne powiadomienie P24 wymaga ponownej rezerwacji lub trafia do ręcznej obsługi (bez wydania towaru). Brak automatycznego zwalniania niezweryfikowanych płatności przez sam powrót przeglądarki.
+Drizzle: transakcje, blokady rekordów magazynu i unikalne klucze idempotencji. Rezerwacja pomniejsza dostępny stan jeden raz. Anulowanie zwalnia rezerwację. Powrót przeglądarki nie potwierdza płatności.
 
-P24: SHA-384 z JSON w kolejności pól określonej dokumentacją, uwierzytelnienie Basic, weryfikacja podpisu callbacku i parametrów, następnie transaction/verify. Powtórzenia nie wydają ponownie ebooków ani magazynu. Rejestracja niepewna po timeout nie jest automatycznie powtarzana jako nowa transakcja.
+Tpay: planowana integracja. Adapter poprzedniego operatora i jego callback usunięto. Płatności online są zablokowane do czasu wdrożenia i przetestowania rejestracji, weryfikacji powiadomień oraz uzgadniania transakcji Tpay.
 
 Ebooki: prywatny bucket S3-compatible. Losowy token 256-bit, w bazie hash, ważność ograniczona; krótko ważny podpisany URL generowany dopiero po sprawdzeniu uprawnienia. W bazie outbox przechowuje treść e-maila i ponawia wysyłkę z backoff. SMTP może dostarczyć duplikat po awarii między wysyłką i zapisem — gwarancja at-least-once, nie exactly-once.
 
@@ -41,11 +41,11 @@ customers 1:N orders 1:N order_items. orders 1:1 payments, 1:N payment_events, 1
 1. Frontend i responsywność 375/768/1024/1440/1920.
 2. Sanity: schematy, Studio, odczyt i kontrolowane dane demonstracyjne wyłącznie lokalnie.
 3. Drizzle, migracje, magazyn, koszyk i checkout.
-4. P24, callback, idempotencja i testy kontraktu; test rzeczywistego sandboxu wymaga konta sprzedawcy.
+4. Do wdrożenia: Tpay, weryfikacja powiadomień, idempotencja i testy kontraktu oraz sandboxu.
 5. Uprawnienia, pobieranie i outbox SMTP.
 6. Admin, statusy, ponawianie wiadomości i linków.
 7. Typecheck, ESLint, unit/integration, Playwright, build i dokumentacja wdrożenia.
 
 ## Konfiguracja i decyzje właściciela
 
-Potrzebne: Sanity project/dataset, PostgreSQL, SMTP, prywatny bucket, P24 sandbox/production, domena HTTPS, dane firmy, treść regulaminu/prywatności, metody dostaw, rzeczywiste produkty/PDF/zdjęcia, stawki podatku, zweryfikowane opinie i social media. Nie wymyślamy danych firmy ani opinii. Dane demonstracyjne i koncepcyjne zdjęcia nie trafiają do produkcyjnego checkoutu. Sprzedaż pozostaje wyłączona do jawnej konfiguracji.
+Potrzebne: Sanity project/dataset, PostgreSQL, SMTP, prywatny bucket, Tpay sandbox/production (po implementacji adaptera), domena HTTPS, dane firmy, treść regulaminu/prywatności, metody dostaw, rzeczywiste produkty/PDF/zdjęcia, stawki podatku, zweryfikowane opinie i social media. Nie wymyślamy danych firmy ani opinii. Dane demonstracyjne i koncepcyjne zdjęcia nie trafiają do produkcyjnego checkoutu. Sprzedaż pozostaje wyłączona do jawnej konfiguracji.

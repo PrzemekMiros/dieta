@@ -1,8 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { cashOnDeliveryAvailable, legacyOnlinePaymentsAvailable } from '../lib/server/payment-readiness';
+import { cashOnDeliveryAvailable } from '../lib/server/payment-readiness';
 const cod = cashOnDeliveryAvailable();
-const legacy = legacyOnlinePaymentsAvailable();
 ---
 
 <Layout title="Sposoby płatności">
@@ -49,15 +48,6 @@ const legacy = legacyOnlinePaymentsAvailable();
           <p>
             Dostępna dla zamówień zawierających wyłącznie produkty fizyczne. Całą kwotę wskazaną w
             podsumowaniu zapłacisz przy odbiorze przesyłki. Ta metoda nie obejmuje e-booków.
-          </p>
-        </section>
-      )}
-      {legacy && (
-        <section class="card">
-          <h2>Płatność online przez Przelewy24</h2>
-          <p>
-            Obecnie dostępna płatność online odbywa się przez Przelewy24. Dostępność metody
-            potwierdzisz w formularzu zamówienia.
           </p>
         </section>
       )}

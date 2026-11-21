@@ -28,8 +28,6 @@
     "admin:create": "tsx scripts/admin-create.ts",
     "worker": "tsx scripts/worker.ts",
     "worker:start": "node --env-file-if-exists=.env dist/jobs/worker.mjs",
-    "payments:reconcile:start": "node --env-file-if-exists=.env dist/jobs/reconcile.mjs",
-    "payments:reconcile": "tsx scripts/reconcile.ts",
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",

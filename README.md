@@ -1,12 +1,12 @@
-﻿Sklep w Astro SSR + TypeScript, Tailwind CSS 4 i GSAP/ScrollTrigger, z Sanity Studio, PostgreSQL/Drizzle, integracją Przelewy24, prywatnymi ebookami i osobnym panelem zamówień.
+Sklep w Astro SSR + TypeScript, Tailwind CSS 4 i GSAP/ScrollTrigger, z Sanity Studio, PostgreSQL/Drizzle, planowaną integracją Tpay, prywatnymi ebookami i osobnym panelem zamówień.
 
 ## Wdrożenie na Netlify
 
-Repozytorium jest skonfigurowane do builda SSR na Netlify (`netlify.toml`, Node 24/npm 11). Netlify automatycznie używa adaptera Astro Netlify; poza Netlify lokalny build nadal używa adaptera Node. Ustaw wymagane zmienne z `.env.example` w Netlify Site configuration → Environment variables. Ustaw `SITE_URL` na publiczny adres HTTPS. Nie włączaj sprzedaży przed skonfigurowaniem i odbiorem bazy PostgreSQL, Sanity, P24, S3 i SMTP.
+Repozytorium jest skonfigurowane do builda SSR na Netlify (`netlify.toml`, Node 24/npm 11). Netlify automatycznie używa adaptera Astro Netlify; poza Netlify lokalny build nadal używa adaptera Node. Ustaw wymagane zmienne z `.env.example` w Netlify Site configuration → Environment variables. Ustaw `SITE_URL` na publiczny adres HTTPS. Płatności online wymagają wdrożenia i odbioru integracji Tpay. Pobranie wymaga skonfigurowanego magazynu zamówień, Sanity i SMTP.
 
-Netlify obsługuje SSR strony, ale nie uruchamia stale procesów `worker` i `payments:reconcile`. Bez osobnego hosta/schedulera te zadania nie będą przetwarzać kolejki e-mail ani uzgadniać płatności; sprzedaż nie jest gotowa do uruchomienia tylko przez sam deploy Netlify. Szczegóły: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+Netlify obsługuje SSR oraz funkcję `shop-outbox` dla zamówień Sanity. Starszy adapter PostgreSQL wymaga osobnego workera SMTP. Dawne zadanie uzgadniania płatności usunięto. Szczegóły: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
-Projekt działa lokalnie z 3 demonstracyjnymi ebookami i 10 produktami fizycznymi. **Sprzedaż jest domyślnie wyłączona.** Prawdziwy sandbox P24, Sanity, SMTP i S3 wymagają konfiguracji kont właściciela oraz testów odbiorowych. To nie jest deklaracja gotowości produkcyjnej.
+**Płatności online są wyłączone do czasu wdrożenia Tpay**, również przy `SALES_ENABLED=true`. Pobranie działa niezależnie dla produktów fizycznych. Wymagana jest konfiguracja kont właściciela i testy odbiorowe; sam deploy nie oznacza gotowości produkcyjnej.
 
 ## Start na tym komputerze
 
@@ -51,7 +51,6 @@ W `.env` lub zmiennych procesu ustaw tymczasowo `ADMIN_EMAIL` i `ADMIN_PASSWORD`
 
 ```powershell
 .\dev.ps1 worker              # przetwarzanie kolejki maili
-.\dev.ps1 payments:reconcile  # uzgodnienie zaległych płatności z P24
 ```
 
 Sanity jest źródłem treści i cen. Dostępny stan magazynowy jest w PostgreSQL, a nie w publicznym polu `stock` z CMS. Seed inicjuje tylko brakujące rekordy. Korekty wykonuj w `/admin/magazyn`.
@@ -79,7 +78,7 @@ Playwright używa zainstalowanego Chrome. Dla CI można zmienić `channel` na Ch
 - Koszyk z zapisem lokalnym, zmianą ilości, usuwaniem i wyceną serwerową; checkout cyfrowy, fizyczny i mieszany.
 - Sanity: produkty, kategorie, strony, artykuły, ustawienia i konfigurowalna kolejność sekcji strony głównej.
 - Zamówienia, snapshoty cen/podatku/produktu, transakcyjny magazyn i rejestr ruchów.
-- Przelewy24: sandbox/production, podpisy, rejestracja, weryfikowany callback, idempotencja i uzgadnianie.
+- Pobranie: zamówienia fizyczne i potwierdzanie odbioru gotówki. Tpay: integracja do wdrożenia, płatności online zablokowane.
 - Ebooki: prywatny S3, uprawnienia, hashowane tokeny, wygasanie i regeneracja linków.
 - Admin: logowanie scrypt, sesje, dashboard, filtry i szczegóły zamówień, przesyłki, magazyn, historia i ponawianie wiadomości.
 - Outbox SMTP z retry, newsletter double opt-in, SEO/OG/sitemap/robots, lokalne fonty i reduced motion.

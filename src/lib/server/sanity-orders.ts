@@ -8,8 +8,7 @@ import { products, contentPage, settings } from '../catalog';
 import { calculate } from './pricing';
 import type { CheckoutInput } from './checkout-input';
 import type { Product } from '../types';
-import { cashOnDeliveryAvailable, legacyOnlinePaymentsAvailable } from './payment-readiness';
-import { registerPayment, paymentUrl, p24Config, verifyPayment, type Notification } from './p24';
+import { cashOnDeliveryAvailable, onlinePaymentsAvailable } from './payment-readiness';
 import { escapeHtml } from './email';
 
 type Item = {
@@ -45,7 +44,7 @@ export type ShopOrder = SanityDocument & {
   accessHash: string;
   requestHash: string;
   items: Item[];
-  payment: { status: string; token?: string; p24OrderId?: string };
+  payment: { status: string };
   shipment: { status: string; tracking: string | null } | null;
   entitlements: Grant[];
   events: Event[];
@@ -98,7 +97,7 @@ export function publicDetail(order: ShopOrder) {
       unitPrice,
       taxRate,
     })),
-    payment: { status: order.payment.status, p24OrderId: order.payment.p24OrderId || null },
+    payment: { status: order.payment.status },
     shipment: order.shipment
       ? { status: order.shipment.status, tracking: order.shipment.tracking }
       : null,
@@ -200,7 +199,7 @@ function queueMail(tx: Transaction, order: ShopOrder, key: string, subject: stri
   });
 }
 export function sanitySalesReady(method: CheckoutInput['paymentMethod']) {
-  if (isDemo() || (method === 'p24' && !legacyOnlinePaymentsAvailable()))
+  if (isDemo() || (method !== 'cod' && !onlinePaymentsAvailable()))
     throw new HttpError(503, 'Sklep nie przyjmuje jeszcze zamówień online.');
   if (method === 'cod' && !cashOnDeliveryAvailable())
     throw new HttpError(503, 'Płatność za pobraniem nie jest obecnie dostępna.');
@@ -215,12 +214,6 @@ export async function sanityCreateOrder(input: CheckoutInput) {
   const repeat = (existing: ShopOrder) => {
     if (existing.accessHash !== hash(input.accessToken) || existing.requestHash !== requestHash)
       throw new HttpError(409, 'Dane ponowionego zamówienia nie są zgodne.');
-    if (
-      existing.status === 'pending' &&
-      existing.payment.status === 'registered' &&
-      existing.payment.token
-    )
-      return { redirect: paymentUrl(existing.payment.token) };
     if (existing.status === 'pending' && existing.payment.status === 'cod_pending')
       return { redirect: `/zamowienie/sukces?token=${encodeURIComponent(input.accessToken)}` };
     throw new HttpError(409, 'Zamówienie zapisano. Sprawdź jego status przed kolejną próbą.');
@@ -247,17 +240,10 @@ export async function sanityCreateOrder(input: CheckoutInput) {
     throw new HttpError(400, 'Uzupełnij adres i telefon do dostawy.');
   if (input.paymentMethod === 'cod' && (!quote.physical || quote.digital))
     throw new HttpError(400, 'Pobranie jest dostępne tylko dla produktów fizycznych.');
-  if (input.paymentMethod === 'p24') p24Config();
   if (quote.digital) {
     if (input.digitalConsent !== true)
       throw new HttpError(400, 'Potwierdź zgodę na dostarczenie treści cyfrowej.');
-    if (
-      quote.lines.some(
-        (p) =>
-          p.productType === 'digital' &&
-          !p.digitalFileUrl,
-      )
-    )
+    if (quote.lines.some((p) => p.productType === 'digital' && !p.digitalFileUrl))
       throw new HttpError(503, 'Plik produktu nie został przygotowany.');
   }
   const customer: Customer = {
@@ -295,9 +281,7 @@ export async function sanityCreateOrder(input: CheckoutInput) {
       quantity: p.quantity,
       unitPrice: p.price,
       taxRate: p.taxRate,
-      ...(p.digitalFileUrl
-        ? { assetKey: p.digitalFileUrl }
-        : {}),
+      ...(p.digitalFileUrl ? { assetKey: p.digitalFileUrl } : {}),
     })),
     payment: { status: input.paymentMethod === 'cod' ? 'cod_pending' : 'registering' },
     shipment: input.paymentMethod === 'cod' ? { status: 'preparing', tracking: null } : null,
@@ -328,41 +312,7 @@ export async function sanityCreateOrder(input: CheckoutInput) {
     return null;
   });
   if (created) return repeat(created);
-  if (input.paymentMethod === 'cod')
-    return { redirect: `/zamowienie/sukces?token=${encodeURIComponent(input.accessToken)}` };
-  try {
-    const paymentToken = await registerPayment(
-      { id, total: order.total, ...customer },
-      input.accessToken,
-    );
-    await retryConflict(async () => {
-      const current = await getOrder(client, id);
-      if (current.payment.status !== 'registering') return;
-      await client
-        .patch(id)
-        .ifRevisionId(current._rev)
-        .set({ payment: { status: 'registered', token: paymentToken } })
-        .commit({ visibility: 'sync' });
-    });
-    return { redirect: paymentUrl(paymentToken) };
-  } catch {
-    await retryConflict(async () => {
-      const current = await getOrder(client, id);
-      if (current.payment.status !== 'registering') return;
-      await client
-        .patch(id)
-        .ifRevisionId(current._rev)
-        .set({
-          payment: { status: 'registration_unknown' },
-          events: [...current.events, event('registration_unknown')],
-        })
-        .commit({ visibility: 'sync' });
-    });
-    throw new HttpError(
-      502,
-      'Zamówienie zapisano, lecz nie uzyskano linku do płatności. Sprawdź status; nie składaj go ponownie.',
-    );
-  }
+  return { redirect: `/zamowienie/sukces?token=${encodeURIComponent(input.accessToken)}` };
 }
 
 function grantDownloads(order: ShopOrder) {
@@ -386,55 +336,6 @@ function grantDownloads(order: ShopOrder) {
     });
   return links.join('');
 }
-export async function sanityAcceptPayment(n: Notification, verify = verifyPayment) {
-  const client = await privateOrdersClient();
-  const validate = (order: ShopOrder) => {
-    if (
-      order.total !== n.amount ||
-      order.total !== n.originAmount ||
-      order.currency !== n.currency ||
-      order.payment.status.startsWith('cod_') ||
-      (order.payment.p24OrderId && order.payment.p24OrderId !== String(n.orderId))
-    )
-      throw new HttpError(400, 'Niezgodne dane płatności.');
-  };
-  const order = await getOrder(client, n.sessionId);
-  validate(order);
-  if (order.payment.status === 'verified') return { duplicate: true };
-  await verify(n);
-  return retryConflict(async () => {
-    const current = await getOrder(client, n.sessionId);
-    validate(current);
-    if (current.payment.status === 'verified') return { duplicate: true };
-    const review = current.status === 'cancelled';
-    current.status = review ? 'payment_review' : 'paid';
-    current.payment = { status: 'verified', p24OrderId: String(n.orderId) };
-    current.events.push(event('verified'));
-    const links = review ? '' : grantDownloads(current);
-    if (!review && current.items.some((i) => i.type === 'physical'))
-      current.shipment = { status: 'preparing', tracking: null };
-    const tx = client.transaction().patch(current._id, (p) =>
-      p.ifRevisionId(current._rev).set({
-        status: current.status,
-        payment: current.payment,
-        events: current.events,
-        entitlements: current.entitlements,
-        shipment: current.shipment,
-        paidAt: now(),
-      }),
-    );
-    queueMail(
-      tx,
-      current,
-      'paid',
-      review ? 'Płatność wymaga sprawdzenia' : 'Płatność potwierdzona',
-      `<p>Zamówienie ${current._id}. ${review ? 'Sklep sprawdzi płatność do anulowanego zamówienia.' : 'Dziękujemy za płatność.'}</p>${links}`,
-    );
-    await tx.commit({ visibility: 'sync' });
-    return review ? { review: true } : { paid: true };
-  });
-}
-
 export const sanityActionSchema = z.object({
   orderId: orderIdSchema,
   action: z.enum(['cancel', 'confirm-cod', 'shipment', 'resend-links', 'resend-email']),
@@ -541,7 +442,7 @@ export async function sanityOrderStatus(raw: string) {
   const order = await getOrder(client, id);
   return {
     ...publicOrder(order),
-    paymentMethod: order.payment.status.startsWith('cod_') ? 'cod' : 'p24',
+    paymentMethod: order.payment.status.startsWith('cod_') ? 'cod' : 'online',
     email: unseal<Customer>(order.customer, order._id).email,
     items: order.items.map(({ name, quantity, unitPrice }) => ({ name, quantity, unitPrice })),
   };

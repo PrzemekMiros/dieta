@@ -74,6 +74,7 @@ export const payments = pgTable('payments', {
     .unique()
     .references(() => orders.id),
   sessionId: text('session_id').notNull().unique(),
+  // Historical data only. No payment adapter reads or writes this column.
   p24OrderId: text('p24_order_id').unique(),
   token: text('token'),
   status: text('status').notNull().default('registering'),

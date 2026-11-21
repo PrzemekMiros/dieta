@@ -94,8 +94,8 @@ import Layout from '../../layouts/Layout.astro';
             <span>Gotówka przy odbiorze przesyłki</span>
           </label>
           <label class="check">
-            <input type="radio" name="paymentMethod" value="p24" />
-            <span>Płatność online przez Przelewy24</span>
+            <input type="radio" name="paymentMethod" value="tpay" />
+            <span>Płatność online przez Tpay</span>
           </label>
         </fieldset>
         <section class="checkout-section checkout-invoice">
@@ -403,7 +403,7 @@ import Layout from '../../layouts/Layout.astro';
   let paymentSelectionMade = false;
   let q: Awaited<ReturnType<typeof quote>>;
   function updatePaymentNote() {
-    if (!q.codAvailable && !q.p24Available) {
+    if (!q.codAvailable && !q.onlinePaymentAvailable) {
       paymentNote.textContent =
         'Płatności online Tpay są w przygotowaniu. Dla tego koszyka płatność jest obecnie niedostępna.';
       return;
@@ -420,7 +420,7 @@ import Layout from '../../layouts/Layout.astro';
         ` ${
           cod.checked && !paymentFields.disabled
             ? 'Zapłacisz gotówką przy odbiorze przesyłki.'
-            : 'Po złożeniu zamówienia przejdziesz do bezpiecznej płatności Przelewy24.'
+            : 'Po złożeniu zamówienia przejdziesz do bezpiecznej płatności Tpay.'
         }`,
       ),
     );
@@ -437,20 +437,20 @@ import Layout from '../../layouts/Layout.astro';
       q = await quote(readCart(), methods.value || undefined);
       shipping.hidden = !q.physical;
       shipping.disabled = !q.physical;
-      paymentFields.hidden = !q.codAvailable && !q.p24Available;
-      paymentFields.disabled = !q.codAvailable && !q.p24Available;
+      paymentFields.hidden = !q.codAvailable && !q.onlinePaymentAvailable;
+      paymentFields.disabled = !q.codAvailable && !q.onlinePaymentAvailable;
       const codPayment = paymentFields.querySelector<HTMLInputElement>(
         'input[name="paymentMethod"][value="cod"]',
       )!;
-      const p24Payment = paymentFields.querySelector<HTMLInputElement>(
-        'input[name="paymentMethod"][value="p24"]',
+      const onlinePayment = paymentFields.querySelector<HTMLInputElement>(
+        'input[name="paymentMethod"][value="tpay"]',
       )!;
       codPayment.disabled = !q.codAvailable;
       codPayment.closest('label')!.hidden = !q.codAvailable;
-      p24Payment.disabled = !q.p24Available;
-      p24Payment.closest('label')!.hidden = !q.p24Available;
-      if (!q.codAvailable && q.p24Available) p24Payment.checked = true;
-      else if (q.codAvailable && !q.p24Available) codPayment.checked = true;
+      onlinePayment.disabled = !q.onlinePaymentAvailable;
+      onlinePayment.closest('label')!.hidden = !q.onlinePaymentAvailable;
+      if (!q.codAvailable && q.onlinePaymentAvailable) onlinePayment.checked = true;
+      else if (q.codAvailable && !q.onlinePaymentAvailable) codPayment.checked = true;
       else if (!paymentSelectionMade) codPayment.checked = true;
       updatePaymentNote();
       const digital = document.querySelector<HTMLElement>('#digital-consent')!;
@@ -478,7 +478,7 @@ import Layout from '../../layouts/Layout.astro';
       document.querySelector('[data-checkout-total]')!.textContent = money(q.total);
       if (q.lines.some((p) => p.productType === 'physical' && p.quantity > p.stock))
         throw new Error('Stan magazynowy uległ zmianie. Wróć do koszyka.');
-      button.disabled = !q.codAvailable && !q.p24Available;
+      button.disabled = !q.codAvailable && !q.onlinePaymentAvailable;
       message.textContent = button.disabled
         ? 'Nie można jeszcze złożyć tego zamówienia. Skontaktuj się z nami, jeśli potrzebujesz pomocy.'
         : '';
@@ -518,7 +518,7 @@ import Layout from '../../layouts/Layout.astro';
       const get = (key: string) => String(data.get(key) || '');
       const payload = {
         items: readCart(),
-        paymentMethod: get('paymentMethod') || (q.codAvailable ? 'cod' : 'p24'),
+        paymentMethod: get('paymentMethod') || (q.codAvailable ? 'cod' : 'tpay'),
         firstName: get('firstName'),
         lastName: get('lastName'),
         email: get('email'),

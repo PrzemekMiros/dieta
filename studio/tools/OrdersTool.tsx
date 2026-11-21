@@ -28,7 +28,7 @@ type Detail = {
     unitPrice: number
     taxRate: number
   }[]
-  payment: {status: string; p24OrderId: string | null} | null
+  payment: {status: string} | null
   shipment: {status: string; tracking: string | null} | null
   entitlements: {itemId: string; active: boolean}[]
   audit: {id: string; action: string; createdAt: string}[]
@@ -307,7 +307,6 @@ export function OrdersTool() {
                     <span className="so-badge">{label(detail.order.status)}</span>
                   </p>
                   <p>{detail.payment ? label(detail.payment.status) : 'Brak płatności'}</p>
-                  {detail.payment?.p24OrderId && <p>Numer P24: {detail.payment.p24OrderId}</p>}
                   <strong className="so-total">
                     {money(detail.order.total, detail.order.currency)}
                   </strong>

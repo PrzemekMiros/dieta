@@ -7,15 +7,14 @@ import { calculate } from './pricing';
 import type { CheckoutInput } from './checkout-input';
 import { hash, HttpError } from './security';
 import { env, isDemo, required } from './env';
-import { registerPayment, paymentUrl, p24Config, verifyPayment, type Notification } from './p24';
 import { enqueue, escapeHtml } from './email';
 import { issueLink } from './digital';
-import { cashOnDeliveryAvailable, legacyOnlinePaymentsAvailable } from './payment-readiness';
-export function salesReady(paymentMethod: CheckoutInput['paymentMethod'] = 'p24') {
+import { cashOnDeliveryAvailable, onlinePaymentsAvailable } from './payment-readiness';
+export function salesReady(paymentMethod: CheckoutInput['paymentMethod'] = 'tpay') {
   if (isDemo()) throw new HttpError(503, 'Sklep nie przyjmuje jeszcze zamówień.');
   if (paymentMethod === 'cod' && !cashOnDeliveryAvailable())
     throw new HttpError(503, 'Płatność za pobraniem nie jest obecnie dostępna.');
-  if (paymentMethod === 'p24' && !legacyOnlinePaymentsAvailable())
+  if (paymentMethod !== 'cod' && !onlinePaymentsAvailable())
     throw new HttpError(503, 'Sklep nie przyjmuje jeszcze zamówień.');
   required('DATABASE_URL');
   required('SMTP_HOST');
@@ -34,8 +33,6 @@ export async function createOrder(input: CheckoutInput) {
       .select()
       .from(t.payments)
       .where(eq(t.payments.orderId, existing.id));
-    if (payment?.token && existing.status === 'pending')
-      return { redirect: paymentUrl(payment.token) };
     if (payment?.status === 'cod_pending' && existing.status === 'pending')
       return { redirect: `/zamowienie/sukces?token=${encodeURIComponent(input.accessToken)}` };
     throw new HttpError(409, 'Zamówienie już istnieje. Sprawdź jego status przed kolejną próbą.');
@@ -62,8 +59,6 @@ export async function createOrder(input: CheckoutInput) {
         400,
         'Płatność za pobraniem jest dostępna tylko dla produktów fizycznych.',
       );
-  } else {
-    p24Config();
   }
   if (quote.lines.some((p) => p.demo))
     throw new HttpError(400, 'Produkty demonstracyjne nie mogą być sprzedawane.');
@@ -72,16 +67,10 @@ export async function createOrder(input: CheckoutInput) {
   if (quote.digital && input.digitalConsent !== true)
     throw new HttpError(400, 'Potwierdź zgodę na dostarczenie treści cyfrowej.');
   if (quote.digital) {
-    if (
-      quote.lines.some(
-        (p) =>
-          p.productType === 'digital' &&
-          !p.digitalFileUrl,
-      )
-    )
+    if (quote.lines.some((p) => p.productType === 'digital' && !p.digitalFileUrl))
       throw new HttpError(503, 'Plik produktu nie został przygotowany.');
   }
-  const order = await db().transaction(async (tx) => {
+  await db().transaction(async (tx) => {
     const [customer] = await tx
       .insert(t.customers)
       .values({ email: input.email, name: `${input.firstName} ${input.lastName}` })
@@ -168,36 +157,7 @@ export async function createOrder(input: CheckoutInput) {
     );
     return order!;
   });
-  if (input.paymentMethod === 'cod')
-    return { redirect: `/zamowienie/sukces?token=${encodeURIComponent(input.accessToken)}` };
-  try {
-    const token = await registerPayment(order, input.accessToken);
-    await db()
-      .update(t.payments)
-      .set({ token, status: 'registered' })
-      .where(and(eq(t.payments.orderId, order.id), eq(t.payments.status, 'registering')));
-    return { redirect: paymentUrl(token) };
-  } catch {
-    await db()
-      .update(t.payments)
-      .set({
-        status: 'registration_unknown',
-        lastError: 'Registration failed or timed out; reconcile before retry.',
-      })
-      .where(and(eq(t.payments.orderId, order.id), eq(t.payments.status, 'registering')));
-    await db()
-      .insert(t.paymentEvents)
-      .values({
-        orderId: order.id,
-        eventKey: `registration:${order.id}`,
-        kind: 'registration_unknown',
-      })
-      .onConflictDoNothing();
-    throw new HttpError(
-      502,
-      'Nie udało się uzyskać linku do płatności. Zamówienie zapisano. Sprawdź status lub skontaktuj się ze sklepem — nie składaj go ponownie.',
-    );
-  }
+  return { redirect: `/zamowienie/sukces?token=${encodeURIComponent(input.accessToken)}` };
 }
 export async function confirmCashOnDelivery(tx: Tx, orderId: string) {
   const [order] = await tx.select().from(t.orders).where(eq(t.orders.id, orderId)).for('update');
@@ -229,87 +189,6 @@ export async function confirmCashOnDelivery(tx: Tx, orderId: string) {
     'Płatność za pobraniem odebrana',
     `<p>Potwierdzamy odbiór płatności za pobraniem do zamówienia ${orderId}. Dziękujemy!</p>`,
   );
-}
-export async function acceptPayment(n: Notification, verify: typeof verifyPayment = verifyPayment) {
-  return db().transaction(async (tx) => {
-    const [order] = await tx
-      .select()
-      .from(t.orders)
-      .where(eq(t.orders.id, n.sessionId))
-      .for('update');
-    if (
-      !order ||
-      order.total !== n.amount ||
-      order.total !== n.originAmount ||
-      order.currency !== n.currency
-    )
-      throw new HttpError(400, 'Niezgodne dane płatności.');
-    const [payment] = await tx.select().from(t.payments).where(eq(t.payments.orderId, order.id));
-    if (
-      !payment ||
-      payment.sessionId !== n.sessionId ||
-      payment.status.startsWith('cod_') ||
-      (payment.p24OrderId && payment.p24OrderId !== String(n.orderId))
-    )
-      throw new HttpError(400, 'Niezgodny identyfikator płatności.');
-    if (payment.status === 'verified') return { duplicate: true };
-    await verify(n);
-    await tx
-      .update(t.payments)
-      .set({ status: 'verified', p24OrderId: String(n.orderId), lastError: null })
-      .where(eq(t.payments.id, payment.id));
-    await tx
-      .insert(t.paymentEvents)
-      .values({
-        orderId: order.id,
-        eventKey: `verified:${n.orderId}`,
-        kind: 'verified',
-        data: { amount: n.amount, orderId: n.orderId, methodId: n.methodId },
-      })
-      .onConflictDoNothing();
-    if (order.status === 'cancelled') {
-      await tx
-        .update(t.orders)
-        .set({ status: 'payment_review', paidAt: new Date(), updatedAt: new Date() })
-        .where(eq(t.orders.id, order.id));
-      await enqueue(
-        tx,
-        `review:${order.id}`,
-        order.email,
-        'Płatność wymaga sprawdzenia',
-        `<p>Otrzymaliśmy płatność do anulowanego zamówienia ${order.id}. Sklep sprawdzi możliwość realizacji lub zwrotu. Nie składaj kolejnej płatności.</p>`,
-      );
-      return { review: true };
-    }
-    await tx
-      .update(t.orders)
-      .set({ status: 'paid', paidAt: new Date(), updatedAt: new Date() })
-      .where(eq(t.orders.id, order.id));
-    const items = await tx.select().from(t.orderItems).where(eq(t.orderItems.orderId, order.id));
-    const links: string[] = [];
-    for (const item of items.filter((i) => i.type === 'digital')) {
-      if (!item.assetKey) throw new Error('Missing digital asset snapshot');
-      const [e] = await tx
-        .insert(t.entitlements)
-        .values({ orderId: order.id, itemId: item.id, assetKey: item.assetKey })
-        .onConflictDoNothing()
-        .returning();
-      if (e) {
-        const link = await issueLink(tx, e.id);
-        links.push(`<p><a href="${escapeHtml(link)}">Pobierz: ${escapeHtml(item.name)}</a></p>`);
-      }
-    }
-    if (items.some((i) => i.type === 'physical'))
-      await tx.insert(t.shipments).values({ orderId: order.id }).onConflictDoNothing();
-    await enqueue(
-      tx,
-      `paid:${order.id}`,
-      order.email,
-      'Płatność potwierdzona — dziękujemy!',
-      `<p>Zamówienie ${order.id} zostało opłacone.</p>${links.join('')}${links.length ? '<p>Linki są ważne przez 72 godziny. Zachowaj tę wiadomość.</p>' : ''}`,
-    );
-    return { paid: true };
-  });
 }
 export async function cancelOrder(tx: Tx, orderId: string) {
   const [order] = await tx.select().from(t.orders).where(eq(t.orders.id, orderId)).for('update');

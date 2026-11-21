@@ -6,7 +6,7 @@ export const cartSchema = z
   .refine((rows) => new Set(rows.map((x) => x.id)).size === rows.length, 'Powtórzone pozycje.');
 export const checkoutSchema = z.object({
   items: cartSchema,
-  paymentMethod: z.enum(['p24', 'cod']).default('p24'),
+  paymentMethod: z.enum(['tpay', 'cod']).default('tpay'),
   idempotencyKey: z.uuid(),
   accessToken: z.string().regex(/^[a-f0-9]{64}$/),
   firstName: z.string().trim().min(1).max(40),

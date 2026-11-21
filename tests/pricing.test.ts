@@ -2,9 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { calculate } from '../src/lib/server/pricing';
 import { cartSchema, checkoutSchema } from '../src/lib/server/checkout-input';
 import { demoProducts } from '../src/data/demo';
-import { notificationSign, sign } from '../src/lib/server/p24';
 import { passwordHash, passwordMatches, sameOrigin } from '../src/lib/server/security';
-import { createHash } from 'node:crypto';
 describe('wycena koszyka', () => {
   it('ebook bez kosztu dostawy', () => {
     const q = calculate([{ id: 'demo-1', quantity: 1 }], demoProducts);
@@ -87,25 +85,5 @@ describe('bezpieczeństwo', () => {
         }),
       ),
     ).toThrow();
-  });
-  it('podpis P24 zachowuje typy, kolejność i UTF-8', () => {
-    const n = {
-      merchantId: 1,
-      posId: 2,
-      sessionId: 's/ą',
-      amount: 100,
-      originAmount: 100,
-      currency: 'PLN' as const,
-      orderId: 3,
-      methodId: 4,
-      statement: 'Zażółć',
-    };
-    const expected = createHash('sha384')
-      .update(
-        '{"merchantId":1,"posId":2,"sessionId":"s/ą","amount":100,"originAmount":100,"currency":"PLN","orderId":3,"methodId":4,"statement":"Zażółć","crc":"test"}',
-      )
-      .digest('hex');
-    expect(notificationSign(n, 'test')).toBe(expected);
-    expect(sign({ a: 1 })).not.toBe(sign({ a: '1' }));
   });
 });
