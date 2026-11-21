@@ -9,7 +9,7 @@ export const escapeHtml = (s: string) =>
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!,
   );
 export function emailTemplate(title: string, body: string) {
-  return `<!doctype html><html lang="pl"><body style="margin:0;background:#f7f6f4;color:#2d2f30;font-family:Arial,sans-serif"><div style="max-width:580px;margin:40px auto;padding:40px;background:#fff"><p style="font-family:Georgia,serif;letter-spacing:2px">TORTOWE CIOCHO</p><h1 style="font:32px Georgia,serif">${escapeHtml(title)}</h1>${body}<hr style="border:0;border-top:1px solid #e5ded7;margin:32px 0"><p style="font-size:12px;color:#646464">Dziękujemy za wspólne słodkie chwile.<br>Tortowe Ciocho</p></div></body></html>`;
+  return `<!doctype html><html lang="pl"><body style="margin:0;background:#f7f6f4;color:#2d2f30;font-family:Arial,sans-serif"><div style="max-width:580px;margin:40px auto;padding:40px;background:#fff"><p style="font-family:Georgia,serif;letter-spacing:2px">DIETETYKA DLA SMYKA</p><h1 style="font:32px Georgia,serif">${escapeHtml(title)}</h1>${body}<hr style="border:0;border-top:1px solid #e5ded7;margin:32px 0"><p style="font-size:12px;color:#646464">Dziękujemy za zaufanie.<br>Dietetyka dla Smyka</p></div></body></html>`;
 }
 export async function enqueue(tx: Tx, key: string, to: string, subject: string, body: string) {
   await tx
@@ -54,7 +54,7 @@ export async function processOutbox() {
           to: row.to,
           subject: row.subject,
           html: row.html,
-          messageId: `<${row.id}@${env('MAIL_MESSAGE_DOMAIN', 'tortowe.local')}>`,
+          messageId: `<${row.id}@${env('MAIL_MESSAGE_DOMAIN', 'dietetykadlasmyka.pl')}>`,
         });
         await tx
           .update(emailOutbox)

@@ -84,9 +84,9 @@ demoProducts.push({
 
 export const demoPosts: Post[] = [
   {
-    title: 'Dobry tort zaczyna się od planu',
-    slug: 'dobry-tort-zaczyna-sie-od-planu',
-    excerpt: 'Kilka spokojnych kroków, które ułatwiają domowe pieczenie.',
+    title: 'Spokojne posiłki zaczynają się od planu',
+    slug: 'spokojne-posilki-zaczynaja-sie-od-planu',
+    excerpt: 'Kilka prostych kroków, które ułatwiają planowanie rodzinnych posiłków.',
     image: '/images/cake-editorial.webp',
     publishedAt: '2026-11-05',
     content: [
@@ -95,7 +95,7 @@ export const demoPosts: Post[] = [
         _type: 'block',
         children: [
           {
-            text: 'Rozpisz pracę na etapy: przygotowanie składników, pieczenie, studzenie, składanie i dekorowanie. Zostaw czas na schłodzenie. Dzięki temu ostatni etap może być przyjemnością, a nie wyścigiem z zegarem.',
+            text: 'Sprawdź, co masz w kuchni, wybierz kilka posiłków na najbliższe dni i przygotuj listę zakupów. Uwzględnij czas na gotowanie oraz upodobania domowników. Zostaw też miejsce na zmianę planów.',
           },
         ],
       },
@@ -103,14 +103,14 @@ export const demoPosts: Post[] = [
         _key: 'b',
         _type: 'block',
         style: 'h2',
-        children: [{ text: 'Zacznij od prostych połączeń' }],
+        children: [{ text: 'Zacznij od znanych posiłków' }],
       },
       {
         _key: 'c',
         _type: 'block',
         children: [
           {
-            text: 'Wybierz jeden krem i jeden owocowy akcent. Zważ składniki przed rozpoczęciem pracy i przeczytaj cały przepis. Małe przygotowania robią dużą różnicę.',
+            text: 'Zapisz kilka dań, które lubicie i potraficie przygotować. Wykorzystaj część składników w więcej niż jednym posiłku, aby ułatwić zakupy i ograniczyć marnowanie jedzenia. Wspólny stół może być okazją do rozmowy i poznawania smaków.',
           },
         ],
       },

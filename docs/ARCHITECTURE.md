@@ -1,4 +1,4 @@
-# Tortowe Ciocho — architektura i plan
+# Dietetyka dla Smyka — architektura i plan
 
 ## Analiza referencji
 

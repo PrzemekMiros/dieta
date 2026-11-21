@@ -4,7 +4,7 @@ for (const width of [375, 768, 1024, 1440, 1920])
     await page.setViewportSize({ width, height: 1000 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Słodkie chwile');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Pomagam zaprzyjaźnić się');
     await page.evaluate(() => document.fonts.ready);
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),

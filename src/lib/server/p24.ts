@@ -89,7 +89,7 @@ export async function registerPayment(
     sessionId: order.id,
     amount: order.total,
     currency: 'PLN',
-    description: `Tortowe Ciocho ${order.id}`,
+    description: `Dietetyka dla Smyka ${order.id}`,
     email: order.email,
     client: order.name.slice(0, 40),
     country: 'PL',

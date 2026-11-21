@@ -32,6 +32,7 @@ import { notificationSchema, validNotification } from '../../lib/server/p24';
 import { enqueue, escapeHtml } from '../../lib/server/email';
 import { signedDownload } from '../../lib/server/digital';
 import { databaseError } from '../../lib/server/database-error';
+import { serviceError } from '../../lib/server/service-error';
 import { studioAdmin, studioCors, studioOrigin } from '../../lib/server/studio-access';
 import { listAdminOrders, adminOrderDetail } from '../../lib/server/admin-order-queries';
 import { usesSanityOrders } from '../../lib/server/shop-storage';
@@ -255,7 +256,7 @@ const handle: APIRoute = async (ctx) => {
           tx,
           `newsletter:${randomUUID()}`,
           input.email,
-          'Potwierdź zapis do słodkich listów',
+          'Potwierdź zapis do newslettera Dietetyki dla Smyka',
           `<p>Cześć ${escapeHtml(input.name)}!</p><p><a href="${siteUrl()}/api/newsletter/confirm?token=${confirm}">Potwierdzam zapis</a></p><p><a href="${siteUrl()}/api/newsletter/unsubscribe?token=${unsubscribe}">Rezygnuję z zapisu</a></p>`,
         );
       });
@@ -478,6 +479,7 @@ const handle: APIRoute = async (ctx) => {
       );
     if (error instanceof HttpError) return json({ error: error.message }, error.status);
     const databaseDiagnostic = databaseError(error);
+    const serviceDiagnostic = serviceError(error);
     // Never log payloads, credentials, access tokens or customer details.
     console.error(
       JSON.stringify({
@@ -485,6 +487,7 @@ const handle: APIRoute = async (ctx) => {
         path,
         error: error instanceof Error ? error.name : 'Unknown',
         ...(databaseDiagnostic ? { reason: databaseDiagnostic.reason } : {}),
+        ...serviceDiagnostic,
         ...(path?.startsWith('booking/') || path === 'booking'
           ? {
               detail: error instanceof Error ? error.message.slice(0, 200) : 'Unknown',
