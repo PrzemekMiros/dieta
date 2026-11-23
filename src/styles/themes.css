@@ -34,7 +34,26 @@
   --color-booking-background: #251d2e;
   --color-booking-surface: #3b2e48;
 }
-:root:is([data-theme='sage'], [data-theme='lavender']) {
+:root[data-theme='lime'] {
+  --color-paper: #f7f9ef;
+  --color-beige: #e8f0cc;
+  --color-ink: #1d2616;
+  --color-action: #e2fc4e;
+  --color-on-action: #1d2616;
+  --color-action-hover: #c9e63f;
+  --color-ink-hover: #2d3a20;
+  --color-muted: #58624d;
+  --color-border: #cbd6ac;
+  --color-border-strong: #97a77a;
+  --color-surface-raised: #fdfff7;
+  --color-surface-hover: #eff5dc;
+  --color-surface-hero: #dce8b5;
+  --color-accent-banner: #e2fc4e;
+  --color-accent-inverse: #edfba1;
+  --color-booking-background: #182011;
+  --color-booking-surface: #29341d;
+}
+:root:is([data-theme='sage'], [data-theme='lavender'], [data-theme='lime']) {
   --color-rose: var(--color-action);
   --color-eyebrow: var(--color-action);
   --color-section-eyebrow: var(--color-action);

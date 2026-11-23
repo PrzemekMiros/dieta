@@ -14,7 +14,7 @@ const links = [
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="/" aria-label="Twoja Dietetyczka — strona główna">
-      <img src="/images/logo.png" width="235" height="42" alt="Twoja Dietetyczka" />
+      <img src="/images/logo.png" width="235" height="95" alt="Twoja Dietetyczka" />
     </a>
     <nav aria-label="Główna" id="main-nav">
       {links.map(([label, href]) => (
@@ -22,8 +22,17 @@ const links = [
           {label}
         </a>
       ))}
-      <a href="/koszyk" aria-current={Astro.url.pathname === '/koszyk' ? 'page' : undefined}>
-        Koszyk{' '}
+      <a
+        class="cart-link"
+        href="/koszyk"
+        aria-label="Koszyk"
+        aria-current={Astro.url.pathname === '/koszyk' ? 'page' : undefined}
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 3h2l2.1 11.1a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 1.9-1.4L19.8 8H6.3" />
+          <circle cx="9.5" cy="20" r="1" />
+          <circle cx="17" cy="20" r="1" />
+        </svg>
         <span class="cart-count" data-cart-count aria-label="produktów w koszyku">
           0
         </span>
@@ -66,24 +75,43 @@ const links = [
   }
   .brand img {
     width: 235px;
-    height: 42px;
+    height: 95px;
     object-fit: contain;
   }
   nav {
     display: flex;
-    gap: 28px;
-    font-size: 12px;
+    gap: 3em;
+    font-size: 14px;
   }
   nav a:hover,
   nav a[aria-current] {
     color: var(--color-action);
   }
+  .cart-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+  }
+  .cart-link svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+  }
   .cart-count {
-    display: inline-grid;
+    position: absolute;
+    top: -7px;
+    right: -12px;
+    display: grid;
     place-items: center;
     min-width: 18px;
     height: 18px;
-    margin-left: 3px;
     padding-inline: 5px;
     border-radius: 999px;
     background: var(--color-surface-nav);

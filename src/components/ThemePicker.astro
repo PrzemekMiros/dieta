@@ -3,6 +3,7 @@ const themes = [
   { id: 'warm', name: 'Ciepły', colors: ['#f7f3ee', '#e8ded3', '#73414c'] },
   { id: 'sage', name: 'Szałwia', colors: ['#f3f6f0', '#dce5d6', '#3d614b'] },
   { id: 'lavender', name: 'Lawenda', colors: ['#f6f3fa', '#e5ddef', '#695080'] },
+  { id: 'lime', name: 'Limonka', colors: ['#f7f9ef', '#e8f0cc', '#e2fc4e'] },
 ];
 ---
 
@@ -36,7 +37,7 @@ const themes = [
   const toggle = picker?.querySelector<HTMLButtonElement>('.theme-toggle');
   const panel = picker?.querySelector<HTMLElement>('.theme-options');
   const choices = picker?.querySelectorAll<HTMLButtonElement>('[data-theme-choice]');
-  const colors: Record<string, string> = { warm: '#f7f3ee', sage: '#f3f6f0', lavender: '#f6f3fa' };
+  const colors: Record<string, string> = { warm: '#f7f3ee', sage: '#f3f6f0', lavender: '#f6f3fa', lime: '#f7f9ef' };
   function updateSelection() {
     const theme = document.documentElement.dataset.theme || 'warm';
     choices?.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.themeChoice === theme)));

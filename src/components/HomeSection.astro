@@ -5,7 +5,13 @@ interface Props {
   products: Product[];
   home: HomeContent;
 }
-const { section: s, home } = Astro.props;
+const { section: s } = Astro.props;
+const recipePhotos = [
+  { src: '/images/IMG_7254.png', alt: 'Zdrowa inspiracja na posiłek' },
+  { src: '/images/IMG_7344.png', alt: 'Domowy, pełnowartościowy posiłek' },
+  { src: '/images/IMG_7423.png', alt: 'Kolorowy zdrowy posiłek' },
+  { src: '/images/IMG_7495.png', alt: 'Pożywny posiłek na co dzień' },
+];
 const features = [
   [
     'Poznaję Twoją sytuację',
@@ -308,31 +314,24 @@ const features = [
     <div class="container testimonials">
       <p class="eyebrow">{s.subtitle || 'Przepisy'}</p>
       <h2 data-reveal>{s.title || 'Zdrowe inspiracje.'}</h2>
-      {home.testimonials?.length ? (
-        <>
-          <div class="review-track" tabindex="0" aria-label="Opinie klientów">
-            {home.testimonials.map((t) => (
-              <figure>
-                <blockquote>{t.quote}</blockquote>
-                <figcaption>{t.author}</figcaption>
-              </figure>
-            ))}
-          </div>
-          <div class="flex justify-center gap-3 mt-6">
-            <button class="btn btn-outline" data-review="-1" aria-label="Poprzednia opinia">
-              ←
-            </button>
-            <button class="btn btn-outline" data-review="1" aria-label="Następna opinia">
-              →
-            </button>
-          </div>
-        </>
-      ) : (
-        <p class="intro mx-auto muted">
-          Każdego dnia na moim Instagramie znajdziesz nowe przepisy, porady dietetyczne oraz
-          wsparcie dla rodziców.
-        </p>
-      )}
+      <p class="intro muted photo-carousel-description">
+        Każdego dnia na moim Instagramie znajdziesz nowe przepisy, porady dietetyczne oraz wsparcie dla rodziców.
+      </p>
+      <div class="photo-carousel-layout">
+        <button class="btn btn-outline" data-photo-carousel="-1" aria-label="Poprzednie zdjęcie">
+          ←
+        </button>
+        <div class="photo-carousel" tabindex="0" aria-label="Inspiracje kulinarne">
+          {recipePhotos.map((photo) => (
+            <figure class="photo-slide">
+              <img src={photo.src} alt={photo.alt} width="1200" height="1200" loading="lazy" />
+            </figure>
+          ))}
+        </div>
+        <button class="btn btn-outline" data-photo-carousel="1" aria-label="Następne zdjęcie">
+          →
+        </button>
+      </div>
       <button class="btn" type="button">
         Zobacz na instagramie <span aria-hidden="true">↗</span>
       </button>
@@ -470,7 +469,7 @@ const features = [
     margin-bottom: 26px;
   }
   .newsletter-copy h2 {
-    font-size: clamp(42px, 4.6vw, 76px);
+    font-size: var(--type-step-4);
     font-weight: 400;
     line-height: 1.08;
     max-width: 650px;
@@ -555,9 +554,6 @@ const features = [
       padding: 32px 20px;
       border-radius: 28px;
     }
-    .newsletter-copy h2 {
-      font-size: 42px;
-    }
     .newsletter-form {
       padding: 10px 10px 20px;
       border-radius: 26px;
@@ -606,7 +602,7 @@ const features = [
     margin-bottom: 30px;
   }
   .consultation-copy h2 {
-    font-size: clamp(46px, 5.6vw, 88px);
+    font-size: var(--type-step-5);
     line-height: 1.02;
     font-weight: 400;
   }
@@ -849,7 +845,6 @@ const features = [
       padding: 32px 24px;
     }
     .consultation-copy h2 {
-      font-size: 44px;
       overflow-wrap: anywhere;
     }
     .consultation-visual {
@@ -903,7 +898,7 @@ const features = [
     padding-top: 6px;
   }
   .feature h3 {
-    font-size: 27px;
+    font-size: var(--type-step-2);
   }
   .feature p {
     font-size: 13px;
@@ -963,6 +958,16 @@ const features = [
     display: flex;
     flex-direction: column;
     min-height: 610px;
+    background: #e8ded3;
+    border-color: #d4c5b8;
+  }
+  .category-card:nth-child(1) {
+    background: #ded2c6;
+    border-color: #cdbdaf;
+  }
+  .category-card:nth-child(3) {
+    background: #f0e8df;
+    border-color: #ddd0c4;
   }
   .category-card > .category-description {
     margin-top: 24px;
@@ -1035,17 +1040,17 @@ const features = [
     color: inherit;
     cursor: pointer;
   }
-  .dark-card {
-    background: var(--color-ink);
-    color: var(--color-paper);
-    border-color: var(--color-ink);
+  .category-card.dark-card {
+    background: #ded2c6;
+    color: var(--color-ink);
+    border-color: #cdbdaf;
   }
   .dark-card .eyebrow {
-    color: var(--color-accent-inverse);
+    color: var(--color-section-eyebrow);
   }
   .dark-card .category-offer small,
   .dark-card .category-package ul {
-    color: var(--color-muted-inverse);
+    color: var(--color-muted);
   }
   .steps {
     background: var(--color-ink);
@@ -1067,7 +1072,7 @@ const features = [
     color: var(--color-accent-quote);
   }
   .steps-grid h3 {
-    font-size: 27px;
+    font-size: var(--type-step-2);
     margin: 16px 0;
   }
   .steps-grid p {
@@ -1081,34 +1086,88 @@ const features = [
   }
   .testimonials {
     text-align: center;
-    max-width: 900px;
+    max-width: none;
   }
-  .testimonials > .intro {
+  .photo-carousel-description {
     max-width: 680px;
     margin-inline: auto;
     text-align: center;
   }
-  .testimonials-booking {
+  .photo-carousel-layout {
+    position: relative;
+    margin-top: 40px;
+  }
+  .photo-carousel-layout .btn {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    font-size: 20px;
+    transform: translateY(-50%);
+  }
+  .photo-carousel-layout .btn:first-child {
+    left: -64px;
+  }
+  .photo-carousel-layout .btn:last-child {
+    right: -64px;
+  }
+  .photo-carousel {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 0 4px 8px;
+    scrollbar-width: none;
+  }
+  .photo-carousel::-webkit-scrollbar {
+    display: none;
+  }
+  .photo-slide {
+    flex: 0 0 calc((100% - 60px) / 4);
+    margin: 0;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    overflow: hidden;
+    border-radius: 24px;
+    background: var(--color-paper);
+    box-shadow: 0 12px 30px var(--color-shadow-card);
+  }
+  .photo-slide img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .photo-slide:hover img {
+    transform: scale(1.035);
+  }
+  .testimonials > .btn {
     margin-top: 28px;
   }
-  .review-track {
-    display: flex;
-    overflow: auto;
-    scroll-snap-type: x mandatory;
-  }
-  .review-track figure {
-    min-width: 100%;
-    margin: 48px 0 0;
-    scroll-snap-align: start;
-  }
-  .review-track blockquote {
-    font-family: var(--font-serif);
-    font-size: 32px;
-    line-height: 1.35;
-  }
-  .review-track figcaption {
-    font-size: 12px;
-    margin-top: 24px;
+  @media (max-width: 767px) {
+    .photo-carousel-layout {
+      margin-top: 28px;
+    }
+    .photo-carousel-layout .btn {
+      width: 40px;
+      height: 40px;
+    }
+    .photo-carousel-layout .btn:first-child {
+      left: -12px;
+    }
+    .photo-carousel-layout .btn:last-child {
+      right: -12px;
+    }
+    .photo-carousel {
+      gap: 12px;
+    }
+    .photo-slide {
+      flex-basis: min(78vw, 360px);
+    }
   }
   details {
     border-bottom: 1px solid var(--color-border-list);
@@ -1176,11 +1235,11 @@ const features = [
   }
 </style>
 <script>
-  document.querySelectorAll<HTMLButtonElement>('[data-review]').forEach((button) =>
+  document.querySelectorAll<HTMLButtonElement>('[data-photo-carousel]').forEach((button) =>
     button.addEventListener('click', () => {
-      const track = document.querySelector('.review-track');
+      const track = document.querySelector<HTMLElement>('.photo-carousel');
       track?.scrollBy({
-        left: track.clientWidth * Number(button.dataset.review),
+        left: track.clientWidth * Number(button.dataset.photoCarousel),
         behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
       });
     }),

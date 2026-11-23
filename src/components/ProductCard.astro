@@ -90,11 +90,12 @@ const demoImage = p.demo ? demoImages[p.image] : undefined;
     background: var(--color-surface-product);
     border-radius: 190px 190px 8px 8px;
     overflow: hidden;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .product-image > img {
     height: 100%;
     width: 100%;
-    transition: transform 0.7s;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)!important;
   }
   .product-image:hover > img {
     transform: scale(1.035);

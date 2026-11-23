@@ -1,9 +1,16 @@
 ﻿@import 'tailwindcss';
-@import '@fontsource-variable/cormorant-garamond';
 @import '@fontsource-variable/dm-sans';
+
+@font-face {
+  font-family: 'Tiempos';
+  src: url('/fonts/Tiempos-Font.otf') format('opentype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
 @theme static {
   --font-sans: 'DM Sans Variable', sans-serif;
-  --font-serif: 'Cormorant Garamond Variable', Georgia, serif;
+  --font-serif: 'Tiempos', Georgia, serif;
 
   /* Paleta zaczerpnięta ze zdjęć: kość słoniowa, kamień, orzech, śliwka i mosiądz */
   --color-paper: #f7f3ee;
@@ -11,6 +18,7 @@
   --color-ink: #2b211f;
   --color-rose: #7e4d59;
   --color-action: #73414c;
+  --color-on-action: #fff;
   --color-white: #fff;
   --color-transparent: transparent;
   /* Tekst i akcje */
@@ -100,6 +108,11 @@
   --section-space: clamp(2rem, 4vw, 4rem);
   --radius: 12px;
   --ease: cubic-bezier(0.2, 0.65, 0.3, 1);
+  --type-step-1: clamp(1.25rem, 1.15rem + 0.4vw, 1.5rem);
+  --type-step-2: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem);
+  --type-step-3: clamp(1.875rem, 1.45rem + 1.5vw, 2.5rem);
+  --type-step-4: clamp(2.25rem, 1.6rem + 2.4vw, 3.25rem);
+  --type-step-5: clamp(2.75rem, 1.8rem + 3.6vw, 4rem);
 }
 * {
   box-sizing: border-box;
@@ -128,18 +141,21 @@ h2,
 h3,
 h4 {
   font-family: var(--font-serif);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.06;
   letter-spacing: -0.035em;
 }
 h1 {
-  font-size: clamp(3rem, 5.3vw, 5.5rem);
+  font-size: var(--type-step-5);
 }
 h2 {
-  font-size: clamp(2.5rem, 3.8vw, 4rem);
+  font-size: var(--type-step-4);
 }
 h3 {
-  font-size: 2rem;
+  font-size: var(--type-step-2);
+}
+h4 {
+  font-size: var(--type-step-1);
 }
 a {
   color: inherit;
@@ -213,7 +229,7 @@ img {
   font-size: 13px;
   font-weight: 500;
   background: var(--color-action);
-  color: var(--color-white);
+  color: var(--color-on-action);
   transition:
     background 0.2s,
     transform 0.2s;
@@ -314,7 +330,7 @@ input[type='checkbox'] {
   margin-block: 22px;
 }
 .prose h2 {
-  font-size: 2.5rem;
+  font-size: var(--type-step-3);
   margin-top: 40px;
 }
 .prose h3 {
@@ -360,9 +376,6 @@ th {
   .section-heading {
     align-items: start;
     flex-direction: column;
-  }
-  h1 {
-    font-size: 3.2rem;
   }
   .card {
     padding: 24px;
