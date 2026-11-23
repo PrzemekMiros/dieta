@@ -17,8 +17,10 @@ const features = [
     'Poznaję Twoją sytuację',
     'Przed konsultacją proszę Cię o wyniki badań, wypełnioną ankietę żywieniowo-zdrowotną, dzienniczek żywieniowy i krótkie informacje o Twoich nawykach oraz trudnościach. Wszystko po to, żeby lepiej poznać Twoje potrzeby.',
   ],
-  ['Analizuję i wyciągam wnioski',
-   'Zapoznaję się z przesłanymi materiałami, przyglądam się Twojemu sposobowi odżywiania i potrzebom. Dzięki temu nie tracimy czasu na poznawanie podstaw dopiero podczas spotkania.'],
+  [
+    'Analizuję i wyciągam wnioski',
+    'Zapoznaję się z przesłanymi materiałami, przyglądam się Twojemu sposobowi odżywiania i potrzebom. Dzięki temu nie tracimy czasu na poznawanie podstaw dopiero podczas spotkania.',
+  ],
   [
     'Rozmawiamy i szukamy rozwiązań',
     'Omawiamy najważniejsze kwestie, wyjaśniam Ci, co warto zmienić i dlaczego. Otrzymujesz konkretne wskazówki dopasowane do swojej sytuacji.',
@@ -34,12 +36,18 @@ const features = [
   <section class="section container split" id="filozofia">
     <div data-reveal>
       <p class="eyebrow">{s.subtitle || 'Moja filozofia'}</p>
-      <h2>Najpierw poznaję Twoją historię. <span class="txt-accent">Potem szukamy najlepszych rozwiązań.</span></h2>
+      <h2>
+        Najpierw poznaję Twoją historię.{' '}
+        <span class="txt-accent">Potem szukamy najlepszych rozwiązań.</span>
+      </h2>
       <div class="intro muted">
         <p>
-          Nie zaczynam od gotowego jadłospisu ani listy zakazów. Chcę wiedzieć, z czym się mierzysz, jak wygląda Twoje odżywianie i czego potrzebujesz. Dzięki temu nasze spotkanie ma konkretny cel, a Ty wychodzisz z wiedzą i wskazówkami, które możesz wykorzystać w praktyce.
+          Nie zaczynam od gotowego jadłospisu ani listy zakazów. Chcę wiedzieć, z czym się mierzysz,
+          jak wygląda Twoje odżywianie i czego potrzebujesz. Dzięki temu nasze spotkanie ma
+          konkretny cel, a Ty wychodzisz z wiedzą i wskazówkami, które możesz wykorzystać w
+          praktyce.
         </p>
-      </div> 
+      </div>
     </div>
     <div class="md:mt-5">
       {features.map(([title, body], i) => (
@@ -90,10 +98,12 @@ const features = [
             pasować do Ciebie i Twojego życia, a nie na odwrót.
           </p>
           <p>
-            Nie wierzę w sztywne schematy, restrykcje czy idealne jadłospisy z podręcznika. Tworzę spersonalizowane zalecenia i daję Ci proste narzędzia do pracy nad zdrowiem na co dzień.
+            Nie wierzę w sztywne schematy, restrykcje czy idealne jadłospisy z podręcznika. Tworzę
+            spersonalizowane zalecenia i daję Ci proste narzędzia do pracy nad zdrowiem na co dzień.
           </p>
           <p>
-            Elastyczność to klucz do sukcesu: to zmiana ma pasować do Ciebie i Twojego życia, a nie na odwrót.
+            Elastyczność to klucz do sukcesu: to zmiana ma pasować do Ciebie i Twojego życia, a nie
+            na odwrót.
           </p>
         </div>
         <a class="text-link mt-8" href="/o-nas">
@@ -113,7 +123,9 @@ const features = [
     <div class="section-heading" data-reveal>
       <div>
         <p class="eyebrow">{s.subtitle || 'W czym pomagam'}</p>
-        <h2>Wybierz wsparcie, <span class="txt-accent">które odpowiada Twoim potrzebom.</span></h2>
+        <h2>
+          Wybierz wsparcie, <span class="txt-accent">które odpowiada Twoim potrzebom.</span>
+        </h2>
         <p class="intro muted">
           Każdy plan powstaje z myślą o Tobie — Twoim rytmie, celach i codzienności.
         </p>
@@ -121,12 +133,14 @@ const features = [
     </div>
     <div class="category-grid">
       <article class="card category-card dark-card" data-reveal>
-        <p class="eyebrow">Kobiety w ciąży</p>
-        <h3>Dietoterapia kobiet w ciąży</h3>
-        <p class="category-description">
-          Wsparcie żywieniowe na każdym etapie ciąży, dobór celowanej suplementacji i modyfikacja
-          diety przy ewentualnych dolegliwościach lub wyzwaniach zdrowotnych.
-        </p>
+        <div class="category-card-heading">
+          <p class="eyebrow">Kobiety w ciąży</p>
+          <h3>Dietoterapia kobiet w ciąży</h3>
+          <p class="category-description">
+            Wsparcie żywieniowe na każdym etapie ciąży, dobór celowanej suplementacji i modyfikacja
+            diety przy ewentualnych dolegliwościach lub wyzwaniach zdrowotnych.
+          </p>
+        </div>
         <div class="category-offers">
           <div class="category-offer">
             <div>
@@ -160,12 +174,14 @@ const features = [
       </article>
 
       <article class="card category-card" data-reveal>
-        <p class="eyebrow">Dzieci i rodzice</p>
-        <h3>Konsultacje dla rodziców</h3>
-        <p class="category-description">
-          Rozszerzanie diety u niemowląt, bilansowanie posiłków maluchów i wsparcie przy braku
-          apetytu.
-        </p>
+        <div class="category-card-heading">
+          <p class="eyebrow">Dzieci i rodzice</p>
+          <h3>Konsultacje dla rodziców</h3>
+          <p class="category-description">
+            Rozszerzanie diety u niemowląt, bilansowanie posiłków maluchów i wsparcie przy braku
+            apetytu.
+          </p>
+        </div>
         <div class="category-offers">
           <div class="category-offer">
             <div>
@@ -181,8 +197,10 @@ const features = [
       </article>
 
       <article class="card category-card" data-reveal>
-        <p class="eyebrow">Oferta dla dorosłych</p>
-        <h3>Dietoterapia osób dorosłych</h3>
+        <div class="category-card-heading">
+          <p class="eyebrow">Oferta dla dorosłych</p>
+          <h3>Dietoterapia osób dorosłych</h3>
+        </div>
         <div class="category-offers">
           <div class="category-offer">
             <div>
@@ -293,7 +311,9 @@ const features = [
       </div>
       <div class="consultation-copy">
         <p class="eyebrow">{s.subtitle || 'Spotkajmy się online'}</p>
-        <h2>Konsultacja dietetyczna <span class="txt-accent">online</span></h2>
+        <h2>
+          Konsultacja dietetyczna <span class="txt-accent">online</span>
+        </h2>
         <p class="consultation-lead">
           To czas poświęcony w pełni Twoim potrzebom, zdrowiu i celom żywieniowym.
         </p>
@@ -313,9 +333,12 @@ const features = [
   <section class="section bg-beige">
     <div class="container testimonials">
       <p class="eyebrow">{s.subtitle || 'Przepisy'}</p>
-      <h2 data-reveal>Zdrowe <span class="txt-accent">inspiracje</span></h2>
+      <h2 data-reveal>
+        Zdrowe <span class="txt-accent">inspiracje</span>
+      </h2>
       <p class="intro muted photo-carousel-description">
-        Każdego dnia na moim Instagramie znajdziesz nowe przepisy, porady dietetyczne oraz wsparcie dla rodziców.
+        Każdego dnia na moim Instagramie znajdziesz nowe przepisy, porady dietetyczne oraz wsparcie
+        dla rodziców.
       </p>
       <div class="photo-carousel-layout">
         <button class="btn btn-outline" data-photo-carousel="-1" aria-label="Poprzednie zdjęcie">
@@ -332,9 +355,14 @@ const features = [
           →
         </button>
       </div>
-      <button class="btn" type="button">
+      <a
+        class="btn"
+        href="https://www.instagram.com/dietetyka_dla_smyka/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         Zobacz na instagramie <span aria-hidden="true">↗</span>
-      </button>
+      </a>
     </div>
   </section>
 )}
@@ -342,7 +370,10 @@ const features = [
   <section class="section container split faq">
     <div data-reveal>
       <p class="eyebrow">Najczęstsze pytania</p>
-      <h2>Masz pytania? <br><span class="txt-accent">Chętnie odpowiem.</span></h2>
+      <h2>
+        Masz pytania? <br />
+        <span class="txt-accent">Chętnie odpowiem.</span>
+      </h2>
       <p class="intro muted">Zawsze chętnie pomogę dobrać właściwy typ wsparcia.</p>
       <a href="/kontakt" class="text-link mt-8">
         Przejdź do kontaktu <span>↗</span>
@@ -387,7 +418,10 @@ const features = [
     <div class="newsletter-panel">
       <div class="newsletter-copy" data-reveal>
         <p class="eyebrow">{s.subtitle || 'Newsletter'}</p>
-        <h2 id="newsletter-title">Zapisz się na inspiracje <br><span class="txt-accent">do zdrowego życia.</span></h2>
+        <h2 id="newsletter-title">
+          Zapisz się na inspiracje <br />
+          <span class="txt-accent">do zdrowego życia.</span>
+        </h2>
         <p class="newsletter-intro">
           {s.body ||
             'Darmowa porcja wiedzy, która pomoże Ci lepiej zadbać o zdrowie, wyniki badań i relację z jedzeniem.'}
@@ -955,11 +989,61 @@ const features = [
     gap: 24px;
   }
   .category-card {
+    position: relative;
+    isolation: isolate;
     display: flex;
     flex-direction: column;
     min-height: 610px;
     background: color-mix(in srgb, var(--color-paper) 42%, var(--color-beige));
     border-color: color-mix(in srgb, var(--color-border) 72%, var(--color-paper));
+    overflow: hidden;
+  }
+  .category-card::before,
+  .category-card::after {
+    position: absolute;
+    z-index: 0;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--color-surface-hero) 38%, var(--color-paper));
+    content: '';
+    pointer-events: none;
+  }
+  .category-card::before {
+    top: -88px;
+    right: -92px;
+    width: 230px;
+    aspect-ratio: 1;
+  }
+  .category-card::after {
+    bottom: 84px;
+    left: -28px;
+    width: 74px;
+    aspect-ratio: 1;
+  }
+  .category-card:nth-child(2)::before {
+    top: auto;
+    right: -72px;
+    bottom: -86px;
+    width: 210px;
+  }
+  .category-card:nth-child(2)::after {
+    top: 116px;
+    bottom: auto;
+    left: -18px;
+    width: 46px;
+  }
+  .category-card:nth-child(3)::before {
+    top: 42px;
+    right: -118px;
+    width: 248px;
+  }
+  .category-card:nth-child(3)::after {
+    bottom: -16px;
+    left: 46px;
+    width: 64px;
+  }
+  .category-card > * {
+    position: relative;
+    z-index: 1;
   }
   .category-card:nth-child(1) {
     background: color-mix(in srgb, var(--color-paper) 28%, var(--color-beige));
@@ -967,7 +1051,10 @@ const features = [
   .category-card:nth-child(3) {
     background: color-mix(in srgb, var(--color-paper) 62%, var(--color-beige));
   }
-  .category-card > .category-description {
+  .category-card-heading {
+    min-height: 210px;
+  }
+  .category-card-heading .category-description {
     margin-top: 24px;
     font-size: 13px;
   }
