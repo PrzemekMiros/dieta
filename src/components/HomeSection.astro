@@ -34,14 +34,14 @@ const features = [
   <section class="section container split" id="filozofia">
     <div data-reveal>
       <p class="eyebrow">{s.subtitle || 'Moja filozofia'}</p>
-      <h2>{s.title || 'Najpierw poznaję Twoją historię. Potem szukamy najlepszych rozwiązań.'}</h2>
+      <h2>Najpierw poznaję Twoją historię. <span class="txt-accent">Potem szukamy najlepszych rozwiązań.</span></h2>
       <div class="intro muted">
         <p>
           Nie zaczynam od gotowego jadłospisu ani listy zakazów. Chcę wiedzieć, z czym się mierzysz, jak wygląda Twoje odżywianie i czego potrzebujesz. Dzięki temu nasze spotkanie ma konkretny cel, a Ty wychodzisz z wiedzą i wskazówkami, które możesz wykorzystać w praktyce.
         </p>
-      </div>
+      </div> 
     </div>
-    <div>
+    <div class="md:mt-5">
       {features.map(([title, body], i) => (
         <div class="feature" data-reveal>
           <span>0{i + 1}</span>
@@ -60,7 +60,7 @@ const features = [
       <div class="about-images" data-reveal>
         <img
           class="about-main"
-          src="/images/IMG_8219.png"
+          src="/images/o-mnie/_DSC8167.jpg"
           alt="Miska pożywnego śniadania z malinami i owocami"
           width="640"
           height="800"
@@ -68,7 +68,7 @@ const features = [
         />
         <div class="about-small">
           <img
-            src="/images/Natalia.png"
+            src="/images/IMG_7254.png"
             alt="Placuszki z owocami na zdrowe śniadanie"
             width="280"
             height="320"
@@ -113,7 +113,7 @@ const features = [
     <div class="section-heading" data-reveal>
       <div>
         <p class="eyebrow">{s.subtitle || 'W czym pomagam'}</p>
-        <h2>{s.title || 'Wybierz wsparcie, które odpowiada Twoim potrzebom.'}</h2>
+        <h2>Wybierz wsparcie, <span class="txt-accent">które odpowiada Twoim potrzebom.</span></h2>
         <p class="intro muted">
           Każdy plan powstaje z myślą o Tobie — Twoim rytmie, celach i codzienności.
         </p>
@@ -313,7 +313,7 @@ const features = [
   <section class="section bg-beige">
     <div class="container testimonials">
       <p class="eyebrow">{s.subtitle || 'Przepisy'}</p>
-      <h2 data-reveal>{s.title || 'Zdrowe inspiracje.'}</h2>
+      <h2 data-reveal>Zdrowe <span class="txt-accent">inspiracje</span></h2>
       <p class="intro muted photo-carousel-description">
         Każdego dnia na moim Instagramie znajdziesz nowe przepisy, porady dietetyczne oraz wsparcie dla rodziców.
       </p>
@@ -341,8 +341,8 @@ const features = [
 {s.key === 'faq' && (
   <section class="section container split faq">
     <div data-reveal>
-      <p class="eyebrow">{s.subtitle || 'Najczęstsze pytania'}</p>
-      <h2>{s.title || 'Masz wątpliwości? Odpowiem na najważniejsze.'}</h2>
+      <p class="eyebrow">Najczęstsze pytania</p>
+      <h2>Masz pytania? <br><span class="txt-accent">Chętnie odpowiem.</span></h2>
       <p class="intro muted">Zawsze chętnie pomogę dobrać właściwy typ wsparcia.</p>
       <a href="/kontakt" class="text-link mt-8">
         Przejdź do kontaktu <span>↗</span>

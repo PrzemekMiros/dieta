@@ -15,7 +15,7 @@
   /* Paleta zaczerpnięta ze zdjęć: kość słoniowa, kamień, orzech, śliwka i mosiądz */
   --color-paper: #f7f3ee;
   --color-beige: #e8ded3;
-  --color-ink: #2b211f;
+  --color-ink: #3d2f2c;
   --color-rose: #7e4d59;
   --color-action: #73414c;
   --color-on-action: #fff;
@@ -210,6 +210,9 @@ img {
 }
 .muted {
   color: var(--color-muted);
+}
+.txt-accent {
+  opacity: 0.65;
 }
 .intro {
   max-width: 540px;
