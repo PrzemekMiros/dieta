@@ -293,7 +293,7 @@ const features = [
       </div>
       <div class="consultation-copy">
         <p class="eyebrow">{s.subtitle || 'Spotkajmy się online'}</p>
-        <h2>{s.title || 'Konsultacja dietetyczna online'}</h2>
+        <h2>Konsultacja dietetyczna <span class="txt-accent">online</span></h2>
         <p class="consultation-lead">
           To czas poświęcony w pełni Twoim potrzebom, zdrowiu i celom żywieniowym.
         </p>
@@ -387,7 +387,7 @@ const features = [
     <div class="newsletter-panel">
       <div class="newsletter-copy" data-reveal>
         <p class="eyebrow">{s.subtitle || 'Newsletter'}</p>
-        <h2 id="newsletter-title">{s.title || 'Zapisz się na inspiracje do zdrowego życia.'}</h2>
+        <h2 id="newsletter-title">Zapisz się na inspiracje <br><span class="txt-accent">do zdrowego życia.</span></h2>
         <p class="newsletter-intro">
           {s.body ||
             'Darmowa porcja wiedzy, która pomoże Ci lepiej zadbać o zdrowie, wyniki badań i relację z jedzeniem.'}
@@ -958,16 +958,14 @@ const features = [
     display: flex;
     flex-direction: column;
     min-height: 610px;
-    background: #e8ded3;
-    border-color: #d4c5b8;
+    background: color-mix(in srgb, var(--color-paper) 42%, var(--color-beige));
+    border-color: color-mix(in srgb, var(--color-border) 72%, var(--color-paper));
   }
   .category-card:nth-child(1) {
-    background: #ded2c6;
-    border-color: #cdbdaf;
+    background: color-mix(in srgb, var(--color-paper) 28%, var(--color-beige));
   }
   .category-card:nth-child(3) {
-    background: #f0e8df;
-    border-color: #ddd0c4;
+    background: color-mix(in srgb, var(--color-paper) 62%, var(--color-beige));
   }
   .category-card > .category-description {
     margin-top: 24px;
@@ -1041,9 +1039,8 @@ const features = [
     cursor: pointer;
   }
   .category-card.dark-card {
-    background: #ded2c6;
+    background: color-mix(in srgb, var(--color-paper) 28%, var(--color-beige));
     color: var(--color-ink);
-    border-color: #cdbdaf;
   }
   .dark-card .eyebrow {
     color: var(--color-section-eyebrow);
