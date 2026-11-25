@@ -47,13 +47,25 @@ const crumbs = {
 >
   <section class="container section">
     <div class="split items-start">
-      <img
-        class="rounded-t-full w-full max-h-[680px]"
-        src={p.image}
-        alt={p.demo ? 'Ilustracja koncepcyjna' : p.name}
-        width="700"
-        height="850"
-      />
+      {p.productType === 'digital' ? (
+        <div class="product-tablet">
+          <span class="product-tablet-camera" aria-hidden="true" />
+          <img
+            src={p.image}
+            alt={p.demo ? 'Ilustracja koncepcyjna' : p.name}
+            width="700"
+            height="850"
+          />
+        </div>
+      ) : (
+        <img
+          class="rounded-t-full w-full max-h-[680px]"
+          src={p.image}
+          alt={p.demo ? 'Ilustracja koncepcyjna' : p.name}
+          width="700"
+          height="850"
+        />
+      )}
       <div>
         <nav class="product-breadcrumbs text-xs muted" aria-label="Okruszki">
           <a href="/sklep">Sklep</a>
@@ -112,6 +124,35 @@ const crumbs = {
   .product-description {
     max-width: 800px;
   }
+  .product-tablet {
+    position: relative;
+    width: min(78%, 470px);
+    aspect-ratio: 3 / 4;
+    margin-inline: auto;
+    padding: 18px;
+    border: 6px solid var(--color-ink);
+    border-radius: 38px;
+    background: var(--color-ink);
+    box-shadow: 18px 26px 46px var(--color-shadow-product);
+    transform: rotate(-3deg);
+  }
+  .product-tablet-camera {
+    position: absolute;
+    z-index: 1;
+    top: 7px;
+    left: calc(50% - 4px);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-paper);
+  }
+  .product-tablet img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 14px;
+    object-fit: cover;
+  }
   .related-products-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -126,6 +167,9 @@ const crumbs = {
   @media (max-width: 600px) {
     .related-products-grid {
       grid-template-columns: minmax(0, 1fr);
+    }
+    .product-tablet {
+      width: min(82%, 380px);
     }
   }
   .product-breadcrumbs {

@@ -1,6 +1,8 @@
 ﻿@import 'tailwindcss';
 @import '@fontsource-variable/dm-sans';
 
+@import '@fontsource-variable/cormorant-garamond';
+
 @font-face {
   font-family: 'Tiempos';
   src: url('/fonts/Tiempos-Font.otf') format('opentype');
@@ -10,7 +12,7 @@
 }
 @theme static {
   --font-sans: 'DM Sans Variable', sans-serif;
-  --font-serif: 'Tiempos', Georgia, serif;
+  --font-serif: 'Cormorant Garamond Variable', 'Cormorant Garamond', Georgia, serif;
 
   /* Paleta zaczerpnięta ze zdjęć: kość słoniowa, kamień, orzech, śliwka i mosiądz */
   --color-paper: #f7f3ee;
@@ -393,5 +395,24 @@ th {
   *::after {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+::view-transition-old(root) {
+  animation: 160ms ease-out both page-fade-out;
+}
+::view-transition-new(root) {
+  animation: 260ms ease-in both page-fade-in;
+}
+@keyframes page-fade-out {
+  to { opacity: 0; }
+}
+@keyframes page-fade-in {
+  from { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
   }
 }

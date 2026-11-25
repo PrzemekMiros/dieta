@@ -156,6 +156,7 @@ Zapraszamy do współpracy,
 `;
 
 const content: Block[] = source
+  .replaceAll('kontakt@dietetykadlasmyka.pl', 'dietetykadlasmyka@gmail.com')
   .split(/\r?\n/)
   .map((line) => line.trim())
   .filter(Boolean)

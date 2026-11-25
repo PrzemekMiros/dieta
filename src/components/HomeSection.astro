@@ -74,16 +74,6 @@ const features = [
           height="800"
           loading="lazy"
         />
-        <div class="about-small">
-          <img
-            src="/images/IMG_7254.png"
-            alt="Placuszki z owocami na zdrowe śniadanie"
-            width="280"
-            height="320"
-            loading="lazy"
-          />
-          <span>spokojnie, skutecznie, bez presji.</span>
-        </div>
       </div>
       <div data-reveal>
         <p class="eyebrow">{s.subtitle || 'Poznaj mnie'}</p>
@@ -106,13 +96,18 @@ const features = [
             na odwrót.
           </p>
         </div>
-        <a class="text-link mt-8" href="/o-nas">
-          Dowiedz się więcej <span>↗</span>
-        </a>
-        <div class="about-note">
-          Małe zmiany.
-          <br />
-          <em>Duży efekt.</em>
+        <div class="flex flex-wrap gap-5 mt-8">
+          <a class="text-link" href="/o-nas">
+            Dowiedz się więcej <span>↗</span>
+          </a>
+          <a
+            class="text-link"
+            href="https://www.instagram.com/dietetyka_dla_smyka/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Odwiedź mój Instagram <span>↗</span>
+          </a>
         </div>
       </div>
     </div>
@@ -277,7 +272,7 @@ const features = [
       <div class="consultation-visual" aria-hidden="true">
         <div class="consultation-tablet">
           <div class="consultation-camera" />
-          <img src="/images/Natalia.png" alt="" width="1151" height="1770" loading="lazy" />
+          <img src="/images/o-mnie/_DSC7941.jpg" alt="" width="1291" height="1936" loading="lazy" />
           <div class="consultation-screen-label">
             <span>Twoja Dietetyczka</span>
             <small>Blisko Ciebie. Także online.</small>
@@ -290,14 +285,16 @@ const features = [
         </div>
         <div class="consultation-phone">
           <div class="consultation-phone-camera" />
-          <img src="/images/IMG_5522.png" alt="" width="2200" height="2933" loading="lazy" />
-          <div class="consultation-phone-copy">
-            <small>TWÓJ RYTM. TWOJE POTRZEBY.</small>
-            <span>
-              Zdrowe wybory
-              <br />
-              <em>na co dzień.</em>
-            </span>
+          <div class="consultation-phone-screen">
+            <span class="phone-time">9:41</span>
+            <div class="consultation-reminder">
+              <div class="reminder-icon">◌</div>
+              <div>
+                <small>KALENDARZ</small>
+                <strong>Zaplanowano na dziś</strong>
+                <span>Konsultacja online · 17:00</span>
+              </div>
+            </div>
           </div>
         </div>
         <div class="consultation-badge">
@@ -334,7 +331,7 @@ const features = [
     <div class="container testimonials">
       <p class="eyebrow">{s.subtitle || 'Przepisy'}</p>
       <h2 data-reveal>
-        Zdrowe <span class="txt-accent">inspiracje</span>
+        Materiały edukacyjne <span class="txt-accent">| paczki przepisów</span>
       </h2>
       <p class="intro muted photo-carousel-description">
         Każdego dnia na moim Instagramie znajdziesz nowe przepisy, porady dietetyczne oraz wsparcie
@@ -769,29 +766,63 @@ const features = [
     border-radius: 12px;
     background: var(--color-booking-background);
   }
-  .consultation-phone img {
-    width: 100%;
-    height: 65%;
-    border-radius: 19px 19px 0 0;
-  }
-  .consultation-phone-copy {
-    height: 35%;
-    background: var(--color-paper);
+  .consultation-phone-screen {
+    display: flex;
+    height: 100%;
+    padding: 26px 9px 9px;
+    flex-direction: column;
+    background:
+      radial-gradient(
+        circle at 8% 92%,
+        color-mix(in srgb, var(--color-surface-hero) 75%, transparent),
+        transparent 34%
+      ),
+      linear-gradient(150deg, var(--color-paper), var(--color-beige));
     color: var(--color-ink);
-    padding: 12px 10px;
-    border-radius: 0 0 18px 18px;
+    border-radius: 19px;
   }
-  .consultation-phone-copy small {
-    display: block;
-    font-size: clamp(5px, 0.5vw, 8px);
-    letter-spacing: 0.08em;
-    margin-bottom: 8px;
+  .phone-time {
+    margin-left: 8px;
+    font-size: 8px;
+    font-weight: 700;
   }
-  .consultation-phone-copy span {
+  .consultation-reminder {
+    display: flex;
+    gap: 7px;
+    margin-top: auto;
+    padding: 10px 8px;
+    border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--color-paper) 82%, transparent);
+    box-shadow: 0 6px 15px var(--color-shadow-card);
+  }
+  .reminder-icon {
+    display: grid;
+    width: 22px;
+    height: 22px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 7px;
+    background: var(--color-action);
+    color: var(--color-paper);
+  }
+  .consultation-reminder small,
+  .consultation-reminder strong,
+  .consultation-reminder span {
     display: block;
-    font-family: var(--font-serif);
-    font-size: clamp(18px, 2vw, 28px);
-    line-height: 1.05;
+  }
+  .consultation-reminder small {
+    font-size: 5px;
+    letter-spacing: 0.06em;
+  }
+  .consultation-reminder strong {
+    margin: 3px 0;
+    font-size: clamp(7px, 0.65vw, 10px);
+    line-height: 1.1;
+  }
+  .consultation-reminder span {
+    font-size: clamp(5px, 0.48vw, 7px);
+    color: var(--color-muted);
   }
   .consultation-badge {
     position: absolute;
@@ -867,12 +898,6 @@ const features = [
       max-width: 420px;
       margin-block: 8px 24px;
     }
-    .consultation-phone-copy span {
-      font-size: 24px;
-    }
-    .consultation-phone-copy small {
-      font-size: 6px;
-    }
   }
   @media (max-width: 480px) {
     .consultation-panel {
@@ -893,16 +918,6 @@ const features = [
     }
     .consultation-screen-label small {
       font-size: 8px;
-    }
-    .consultation-phone-copy {
-      padding: 8px 5px;
-    }
-    .consultation-phone-copy span {
-      font-size: 18px;
-    }
-    .consultation-phone-copy small {
-      font-size: 5px;
-      margin-bottom: 4px;
     }
     .consultation-badge {
       padding: 10px;
@@ -941,47 +956,12 @@ const features = [
   }
   .about-images {
     position: relative;
-    padding-right: 55px;
-    padding-bottom: 45px;
   }
   .about-main {
     width: 100%;
     height: 560px;
-    border-radius: 220px 220px 6px 6px;
-  }
-  .about-small {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 45%;
-    padding: 8px;
-    background: var(--color-paper);
-    box-shadow: 0 12px 40px var(--color-shadow-card);
-    transform: rotate(3deg);
-  }
-  .about-small img {
-    height: 210px;
-    width: 100%;
-    object-position: 50% 40%;
-  }
-  .about-small span {
-    display: block;
-    text-align: center;
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-size: 22px;
-    padding: 6px;
-  }
-  .about-note {
-    margin-top: 40px;
-    border-top: 1px solid var(--color-border-feature);
-    padding-top: 24px;
-    font-family: var(--font-serif);
-    font-size: 29px;
-    line-height: 1.2;
-  }
-  .about-note em {
-    color: var(--color-action);
+    border-radius: 290px 290px 6px 6px;
+    object-position: center 26%;
   }
   .category-grid {
     display: grid;
@@ -1299,9 +1279,6 @@ const features = [
     }
     .about-main {
       height: 430px;
-    }
-    .about-small img {
-      height: 150px;
     }
     .steps-grid {
       gap: 30px;

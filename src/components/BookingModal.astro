@@ -13,6 +13,7 @@ const dayNames = settings.days
 
 <dialog
   class="booking-dialog"
+  transition:persist="booking-modal"
   aria-label="Wybór terminu konsultacji"
   data-booking-config={JSON.stringify(settings)}
 >
@@ -618,15 +619,16 @@ const dayNames = settings.days
     renderCalendar();
   }
 
-  document.querySelectorAll<HTMLElement>('[data-booking-open]').forEach((trigger) => {
-    trigger.addEventListener('click', (event) => {
-      event.preventDefault();
-      if (!dialog || dialog.open) return;
-      lastTrigger = trigger;
-      resetBooking();
-      dialog.showModal();
-      dialog.querySelector<HTMLButtonElement>('[data-booking-close]')?.focus();
-    });
+  document.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return;
+    const trigger = event.target.closest<HTMLElement>('[data-booking-open]');
+    if (!trigger) return;
+    event.preventDefault();
+    if (!dialog || dialog.open) return;
+    lastTrigger = trigger;
+    resetBooking();
+    dialog.showModal();
+    dialog.querySelector<HTMLButtonElement>('[data-booking-close]')?.focus();
   });
 
   dialog?.addEventListener('click', (event) => {

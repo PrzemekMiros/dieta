@@ -1,8 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { settings } from '../lib/catalog';
+import { business } from '../lib/business';
 const s = await settings();
-const contactEmail = s.email || 'dietetykadlasmyka@gmail.com';
+const contactEmail = business.email;
 ---
 
 <Layout title="Kontakt">
@@ -12,7 +13,7 @@ const contactEmail = s.email || 'dietetykadlasmyka@gmail.com';
       <h1>
         Zadbaj o swoje
         <br />
-        zdrowie już dziś.
+        zdrowe nawyki.
       </h1>
       <p class="intro muted">
         Chcesz poprawić odżywianie, lepiej się czuć lub zacząć zdrowe nawyki bez presji? Napisz do
@@ -88,8 +89,8 @@ const contactEmail = s.email || 'dietetykadlasmyka@gmail.com';
           </p>
         </div>
       </div>
-      {s.companyName && <p class="mt-8">{s.companyName}</p>}
-      {s.address && <p>{s.address}</p>}
+      <p class="mt-8">{business.name}</p>
+      <p>{business.address}</p>
       {s.nip && <p>NIP: {s.nip}</p>}
       <p class="mt-6 text-sm">
         W sprawie płatności, reklamacji lub odstąpienia od umowy napisz na powyższy adres e-mail.

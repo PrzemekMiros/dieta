@@ -48,7 +48,18 @@ export async function contentPage(
     '*[_type=="page" && slug.current==$slug][0]',
     { slug },
   );
-  if (page) return page;
+  if (page) {
+    return {
+      ...page,
+      content: page.content.map((block) => ({
+        ...block,
+        children: block.children?.map((child) => ({
+          ...child,
+          text: child.text.replaceAll('kontakt@dietetykadlasmyka.pl', 'dietetykadlasmyka@gmail.com'),
+        })),
+      })),
+    };
+  }
   if (slug === 'polityka-prywatnosci') return privacyPolicy;
   if (slug === 'regulamin') return termsOfService;
   return null;
