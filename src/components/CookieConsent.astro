@@ -308,13 +308,13 @@
   .cookie-consent h2 { font-size: clamp(30px, 4vw, 42px); }
   .cookie-consent-tabs { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--color-border); }
   .cookie-consent-tabs button { position: relative; min-height: 70px; border: 0; background: transparent; color: var(--color-ink); font: 600 14px var(--font-sans); cursor: pointer; }
-  .cookie-consent-tabs button[aria-selected='true'] { color: var(--color-action); }
+  .cookie-consent-tabs button[aria-selected='true'] { color: var(--color-action-text); }
   .cookie-consent-tabs button[aria-selected='true']::after { content: ''; position: absolute; height: 3px; inset: auto 0 -1px; background: var(--color-action); }
   .cookie-consent-content { min-height: 230px; padding: 30px 34px; }
   .cookie-consent-content h3 { margin-bottom: 12px; font-size: 26px; }
   .cookie-consent-content p { max-width: 850px; color: var(--color-muted); font-size: 14px; line-height: 1.75; }
   .cookie-consent-content .cookie-consent-privacy { margin-top: 14px; font-size: 12px; }
-  .cookie-consent-content a { color: var(--color-action); text-decoration: underline; text-underline-offset: 3px; }
+  .cookie-consent-content a { color: var(--color-action-text); text-decoration: underline; text-underline-offset: 3px; }
   .cookie-consent-options { margin: 0; padding: 0; border: 0; display: grid; gap: 0; }
   .cookie-consent-options legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .cookie-consent-options label { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 56px; border-bottom: 1px solid var(--color-border-divider); cursor: pointer; }
@@ -322,19 +322,19 @@
   .cookie-consent-options span { display: grid; line-height: 1.35; }
   .cookie-consent-options strong { font-size: 13px; }
   .cookie-consent-options small { color: var(--color-muted); font-size: 11px; }
-  .cookie-consent-options input { width: 20px; height: 20px; flex: 0 0 auto; accent-color: var(--color-action); }
+  .cookie-consent-options input { width: 20px; height: 20px; flex: 0 0 auto; accent-color: var(--color-action-text); }
   .cookie-privacy-signal { display: flex; align-items: center; gap: 12px; margin-top: 20px; padding: 13px 16px; background: var(--color-surface-notice); border: 1px solid var(--color-border); border-radius: 8px; }
   .cookie-privacy-signal[hidden] { display: none; }
   .cookie-privacy-signal span { width: 20px; height: 20px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 50%; background: var(--color-ink); color: var(--color-paper); font-size: 12px; }
   .cookie-privacy-signal p { font-size: 12px; }
   .cookie-consent-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 18px 24px 24px; border-top: 1px solid var(--color-border); background: var(--color-surface-raised); }
-  .cookie-action { min-height: 58px; padding: 12px 18px; border: 1px solid var(--color-action); border-radius: 5px; font: 600 13px var(--font-sans); cursor: pointer; transition: background .2s ease, color .2s ease, transform .2s ease; }
+  .cookie-action { min-height: 58px; padding: 12px 18px; border: 1px solid var(--color-action-text); border-radius: 5px; font: 600 13px var(--font-sans); cursor: pointer; transition: background .2s ease, color .2s ease, transform .2s ease; }
   .cookie-action:hover { transform: translateY(-1px); }
   .cookie-action-primary { background: var(--color-action); color: var(--color-on-action); }
   .cookie-action-primary:hover { background: var(--color-action-hover); }
   .cookie-action-secondary { background: var(--color-ink); border-color: var(--color-ink); color: var(--color-white); }
   .cookie-action-secondary:hover { background: var(--color-ink-hover); }
-  .cookie-action-outline { display: flex; justify-content: center; align-items: center; gap: 16px; background: transparent; color: var(--color-action); }
+  .cookie-action-outline { display: flex; justify-content: center; align-items: center; gap: 16px; background: transparent; color: var(--color-action-text); }
   @media (max-width: 640px) {
     .cookie-consent-layer { align-items: end; padding: 10px; }
     .cookie-consent { max-height: calc(100dvh - 20px); border-radius: 12px; }

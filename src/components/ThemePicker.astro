@@ -1,7 +1,7 @@
 ---
 const themes = [
-  { id: 'warm', name: 'Ciepły', colors: ['#f7f3ee', '#e8ded3', '#73414c'] },
-  { id: 'maroon', name: 'Bordo', colors: ['#262626', '#575757', '#7a3b3b', '#f8f5f5'] },
+  { id: 'warm', name: 'Jasny róż', colors: ['#fffaf8', '#f8e9e5', '#ff9999', '#3d2f2c'] },
+  { id: 'maroon', name: 'Różowy kontrast', colors: ['#3d2f2c', '#ff9999', '#fffaf8', '#9f5656'] },
   { id: 'coral', name: 'Koralowy', colors: ['#ff9999', '#f2e3de', '#fff7f5', '#4a3030'] },
 ];
 ---
@@ -37,7 +37,7 @@ const themes = [
   const panel = picker?.querySelector<HTMLElement>('.theme-options');
   const choices = picker?.querySelectorAll<HTMLButtonElement>('[data-theme-choice]');
   const colors: Record<string, string> = {
-    warm: '#f7f3ee', maroon: '#f8f5f5', coral: '#fff7f5',
+    warm: '#fffaf8', maroon: '#fffaf8', coral: '#fff7f5',
   };
   function updateSelection() {
     const theme = document.documentElement.dataset.theme || 'warm';
@@ -70,19 +70,19 @@ const themes = [
 
 <style>
   .theme-picker { position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 30; }
-  .theme-toggle { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 10px; border: 1px solid var(--color-border); border-right: 0; border-radius: 14px 0 0 14px; background: var(--color-surface-raised); color: var(--color-action); box-shadow: 0 4px 24px #0000000d; font-size: 10px; }
+  .theme-toggle { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 10px; border: 1px solid var(--color-border); border-right: 0; border-radius: 14px 0 0 14px; background: var(--color-surface-raised); color: var(--color-action-text); box-shadow: 0 4px 24px #0000000d; font-size: 10px; }
   .theme-options { position: absolute; right: calc(100% + 12px); top: 50%; transform: translateY(-50%); width: min(240px, calc(100vw - 84px)); padding: 20px; background: var(--color-surface-raised); color: var(--color-ink); border: 1px solid var(--color-border); border-radius: 16px; box-shadow: 0 12px 48px #00000015; }
   .theme-heading { font-family: var(--font-serif); font-size: 26px; line-height: 1.2; }
   .theme-description { margin: 6px 0 16px; font-size: 12px; color: var(--color-muted); }
   .theme-choices { display: grid; gap: 8px; }
   .theme-choice { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 10px; border: 1px solid var(--color-border); border-radius: 8px; background: transparent; color: inherit; font-size: 12px; text-align: left; }
   .theme-choice:hover { background: var(--color-surface-hover); }
-  .theme-choice[aria-pressed='true'] { border-color: var(--color-action); background: var(--color-surface-hover); }
+  .theme-choice[aria-pressed='true'] { border-color: var(--color-action-text); background: var(--color-surface-hover); }
   .theme-swatches { display: flex; flex-shrink: 0; }
   .theme-swatches span { width: 15px; height: 22px; }
   .theme-swatches span:first-child { border-radius: 5px 0 0 5px; }
   .theme-swatches span:last-child { border-radius: 0 5px 5px 0; }
-  .theme-check { margin-left: auto; visibility: hidden; color: var(--color-action); }
+  .theme-check { margin-left: auto; visibility: hidden; color: var(--color-action-text); }
   [aria-pressed='true'] .theme-check { visibility: visible; }
   @media (max-width: 640px) { .theme-picker { top: auto; bottom: 24px; transform: none; } .theme-options { top: auto; bottom: 0; transform: none; } }
 </style>

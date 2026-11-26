@@ -14,22 +14,23 @@
   --font-sans: 'DM Sans Variable', sans-serif;
   --font-serif: 'Cormorant Garamond Variable', 'Cormorant Garamond', Georgia, serif;
 
-  /* Paleta zaczerpnięta ze zdjęć: kość słoniowa, kamień, orzech, śliwka i mosiądz */
-  --color-paper: #f7f3ee;
-  --color-beige: #e8ded3;
+  /* Jaśniejsza paleta z pudrowym różem i ciepłym tuszem */
+  --color-paper: #fffaf8;
+  --color-beige: #f8e9e5;
   --color-ink: #3d2f2c;
-  --color-rose: #7e4d59;
-  --color-action: #73414c;
-  --color-on-action: #fff;
+  --color-rose: #ff9999;
+  --color-action: #ff9999;
+  --color-action-text: #9f5656;
+  --color-on-action: #3d2f2c;
   --color-white: #fff;
   --color-transparent: transparent;
   /* Tekst i akcje */
   --color-muted: #6b625d;
   --color-eyebrow: #75613f;
   --color-section-eyebrow: #806e52;
-  --color-action-hover: #5c3038;
+  --color-action-hover: #f18181;
   --color-ink-hover: #463735;
-  --color-selection: #d8c5b7;
+  --color-selection: #ffe3e0;
   --color-text-warm: #71645c;
   --color-text-step: #786c65;
   --color-text-cart: #75675f;
@@ -37,35 +38,35 @@
   --color-text-detail: #655852;
   --color-text-subtle: #82756d;
   /* Powierzchnie i obramowania */
-  --color-border: #d8ccc0;
-  --color-border-strong: #a99a8d;
-  --color-border-link: #b5a396;
-  --color-border-input: #b9aa9d;
-  --color-border-divider: #e3d9cf;
-  --color-border-summary: #dfd2c6;
-  --color-border-feature: #c8b8a8;
-  --color-border-tab: #c9b9ab;
-  --color-border-list: #d0c2b6;
-  --color-surface-notice: #eee3da;
-  --color-surface-raised: #fffbf7;
-  --color-surface-hover: #f0e9e2;
-  --color-surface-code: #f6f1ec;
-  --color-surface-nav: #e9ddd2;
+  --color-border: #edd8d2;
+  --color-border-strong: #bc8a84;
+  --color-border-link: #d49b97;
+  --color-border-input: #d6aaa5;
+  --color-border-divider: #f2dfda;
+  --color-border-summary: #f0d8d2;
+  --color-border-feature: #e3bdb7;
+  --color-border-tab: #e0bbb6;
+  --color-border-list: #e8cbc6;
+  --color-surface-notice: #fff0ed;
+  --color-surface-raised: #fffdfb;
+  --color-surface-hover: #ffe9e6;
+  --color-surface-code: #fff4f1;
+  --color-surface-nav: #fff0ed;
   /* Strona g??wna i karty produkt?w */
-  --color-surface-product: #e7dbd0;
-  --color-surface-book: #f3e9df;
-  --color-border-book: #d3c0ad;
-  --color-surface-product-alt: #ddd0c5;
-  --color-surface-hero: #d8caba;
-  --color-border-hero: #ded2c7;
-  --color-text-stat: #8b734e;
+  --color-surface-product: #ffe8e4;
+  --color-surface-book: #fff2ee;
+  --color-border-book: #e9c7c0;
+  --color-surface-product-alt: #ffdeda;
+  --color-surface-hero: #ffd5d0;
+  --color-border-hero: #f0d9d3;
+  --color-text-stat: #9f5656;
   --color-text-caption: #6b5e57;
-  --color-text-inverse: #eee5dc;
-  --color-accent-banner: #c79b64;
-  --color-accent-inverse: #caa875;
-  --color-eyebrow-inverse: #d3b889;
-  --color-accent-quote: #bb7b86;
-  --color-muted-inverse: #d2c8c1;
+  --color-text-inverse: #fffaf8;
+  --color-accent-banner: #ff9999;
+  --color-accent-inverse: #ffd0d0;
+  --color-eyebrow-inverse: #ffd6d6;
+  --color-accent-quote: #ffb8b8;
+  --color-muted-inverse: #f8e5e1;
   /* Komunikaty i statusy */
   --color-error: #952c2c;
   --color-success: #52745c;
@@ -84,9 +85,9 @@
   /* Okno rezerwacji */
   --color-booking-text: #f7f1ec;
   --color-booking-background: #171211;
-  --color-booking-accent: #c17a87;
+  --color-booking-accent: #ff9999;
   --color-booking-surface: #3d302d;
-  --color-booking-accent-soft: #dfadb5;
+  --color-booking-accent-soft: #ffc7c7;
   --color-booking-border: #68564f;
   --color-booking-field: #2b211f;
   --color-booking-border-input: #927f76;
@@ -95,14 +96,14 @@
   --color-booking-muted: #dacfc7;
   --color-booking-disabled: #9b8d85;
   --color-booking-secondary: #d1c4bc;
-  --color-booking-link: #dfadb5;
+  --color-booking-link: #ffc7c7;
   --color-booking-placeholder: #bcaeA5;
   --color-booking-border-hover: #b09b91;
   /* Przezroczysto?ci i cienie */
-  --color-surface-badge: #f7f3eee8;
-  --color-shadow-product: #38241f25;
-  --color-shadow-card: #39261f18;
-  --color-border-header: #d8ccc080;
+  --color-surface-badge: #fffaf8e8;
+  --color-shadow-product: #3d2f2c1f;
+  --color-shadow-card: #3d2f2c14;
+  --color-border-header: #edd8d280;
   --color-shadow-header: #0000000a;
   --color-shadow-toast: #0002;
 }
@@ -189,7 +190,7 @@ img {
   object-fit: cover;
 }
 :focus-visible {
-  outline: 2px solid var(--color-action);
+  outline: 2px solid var(--color-action-text);
   outline-offset: 5px;
 }
 ::selection {
@@ -252,6 +253,7 @@ img {
   background: var(--color-beige);
 }
 .btn-dark {
+  color: var(--color-white);
   background: var(--color-ink);
 }
 .btn-dark:hover {
@@ -300,7 +302,7 @@ select {
   color: var(--color-ink);
 }
 input[type='checkbox'] {
-  accent-color: var(--color-action);
+  accent-color: var(--color-action-text);
   width: 18px;
   height: 18px;
   flex-shrink: 0;

@@ -1,24 +1,27 @@
 :root[data-theme='maroon'] {
-  --color-paper: #f8f5f5;
-  --color-beige: #ded7d7;
-  --color-ink: #262626;
-  --color-action: #7a3b3b;
-  --color-action-hover: #5f2d2d;
-  --color-muted: #575757;
-  --color-border: #cec4c4;
-  --color-border-strong: #898080;
-  --color-surface-raised: #fffafa;
-  --color-surface-hover: #eee8e8;
-  --color-surface-hero: #e5d5d5;
-  --color-accent-banner: #7a3b3b;
-  --color-accent-inverse: #d6aaaa;
-  --color-booking-background: #262626;
+  --color-paper: #fffaf8;
+  --color-beige: #f8e9e5;
+  --color-ink: #3d2f2c;
+  --color-action: #ff9999;
+  --color-action-text: #9f5656;
+  --color-on-action: #3d2f2c;
+  --color-action-hover: #f18181;
+  --color-muted: #6b625d;
+  --color-border: #edd8d2;
+  --color-border-strong: #bc8a84;
+  --color-surface-raised: #fffdfb;
+  --color-surface-hover: #ffe9e6;
+  --color-surface-hero: #ffd5d0;
+  --color-accent-banner: #ff9999;
+  --color-accent-inverse: #ffd0d0;
+  --color-booking-background: #241b1a;
 }
 :root[data-theme='coral'] {
   --color-paper: #fff7f5;
   --color-beige: #f2e3de;
   --color-ink: #4a3030;
   --color-action: #ff9999;
+  --color-action-text: #9f5656;
   --color-on-action: #4a3030;
   --color-action-hover: #ed8383;
   --color-muted: #725555;
@@ -33,8 +36,8 @@
 }
 :root:is([data-theme='maroon'], [data-theme='coral']) {
   --color-rose: var(--color-action);
-  --color-eyebrow: var(--color-action);
-  --color-section-eyebrow: var(--color-action);
+  --color-eyebrow: var(--color-action-text);
+  --color-section-eyebrow: var(--color-action-text);
   --color-selection: var(--color-beige);
   --color-text-warm: var(--color-muted);
   --color-text-step: var(--color-muted);
@@ -57,7 +60,7 @@
   --color-border-book: var(--color-border);
   --color-surface-product-alt: var(--color-surface-hero);
   --color-border-hero: var(--color-border);
-  --color-text-stat: var(--color-action);
+  --color-text-stat: var(--color-action-text);
   --color-text-caption: var(--color-muted);
   --color-text-inverse: var(--color-paper);
   --color-eyebrow-inverse: var(--color-accent-inverse);
